@@ -827,7 +827,11 @@ export function MusicApp({ volume = 65 }: { volume?: number }) {
   );
 }
 
-export function CameraApp() {
+export function CameraApp({
+  onCapture,
+}: {
+  onCapture?: (data: string) => Promise<void>;
+}) {
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
 
@@ -865,20 +869,38 @@ export function CameraApp() {
     }
   };
 
-  const capture = () => {
+  const capture = async () => {
     const element = video.current;
 
-    if (!element || !element.videoWidth) return;
+    if (!element || !element.videoWidth) {
+      setError("Start the camera before taking a photo.");
+      return;
+    }
 
     const canvas = document.createElement("canvas");
     canvas.width = element.videoWidth;
     canvas.height = element.videoHeight;
 
-    canvas
-      .getContext("2d")
-      ?.drawImage(element, 0, 0);
+    const context = canvas.getContext("2d");
 
-    setShot(canvas.toDataURL("image/png"));
+    if (!context) {
+      setError("Unable to capture photo.");
+      return;
+    }
+
+    context.drawImage(element, 0, 0);
+
+    const photoData = canvas.toDataURL("image/png");
+    setShot(photoData);
+
+    if (onCapture) {
+      try {
+        await onCapture(photoData);
+        setError("");
+      } catch {
+        setError("Photo captured, but could not be saved to Gallery.");
+      }
+    }
   };
 
   return (

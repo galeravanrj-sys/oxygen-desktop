@@ -298,6 +298,18 @@ export default function App() {
     event.target.value = "";
   };
 
+  const saveCameraPhoto = async (data: string): Promise<void> => {
+    const photo: Photo = {
+      id: crypto.randomUUID(),
+      name: `Camera-${new Date().toISOString().replace(/[:.]/g, "-")}.png`,
+      data,
+    };
+
+    await galleryPut(photo);
+
+    setPhotos(previous => [...previous, photo]);
+    setGalleryError("");
+  };
   const removePhoto = async (id: string) => {
     if (!confirm("Delete this photo?")) return;
     try {
@@ -358,7 +370,7 @@ export default function App() {
       case "Calendar": return <CalendarApp />;
       case "Browser": return <BrowserApp />;
       case "Music": return <MusicApp volume={volume} />;
-      case "Camera": return <CameraApp />;
+      case "Camera": return <CameraApp onCapture={saveCameraPhoto} />;
       case "Gallery": return (
         <div className="gallery-app">
           <div className="gallery-heading">
