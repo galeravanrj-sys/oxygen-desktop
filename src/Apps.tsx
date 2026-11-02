@@ -834,46 +834,145 @@ export function CameraApp({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
+  const requestId = useRef(0);
 
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [shot, setShot] = useState("");
+  const [running, setRunning] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [facing, setFacing] = useState<"user" | "environment">("user");
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [deviceId, setDeviceId] = useState("");
 
-  const stop = () => {
-    stream.current?.getTracks().forEach((track) => track.stop());
+  const stopTracks = () => {
+    stream.current?.getTracks().forEach(track => track.stop());
     stream.current = null;
+  };
+
+  const refreshDevices = async () => {
+    if (!navigator.mediaDevices?.enumerateDevices) return;
+
+    try {
+      const all = await navigator.mediaDevices.enumerateDevices();
+      setDevices(all.filter(device => device.kind === "videoinput"));
+    } catch {
+      // Some browsers restrict camera enumeration.
+    }
   };
 
   useEffect(() => {
     return () => {
-      stream.current?.getTracks().forEach((track) => track.stop());
+      requestId.current++;
+      stream.current?.getTracks().forEach(track => track.stop());
     };
   }, []);
 
-  const start = async () => {
-    try {
-      setError("");
-      stop();
+  const start = async (
+    selectedFacing: "user" | "environment" = facing,
+    selectedId = ""
+  ) => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError("Camera access requires HTTPS or localhost and a supported browser.");
+      return;
+    }
 
-      stream.current =
-        await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false,
-        });
+    const currentRequest = ++requestId.current;
+
+    setBusy(true);
+    setError("");
+    setMessage("");
+    setRunning(false);
+
+    stopTracks();
+
+    if (video.current) {
+      video.current.srcObject = null;
+    }
+
+    try {
+      const constraints: MediaStreamConstraints = {
+        audio: false,
+        video: selectedId
+          ? { deviceId: { exact: selectedId } }
+          : {
+              facingMode: { ideal: selectedFacing },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+      };
+
+      const newStream =
+        await navigator.mediaDevices.getUserMedia(constraints);
+
+      if (currentRequest !== requestId.current) {
+        newStream.getTracks().forEach(track => track.stop());
+        return;
+      }
+
+      stream.current = newStream;
 
       if (video.current) {
-        video.current.srcObject = stream.current;
+        video.current.srcObject = newStream;
         await video.current.play();
       }
-    } catch {
-      setError("Camera unavailable or permission denied.");
+
+      setRunning(true);
+      setDeviceId(
+        newStream.getVideoTracks()[0]?.getSettings().deviceId || ""
+      );
+
+      await refreshDevices();
+    } catch (err) {
+      if (currentRequest !== requestId.current) return;
+
+      console.error("Camera error:", err);
+      setError(
+        "Unable to open this camera. Check permissions or select another camera."
+      );
+      setRunning(false);
+    } finally {
+      if (currentRequest === requestId.current) {
+        setBusy(false);
+      }
+    }
+  };
+
+  const stop = () => {
+    requestId.current++;
+    stopTracks();
+
+    if (video.current) {
+      video.current.srcObject = null;
+    }
+
+    setRunning(false);
+    setBusy(false);
+    setMessage("");
+  };
+
+  const switchCamera = async () => {
+    const next = facing === "user" ? "environment" : "user";
+
+    setFacing(next);
+    setDeviceId("");
+
+    await start(next, "");
+  };
+
+  const selectCamera = async (id: string) => {
+    setDeviceId(id);
+
+    if (id) {
+      await start(facing, id);
     }
   };
 
   const capture = async () => {
     const element = video.current;
 
-    if (!element || !element.videoWidth) {
-      setError("Start the camera before taking a photo.");
+    if (!element || !element.videoWidth || !running) {
+      setError("Start the camera before taking a picture.");
       return;
     }
 
@@ -884,62 +983,161 @@ export function CameraApp({
     const context = canvas.getContext("2d");
 
     if (!context) {
-      setError("Unable to capture photo.");
+      setError("Unable to capture picture.");
       return;
     }
 
     context.drawImage(element, 0, 0);
 
     const photoData = canvas.toDataURL("image/png");
+
     setShot(photoData);
+    setError("");
+    setMessage("");
 
     if (onCapture) {
       try {
         await onCapture(photoData);
-        setError("");
+        setMessage("Photo saved to Oxygen Desktop Gallery!");
       } catch {
-        setError("Photo captured, but could not be saved to Gallery.");
+        setError("Photo captured, but Gallery could not save it.");
       }
     }
   };
 
   return (
-    <div className="ox-app">
-      <div className="ox-toolbar">
-        <button onClick={start}>Start camera</button>
-        <button onClick={capture}>Capture</button>
-        <button onClick={stop}>Stop camera</button>
+    <div className="ox-app" style={{ overflowY: "auto" }}>
+      <h2>Camera</h2>
 
-        {shot && (
-          <button
-            onClick={() =>
-              download(shot, "oxygen-camera.png")
-            }
-          >
-            Save photo
-          </button>
-        )}
+      <div
+        className="ox-toolbar"
+        style={{ flexWrap: "wrap", gap: 8 }}
+      >
+        <button
+          onClick={() => start(facing, "")}
+          disabled={busy}
+        >
+          {busy ? "Opening..." : "Start Camera"}
+        </button>
+
+        <button
+          onClick={switchCamera}
+          disabled={busy}
+        >
+          🔄 Switch Front / Back
+        </button>
+
+        <button
+          onClick={capture}
+          disabled={!running || busy}
+        >
+          📸 Capture
+        </button>
+
+        <button onClick={stop}>
+          Stop Camera
+        </button>
       </div>
 
-      {error && <p>{error}</p>}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 10,
+          margin: "12px 0",
+        }}
+      >
+        <label htmlFor="oxygen-camera-select">
+          Choose Camera:
+        </label>
+
+        <select
+          id="oxygen-camera-select"
+          value={deviceId}
+          disabled={busy}
+          onChange={event => selectCamera(event.target.value)}
+          style={{
+            padding: 9,
+            borderRadius: 8,
+            maxWidth: "100%",
+          }}
+        >
+          <option value="">Automatic camera</option>
+
+          {devices.map((device, index) => (
+            <option
+              key={device.deviceId}
+              value={device.deviceId}
+            >
+              {device.label || `Camera ${index + 1}`}
+            </option>
+          ))}
+        </select>
+
+        <button onClick={refreshDevices}>
+          Refresh List
+        </button>
+      </div>
+
+      <p className="ox-muted">
+        Front camera is preferred initially. Use Switch Front / Back
+        to request the other camera, or choose a camera manually.
+        Available cameras depend on your device and browser.
+      </p>
+
+      {error && (
+        <p style={{ color: "#e35b5b" }}>
+          {error}
+        </p>
+      )}
+
+      {message && (
+        <p style={{ color: "#16a34a" }}>
+          {message}
+        </p>
+      )}
 
       <video
         ref={video}
+        autoPlay
         muted
         playsInline
         style={{
+          display: "block",
           width: "100%",
-          maxHeight: 280,
+          maxHeight: 380,
+          objectFit: "contain",
+          borderRadius: 14,
           background: "#15151d",
         }}
       />
 
       {shot && (
-        <img
-          src={shot}
-          alt="Captured"
-          style={{ maxWidth: "100%", maxHeight: 180 }}
-        />
+        <div style={{ marginTop: 16 }}>
+          <h3>Last Captured Photo</h3>
+
+          <img
+            src={shot}
+            alt="Last captured photo"
+            style={{
+              maxWidth: "100%",
+              maxHeight: 220,
+              borderRadius: 12,
+              objectFit: "contain",
+            }}
+          />
+
+          <div style={{ marginTop: 10 }}>
+            <button
+              onClick={() =>
+                download(shot, "oxygen-camera.png")
+              }
+            >
+              Download Photo
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
