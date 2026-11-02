@@ -1,0 +1,241 @@
+
+.ox-app {
+  height: 100%;
+  overflow: auto;
+  padding: 18px;
+  color: #303247;
+  background: #fafafe;
+  font-size: 13px;
+}
+
+.ox-app button {
+  border: 1px solid #dce0ee;
+  background: #fff;
+  color: #3d4665;
+  border-radius: 9px;
+  padding: 8px 11px;
+  cursor: pointer;
+}
+
+.ox-app button:hover {
+  background: #edf0ff;
+}
+
+.ox-app button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ox-app input,
+.ox-app textarea {
+  padding: 9px;
+  border: 1px solid #dce0ee;
+  border-radius: 9px;
+  min-width: 0;
+}
+
+.ox-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.ox-toolbar input {
+  flex: 1;
+}
+
+.ox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ox-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px;
+  background: #f1f2f9;
+  border-radius: 10px;
+}
+
+.ox-entry-main {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.ox-entry-main span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ox-muted {
+  font-size: 11px;
+  color: #85899c;
+  margin-top: 12px;
+}
+
+.ox-notes {
+  display: flex;
+  gap: 12px;
+}
+
+.ox-notes aside {
+  width: 155px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow: auto;
+}
+
+.ox-notes section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.ox-notes textarea {
+  flex: 1;
+  resize: none;
+}
+
+.ox-calc {
+  max-width: 400px;
+  margin: auto;
+}
+
+.ox-display {
+  font-size: 40px;
+  text-align: right;
+  padding: 25px 10px;
+  overflow: auto;
+}
+
+.ox-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.ox-calc-grid button {
+  font-size: 20px;
+  padding: 15px;
+}
+
+.ox-browser {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.ox-browser iframe {
+  width: 100%;
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  min-height: 100px;
+}
+
+.ox-tabs,
+.ox-bookmarks {
+  display: flex;
+  gap: 5px;
+  overflow: auto;
+  margin-bottom: 7px;
+}
+
+.ox-tabs .selected {
+  background: #dce2ff;
+}
+
+.ox-browser .ox-toolbar {
+  flex-wrap: nowrap;
+}
+
+.ox-browser .ox-toolbar button {
+  white-space: nowrap;
+  padding: 7px;
+}
+
+.ox-browser .ox-muted {
+  margin: 4px 0;
+}
+
+.photo-card img {
+  cursor: pointer;
+}
+
+.ox-photo-viewer {
+  position: absolute;
+  inset: 52px 0 0;
+  background: rgba(16, 18, 30, 0.97);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+}
+
+.ox-photo-viewer img {
+  max-width: 75%;
+  max-height: 82%;
+  object-fit: contain;
+}
+
+.ox-photo-viewer button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.ox-photo-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.ox-photo-caption {
+  position: absolute;
+  bottom: 12px;
+  color: white;
+  font-size: 13px;
+}
+
+.ox-context {
+  position: fixed;
+  z-index: 1000;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #e5e5ee;
+  border-radius: 12px;
+  box-shadow: 0 15px 45px #0003;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ox-context button {
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  color: #34354b;
+}
+
+.ox-context button:hover {
+  background: #eef0fa;
+}
