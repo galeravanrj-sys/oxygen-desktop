@@ -29,3 +29,8 @@ dist/
 .env.*
 !.env.example
 .env.local
+# Oxygen Desktop temporary backups
+*.tsx.backup
+*.tsx.before-hook-fix
+*.tsx.backup-public-gallery
+*.ts.backup
