@@ -1,4 +1,5 @@
-import "./App.css";
+﻿import "./App.css";
+import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { Rnd } from "react-rnd";
 import {
@@ -140,6 +141,7 @@ export default function App() {
     width: window.innerWidth,
     height: window.innerHeight
   });
+  const isMobile = viewport.width <= 650;
   const uploadRef = useRef<HTMLInputElement>(null);
   const zRef = useRef(
     Math.max(10, ...readJSON<Win[]>(SESSION_KEY, []).map(w => w.zIndex))
@@ -262,6 +264,16 @@ export default function App() {
   };
 
   const geometry = (w: Win) => {
+    
+    if (isMobile) {
+      return {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: Math.max(200, viewport.height - 115),
+      };
+    }
+
     const width = Math.max(320, viewport.width - 30);
     const height = Math.max(260, viewport.height - 135);
     if (w.mode === "fullscreen") {
@@ -373,6 +385,7 @@ export default function App() {
       case "Camera": return <CameraApp onCapture={saveCameraPhoto} />;
       case "Gallery": return (
         <div className="gallery-app">
+          <PublicGallery />
           <div className="gallery-heading">
             <div>
               <p className="eyebrow">YOUR COLLECTION</p>
@@ -421,11 +434,11 @@ export default function App() {
               }}><X size={20} /></button>
               <button onClick={() => setPhotoIndex(
                 (photoIndex - 1 + photos.length) % photos.length
-              )}>❮</button>
+              )}>â®</button>
               <img src={photos[photoIndex].data} alt={photos[photoIndex].name} />
               <button onClick={() => setPhotoIndex(
                 (photoIndex + 1) % photos.length
-              )}>❯</button>
+              )}>â¯</button>
               <div className="ox-photo-caption">
                 {photos[photoIndex].name} ({photoIndex + 1}/{photos.length})
                 <button style={{ marginLeft: 12 }}
@@ -515,9 +528,88 @@ export default function App() {
           })}
         </div>
 
+
+<div className="oxygen-widgets">
+  <div className="oxygen-widget oxygen-clock-widget">
+    <div className="oxygen-widget-label">
+      <Sun size={17} />
+      <span>Today</span>
+    </div>
+
+    <strong className="oxygen-widget-time">
+      {formattedTime}
+    </strong>
+
+    <span className="oxygen-widget-date">
+      {formattedDate}
+    </span>
+  </div>
+
+  <button
+    className="oxygen-widget oxygen-gallery-widget"
+    onClick={() => launch("Gallery")}
+  >
+    <div className="oxygen-widget-label">
+      <Images size={18} />
+      <span>Gallery</span>
+    </div>
+
+    <strong>{photos.length}</strong>
+    <span>
+      {photos.length === 1 ? "Saved photo" : "Saved photos"}
+    </span>
+  </button>
+
+  <button
+    className="oxygen-widget oxygen-calendar-widget"
+    onClick={() => launch("Calendar")}
+  >
+    <div className="oxygen-widget-label">
+      <CalendarDays size={18} />
+      <span>Calendar</span>
+    </div>
+
+    <strong>{time.getDate()}</strong>
+    <span>
+      {time.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+      })}
+    </span>
+  </button>
+</div>
+
+<div className="oxygen-mobile-apps">
+  <div className="oxygen-mobile-section-title">
+    <span>Applications</span>
+    <span>{apps.length} apps</span>
+  </div>
+
+  <div className="oxygen-mobile-grid">
+    {apps.map(app => {
+      const Icon = app.icon;
+
+      return (
+        <button
+          key={app.name}
+          className="oxygen-mobile-app"
+          onClick={() => launch(app.name)}
+        >
+          <div className={`shortcut-icon ${app.color}`}>
+            <Icon size={27} />
+          </div>
+
+          <span>{app.name}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+
         <div className="desktop-widget">
           <div className="widget-top">
-            <span>LOCAL TIME</span><span className="clock-icon">◷</span>
+            <span>LOCAL TIME</span><span className="clock-icon">â—·</span>
           </div>
           <h2>{formattedTime}</h2>
           <p>{formattedDate}</p>
@@ -526,19 +618,30 @@ export default function App() {
           </div>
         </div>
 
-        {windows.filter(w => !w.minimized).map(w => {
+
+{windows
+  .filter(w =>
+    !w.minimized &&
+    (!isMobile ||
+      w.id === activeId ||
+      (!activeId &&
+        w.id === topWindow(windows)?.id))
+  )
+  .map(w => {
+
           const g = geometry(w);
           const fixed = w.mode !== "normal";
           return (
             <Rnd key={w.id} bounds="parent"
               position={{ x: g.x, y: g.y }}
               size={{ width: g.width, height: g.height }}
-              minWidth={320} minHeight={260}
+              minWidth={isMobile ? 0 : 320}
+              minHeight={isMobile ? 0 : 260}
               dragHandleClassName="app-window-titlebar"
               cancel=".window-controls, .window-controls *"
-              disableDragging={fixed}
-              enableResizing={!fixed}
-              className={`window-rnd ${activeId === w.id ? "window-active" : ""}`}
+              disableDragging={isMobile || fixed}
+              enableResizing={!isMobile && !fixed}
+              className={`window-rnd ${isMobile ? "mobile-window-rnd" : ""} ${activeId === w.id ? "window-active" : ""}`}
               style={{ zIndex: w.zIndex }}
               onMouseDown={() => {
                 if (activeId !== w.id) focus(w.id);
@@ -738,3 +841,4 @@ export default function App() {
     </main>
   );
 }
+
