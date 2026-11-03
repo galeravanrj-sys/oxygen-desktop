@@ -1,9 +1,10 @@
+import SevenDSTierApp from "./SevenDSTierApp";
 import "./App.css";
 import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
-  Images, Folder, Globe, Settings, CalendarDays, Calculator,
+  Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -31,6 +32,7 @@ type Photo = { id: string; name: string; data: string };
 
 const apps = [
   { name: "Gallery", icon: Images, color: "pink" },
+  { name: "7DS Tier List", icon: Crown, color: "purple" },
   { name: "Files", icon: Folder, color: "orange" },
   { name: "Browser", icon: Globe, color: "blue" },
   { name: "Settings", icon: Settings, color: "gray" },
@@ -344,6 +346,7 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
+      case "7DS Tier List": return <SevenDSTierApp />;
       case "Files": return <FilesApp />;
       case "Notes": return <NotesApp />;
       case "Calculator": return <CalculatorApp />;
