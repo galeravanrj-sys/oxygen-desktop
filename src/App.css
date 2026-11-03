@@ -1,5 +1,5 @@
-
-/* OXYGEN DESKTOP — COMPLETE DESKTOP STYLES */
+﻿
+/* OXYGEN DESKTOP â€” COMPLETE DESKTOP STYLES */
 
 .os-shell {
   --text: #fff;
@@ -1347,3 +1347,284 @@ button.oxygen-widget:hover {
     z-index: 900 !important;
   }
 }
+
+
+/* OXYGEN_GALLERY_REDESIGN_START */
+
+.oxygen-public-gallery {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(115, 103, 190, 0.16);
+  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,0.96),
+    rgba(244,242,255,0.96)
+  );
+  color: #24233e;
+  font-family: inherit;
+}
+
+.oxygen-public-gallery * {
+  box-sizing: border-box;
+}
+
+.oxygen-public-gallery > h2 {
+  margin: 0 0 6px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  color: #262448;
+}
+
+.oxygen-public-gallery > p {
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #77758f;
+}
+
+.public-gallery-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 22px;
+  border: 1px solid #e2ddff;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    #f1edff,
+    #faf8ff
+  );
+}
+
+.public-gallery-upload h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 750;
+  color: #38316b;
+}
+
+.public-gallery-upload p {
+  margin: 0;
+  color: #79748e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.public-gallery-upload input[type="file"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px dashed #aaa0e8;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.8);
+  color: #565070;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.public-gallery-upload input[type="file"]::file-selector-button {
+  padding: 9px 14px;
+  margin-right: 12px;
+  border: 0;
+  border-radius: 9px;
+  background: #e7e1ff;
+  color: #5d4dc4;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.oxygen-public-gallery button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 39px;
+  padding: 10px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 11px;
+  background: #6759e8;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.oxygen-public-gallery button:hover:not(:disabled) {
+  background: #5345d1;
+  transform: translateY(-1px);
+}
+
+.oxygen-public-gallery button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.public-gallery-upload > button {
+  align-self: flex-start;
+  min-width: 175px;
+  background: linear-gradient(135deg, #7668f5, #5b4bd5);
+}
+
+.oxygen-public-gallery > button {
+  margin: 4px 0 16px;
+  background: #ebe8ff;
+  color: #584bc6;
+}
+
+.oxygen-public-gallery > button:hover:not(:disabled) {
+  background: #ded8ff;
+}
+
+.oxygen-public-gallery [role="status"] {
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #a33850;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.public-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.public-gallery-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e8e5f5;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(42,35,85,.05);
+}
+
+.oxygen-public-gallery .public-gallery-photo {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #eeecf9;
+  overflow: hidden;
+}
+
+.public-gallery-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .2s ease;
+}
+
+.public-gallery-photo:hover img {
+  transform: scale(1.04);
+}
+
+.oxygen-public-gallery .public-gallery-delete {
+  width: calc(100% - 16px);
+  margin: 8px;
+  background: #fff0f2;
+  color: #bd3c55;
+}
+
+.public-gallery-admin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 18px;
+  margin-top: 24px;
+  border-top: 1px solid #e8e5f3;
+}
+
+.public-gallery-admin > button {
+  background: #f0edff;
+  color: #6052c7;
+}
+
+.public-admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.public-admin-form input {
+  width: 100%;
+  min-height: 42px;
+  padding: 11px 13px;
+  border: 1px solid #ddd9f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #262448;
+  font-family: inherit;
+}
+
+.public-gallery-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(14, 12, 30, .95);
+}
+
+.public-gallery-viewer img {
+  max-width: 95%;
+  max-height: 80%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.public-gallery-viewer > button {
+  align-self: flex-end;
+}
+
+@media (max-width: 650px) {
+  .oxygen-public-gallery {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .oxygen-public-gallery > h2 {
+    font-size: 21px;
+  }
+
+  .public-gallery-upload {
+    padding: 16px;
+  }
+
+  .public-gallery-upload > button {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .public-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+}
+
+/* OXYGEN_GALLERY_REDESIGN_END */
