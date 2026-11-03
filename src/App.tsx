@@ -1,13 +1,13 @@
-﻿import "./App.css";
+import "./App.css";
 import PublicGallery from "./PublicGallery";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
   Images, Folder, Globe, Settings, CalendarDays, Calculator,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Minimize2, PanelLeft, PanelRight, LayoutGrid,
-  Upload, Trash2, ImagePlus, Columns2, Play, Pause,
+  Columns2,
   Expand, RotateCcw
 } from "lucide-react";
 import {
@@ -134,15 +134,12 @@ export default function App() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [galleryError, setGalleryError] = useState("");
   const [loadingPhotos, setLoadingPhotos] = useState(true);
-  const [photoIndex, setPhotoIndex] = useState<number | null>(null);
-  const [slideshow, setSlideshow] = useState(false);
   const [context, setContext] = useState<{ x: number; y: number } | null>(null);
   const [viewport, setViewport] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
   const isMobile = viewport.width <= 650;
-  const uploadRef = useRef<HTMLInputElement>(null);
   const zRef = useRef(
     Math.max(10, ...readJSON<Win[]>(SESSION_KEY, []).map(w => w.zIndex))
   );
@@ -176,13 +173,6 @@ export default function App() {
       .finally(() => setLoadingPhotos(false));
   }, []);
 
-  useEffect(() => {
-    if (!slideshow || photoIndex === null || photos.length < 2) return;
-    const timer = window.setInterval(() => {
-      setPhotoIndex(i => i === null ? null : (i + 1) % photos.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [slideshow, photoIndex, photos.length]);
 
   const topWindow = (list: Win[]) =>
     [...list].filter(w => !w.minimized).sort((a, b) => b.zIndex - a.zIndex)[0];
@@ -291,25 +281,6 @@ export default function App() {
     return { x: w.x, y: w.y, width: w.width, height: w.height };
   };
 
-  const uploadPhotos = async (event: ChangeEvent<HTMLInputElement>) => {
-    for (const file of Array.from(event.target.files || []).filter(
-      f => f.type.startsWith("image/")
-    )) {
-      try {
-        const photo = {
-          id: crypto.randomUUID(),
-          name: file.name,
-          data: await fileToData(file)
-        };
-        await galleryPut(photo);
-        setPhotos(previous => [...previous, photo]);
-      } catch {
-        setGalleryError("Could not save image. Try a smaller file.");
-      }
-    }
-    event.target.value = "";
-  };
-
   const saveCameraPhoto = async (data: string): Promise<void> => {
     const photo: Photo = {
       id: crypto.randomUUID(),
@@ -327,7 +298,6 @@ export default function App() {
     try {
       await galleryDelete(id);
       setPhotos(previous => previous.filter(p => p.id !== id));
-      setPhotoIndex(null);
     } catch {
       setGalleryError("Could not delete photo.");
     }
@@ -342,9 +312,7 @@ export default function App() {
         setContext(null);
         setStartMenu(false);
         setQuickSettings(false);
-        setPhotoIndex(null);
-        setSlideshow(false);
-        setWindows(previous => previous.map(w =>
+          setWindows(previous => previous.map(w =>
           w.mode === "fullscreen" ? { ...w, mode: "normal" } : w
         ));
         return;
@@ -384,71 +352,21 @@ export default function App() {
       case "Music": return <MusicApp volume={volume} />;
       case "Camera": return <CameraApp onCapture={saveCameraPhoto} />;
       case "Gallery": return (
-        <div className="gallery-app">
-          <PublicGallery />
-          <div className="gallery-heading">
-            <div>
-              <p className="eyebrow">YOUR COLLECTION</p>
-              <h2>Gallery</h2>
-              <span>{photos.length} photos</span>
-            </div>
-            <button className="upload-button" onClick={() => uploadRef.current?.click()}>
-              <ImagePlus size={18} /> Add photos
-            </button>
-            <input ref={uploadRef} hidden type="file" accept="image/*"
-              multiple onChange={uploadPhotos} />
-          </div>
-          {galleryError && <p className="gallery-error">{galleryError}</p>}
-          {loadingPhotos ? <p>Loading gallery...</p> :
-            photos.length === 0 ? (
-              <div className="gallery-empty">
-                <Images size={42} />
-                <h3>Your gallery is empty</h3>
-                <p>Add photos from your computer.</p>
-                <button className="upload-button"
-                  onClick={() => uploadRef.current?.click()}>
-                  <Upload size={17} /> Upload photos
-                </button>
-              </div>
-            ) : (
-              <div className="photo-grid">
-                {photos.map((photo, index) => (
-                  <article className="photo-card" key={photo.id}>
-                    <img src={photo.data} alt={photo.name}
-                      onClick={() => setPhotoIndex(index)} />
-                    <div className="photo-card-info">
-                      <span title={photo.name}>{photo.name}</span>
-                      <button title="Delete photo" onClick={() => removePhoto(photo.id)}>
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          {photoIndex !== null && photos[photoIndex] && (
-            <div className="ox-photo-viewer">
-              <button className="ox-photo-close" onClick={() => {
-                setPhotoIndex(null);
-                setSlideshow(false);
-              }}><X size={20} /></button>
-              <button onClick={() => setPhotoIndex(
-                (photoIndex - 1 + photos.length) % photos.length
-              )}>â®</button>
-              <img src={photos[photoIndex].data} alt={photos[photoIndex].name} />
-              <button onClick={() => setPhotoIndex(
-                (photoIndex + 1) % photos.length
-              )}>â¯</button>
-              <div className="ox-photo-caption">
-                {photos[photoIndex].name} ({photoIndex + 1}/{photos.length})
-                <button style={{ marginLeft: 12 }}
-                  onClick={() => setSlideshow(!slideshow)}>
-                  {slideshow ? <Pause size={15} /> : <Play size={15} />}
-                  {slideshow ? " Pause" : " Slideshow"}
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="gallery-app gallery-unified-shell">
+          <PublicGallery
+            localPhotos={photos}
+            loadingLocal={loadingPhotos}
+            localError={galleryError}
+            onSaveLocal={async (file) => {
+              const photo: Photo = {
+                id: crypto.randomUUID(), name: file.name,
+                data: await fileToData(file),
+              };
+              await galleryPut(photo);
+              setPhotos(previous => [...previous, photo]);
+            }}
+            onDeleteLocal={removePhoto}
+          />
         </div>
       );
       case "Settings": return (

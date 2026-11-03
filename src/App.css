@@ -1,4 +1,4 @@
-﻿
+
 /* OXYGEN DESKTOP â€” COMPLETE DESKTOP STYLES */
 
 .os-shell {
@@ -1628,3 +1628,44 @@ button.oxygen-widget:hover {
 }
 
 /* OXYGEN_GALLERY_REDESIGN_END */
+
+/* OXYGEN UNIFIED GALLERY - one seamless photo collection */
+.gallery-app.gallery-unified-shell { background: #f8f8fd; padding: 0; min-height: 100%; }
+.oxygen-unified-gallery { padding: 24px; color: #292b47; font-family: inherit; }
+.oxygen-unified-gallery * { box-sizing: border-box; }
+.unified-gallery-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.unified-eyebrow { margin: 0 0 4px; font-size: 10px; letter-spacing: 2px; font-weight: 800; color: #7b71d8; }
+.unified-gallery-header h2 { margin: 0; font-size: 29px; color: #252544; }
+.unified-gallery-header p:not(.unified-eyebrow) { margin: 6px 0 0; color: #888aa3; font-size: 12px; line-height: 1.5; }
+.unified-gallery-actions { display: flex; gap: 8px; align-items: center; }
+.oxygen-unified-gallery button, .oxygen-unified-gallery a { font-family: inherit; cursor: pointer; }
+.oxygen-unified-gallery button:disabled { opacity: .55; cursor: not-allowed; }
+.unified-gallery-actions button { border: 0; border-radius: 11px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 14px; }
+.unified-primary { background: #695de4; color: white; font-weight: 700; }
+.unified-icon-button { background: #ebeafd; color: #665ac6; }
+.unified-gallery-subbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 21px 0; padding: 12px 0; border-top: 1px solid #e9e8f5; border-bottom: 1px solid #e9e8f5; color: #898aa4; font-size: 11px; }
+.unified-gallery-subbar span { display: inline-flex; align-items: center; gap: 5px; }
+.unified-gallery-subbar span:first-child { font-weight: 800; color: #57537f; }
+.unified-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; }
+.oxygen-unified-gallery .unified-photo-card { position: relative; padding: 0; overflow: hidden; border: 1px solid #e8e6f2; border-radius: 15px; background: #ecebf5; aspect-ratio: 1; box-shadow: 0 4px 12px #3232570b; }
+.unified-photo-card img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+.unified-photo-card:hover img { transform: scale(1.04); }
+.unified-photo-label { position: absolute; bottom: 8px; left: 8px; border-radius: 7px; background: #17152fbb; color: white; font-size: 10px; padding: 5px 7px; }
+.unified-empty { text-align: center; padding: 65px 12px; color: #9292aa; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.unified-empty h3 { margin: 0; color: #4b4a72; }
+.unified-empty p { margin: 0; font-size: 12px; }
+.unified-error, .unified-success { border-radius: 9px; padding: 11px; font-size: 12px; overflow-wrap: anywhere; }
+.unified-error { background: #fff0f0; color: #b23d52; }
+.unified-success { background: #eaf7ef; color: #236a43; }
+.unified-muted { color: #8d8ca0; font-size: 12px; }
+.unified-gallery-footer { margin-top: 28px; padding-top: 15px; border-top: 1px solid #e9e8f5; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: #8989a0; font-size: 11px; }
+.unified-gallery-footer span { display: inline-flex; gap: 6px; align-items: center; }
+.unified-gallery-footer button, .unified-login button { border: 0; border-radius: 9px; padding: 9px 12px; color: #6158bb; background: #eae8ff; }
+.unified-login { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.unified-login input { min-width: 0; padding: 10px; border: 1px solid #ddd9ee; border-radius: 9px; }
+.unified-photo-viewer { position: fixed; z-index: 99999; inset: 0; padding: 18px; background: #151327f5; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; color: white; }
+.unified-photo-viewer > img { max-height: 72vh; max-width: 96%; object-fit: contain; border-radius: 12px; }
+.unified-viewer-top, .unified-viewer-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
+.unified-viewer-top button, .unified-viewer-actions button, .unified-viewer-actions a { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 9px; padding: 10px 12px; background: #6b5ee2; color: white; font-size: 12px; text-decoration: none; }
+.unified-viewer-actions .unified-danger { background: #a9435a; }
+@media(max-width:650px) { .oxygen-unified-gallery { padding: 15px; } .unified-gallery-header h2 { font-size: 24px; } .unified-photo-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; } .unified-gallery-subbar { gap: 7px 12px; } }
