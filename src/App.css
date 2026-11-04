@@ -171,8 +171,14 @@
   top: 34%;
   left: 5%;
   display: grid;
-  grid-template-columns: repeat(4, 88px);
-  gap: 16px;
+  width: min(960px, 90%);
+  max-height: calc(66% - 20px);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 22px 12px;
+  align-content: start;
+  overflow-y: auto;
+  padding: 4px;
+  box-sizing: border-box;
 }
 
 .desktop-shortcut {
@@ -801,7 +807,7 @@
   .desktop-widget h2 { font-size: 27px; }
 
   .desktop-shortcuts {
-    grid-template-columns: repeat(2,85px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 
@@ -1675,4 +1681,11 @@ button.oxygen-widget:hover {
 @media (max-width: 650px) {
   .oxygen-mobile-apps { display: block; margin-top: 32px; }
   .desktop-area { padding-bottom: 115px; }
+}
+
+@media (min-width: 651px) and (max-width: 1000px) {
+  .desktop-shortcuts {
+    width: min(640px, 90%);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

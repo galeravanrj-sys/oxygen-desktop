@@ -441,7 +441,7 @@ export default function App() {
         </div>
 
         <div className="desktop-shortcuts">
-          {apps.slice(0, 4).map(app => {
+          {apps.map(app => {
             const Icon = app.icon;
             return (
               <button className="desktop-shortcut" key={app.name}
