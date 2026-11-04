@@ -13,7 +13,7 @@ import {
   CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
-  Minimize2, PanelLeft, PanelRight, LayoutGrid,
+  Copy as WindowRestore, Square, Minimize2, PanelLeft, PanelRight, LayoutGrid,
   Columns2,
   Expand, RotateCcw
 } from "lucide-react";
@@ -215,8 +215,8 @@ export default function App() {
       id, name,
       x: 45 + (previous.length % 6) * 32,
       y: 35 + (previous.length % 6) * 26,
-      width: Math.min(760, Math.max(320, viewport.width - 90)),
-      height: Math.min(510, Math.max(260, viewport.height - 160)),
+      width: Math.min(name === "Calculator" ? 360 : 760, Math.max(320, viewport.width - 90)),
+      height: Math.min(name === "Calculator" ? 560 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
       mode: "normal",
       minimized: false,
       zIndex: z
@@ -292,6 +292,11 @@ export default function App() {
     }
     if (w.mode === "right") {
       return { x: width / 2 + 6, y: 10, width: width / 2 - 8, height };
+    }
+    if (w.name === "Calculator") {
+      const calcWidth = Math.min(Math.max(320, w.width), width);
+      const calcHeight = Math.min(Math.max(500, w.height), height);
+      return { x: Math.max(0, Math.min(w.x, viewport.width - calcWidth - 10)), y: Math.max(0, Math.min(w.y, height - calcHeight)), width: calcWidth, height: calcHeight };
     }
     return { x: w.x, y: w.y, width: w.width, height: w.height };
   };
@@ -515,7 +520,7 @@ export default function App() {
               position={{ x: g.x, y: g.y }}
               size={{ width: g.width, height: g.height }}
               minWidth={isMobile ? 0 : 320}
-              minHeight={isMobile ? 0 : 260}
+              minHeight={isMobile ? 0 : w.name === "Calculator" ? Math.min(500, Math.max(240, viewport.height - 135)) : 260}
               dragHandleClassName="app-window-titlebar"
               cancel=".window-controls, .window-controls *"
               disableDragging={isMobile || fixed}
@@ -541,10 +546,10 @@ export default function App() {
                   width: ref.offsetWidth, height: ref.offsetHeight
                 })
               }>
-              <section className="app-window">
+              <section className={`app-window ${w.name === "Calculator" ? "calculator-window" : ""}`}>
                 <div className="app-window-titlebar">
                   <div className="window-app-title">
-                    <span className="window-dot" />
+                    {w.name === "Calculator" ? <Calculator size={13} /> : <span className="window-dot" />}
                     <strong>{w.name}</strong>
                   </div>
                   <div className="window-controls">
@@ -563,7 +568,7 @@ export default function App() {
                     <button title="Maximize or restore"
                       onClick={() => mode(w.id, "maximized")}>
                       {w.mode === "maximized"
-                        ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+                        ? (w.name === "Calculator" ? <WindowRestore size={12} /> : <Minimize2 size={15} />) : (w.name === "Calculator" ? <Square size={12} /> : <Maximize2 size={15} />)}
                     </button>
                     <button title="Close" onClick={() => close(w.id)}>
                       <X size={16} />
