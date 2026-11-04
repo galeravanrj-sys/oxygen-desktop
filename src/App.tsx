@@ -32,7 +32,7 @@ type Photo = { id: string; name: string; data: string };
 
 const apps = [
   { name: "Gallery", icon: Images, color: "pink" },
-  { name: "7DS Tier List", icon: Crown, color: "purple" },
+  { name: "Games Tierlist", icon: Crown, color: "purple" },
   { name: "Files", icon: Folder, color: "orange" },
   { name: "Browser", icon: Globe, color: "blue" },
   { name: "Settings", icon: Settings, color: "gray" },
@@ -346,7 +346,7 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
-      case "7DS Tier List": return <SevenDSTierApp />;
+      case "Games Tierlist": return <SevenDSTierApp />;
       case "Files": return <FilesApp />;
       case "Notes": return <NotesApp />;
       case "Calculator": return <CalculatorApp />;
