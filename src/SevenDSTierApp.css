@@ -5,3 +5,215 @@
 .gtl-art img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
 .gtl-card:hover .gtl-art img{transform:scale(1.045)}
 @media(max-width:520px){.gtl-art{height:108px}}
+
+/* Native Games Tierlist Viewer */
+.gtl-native-viewer {
+  background: #121624;
+  color: #f5f5fc;
+  overflow-y: auto;
+}
+
+.gtl-native-content {
+  padding: 28px;
+}
+
+.gtl-native-content h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.gtl-native-content > p {
+  color: #aeb4cc;
+  margin-bottom: 24px;
+}
+
+.gtl-native-status {
+  padding: 28px;
+  border: 1px solid #3b425b;
+  border-radius: 14px;
+  background: #252a3e;
+  color: #d8dcee;
+}
+
+.gtl-native-status h3 {
+  margin: 0 0 10px;
+}
+
+.gtl-native-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gtl-tier-row {
+  display: flex;
+  min-height: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #252a3e;
+}
+
+.gtl-tier-label {
+  width: 90px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #8e66df;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.gtl-tier-characters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+}
+
+.gtl-character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 80px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.gtl-character img {
+  width: 60px;
+  height: 60px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+/* M8M8S Genshin Native Tier Viewer */
+.gtl-genshin-panel {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.gtl-genshin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.gtl-genshin-tabs button {
+  border: 1px solid #444b68;
+  background: #292e44;
+  color: #e5e6f4;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.gtl-genshin-tabs button.active {
+  background: #8062e7;
+  border-color: #aa85fb;
+  color: white;
+}
+
+.gtl-character-search {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  background: #252a3e;
+  border: 1px solid #444b68;
+  border-radius: 10px;
+  color: white;
+  box-sizing: border-box;
+}
+
+.gtl-genshin-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.gtl-genshin-header,
+.gtl-genshin-row {
+  display: grid;
+  grid-template-columns: 65px repeat(3,minmax(180px,1fr));
+  min-width: 650px;
+}
+
+.gtl-genshin-header {
+  background: #303650;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.gtl-genshin-header span {
+  padding: 14px 6px;
+}
+
+.gtl-genshin-row {
+  border-bottom: 1px solid #3b425b;
+  background: #202638;
+}
+
+.gtl-genshin-row:nth-child(odd) {
+  background: #252b40;
+}
+
+.gtl-genshin-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  font-weight: 900;
+  background: #8565dd;
+}
+
+.gtl-genshin-rank.rank-SS { background: #c65b76; }
+.gtl-genshin-rank.rank-S { background: #d58a57; }
+.gtl-genshin-rank.rank-Aplus { background: #ba9b4e; }
+.gtl-genshin-rank.rank-A { background: #789b60; }
+.gtl-genshin-rank.rank-B { background: #538b9b; }
+.gtl-genshin-rank.rank-C { background: #6477b5; }
+.gtl-genshin-rank.rank-D { background: #79698f; }
+
+.gtl-genshin-characters {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px 8px;
+  border-left: 1px solid #3b425b;
+}
+
+.gtl-genshin-character {
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.gtl-genshin-character img {
+  width: 58px;
+  height: 58px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #383e56;
+}
+
+.gtl-genshin-source {
+  margin-top: 20px;
+  color: #aeb4cc;
+  font-size: 11px;
+}
+
+@media (max-width: 650px) {
+  .gtl-native-content { padding: 15px; }
+  .gtl-genshin-tabs button { padding: 9px 12px; font-size: 11px; }
+  .gtl-genshin-character { width: 58px; }
+  .gtl-genshin-character img { width: 48px; height: 48px; }
+}

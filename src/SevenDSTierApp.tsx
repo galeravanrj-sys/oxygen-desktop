@@ -1,38 +1,139 @@
-import { useState } from "react";
+type GenshinCharacter = {
+  name: string;
+  image?: string;
+};
+
+type GenshinRow = {
+  tier: string;
+  roles: {
+    mainDps: GenshinCharacter[];
+    subDps: GenshinCharacter[];
+    support: GenshinCharacter[];
+  };
+};
+
+type GenshinData = {
+  game: string;
+  title: string;
+  source: string;
+  status: string;
+  grids: Record<string, GenshinRow[]>;
+  updated_at?: string;
+  stale?: boolean;
+};
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, ExternalLink, Globe2, RefreshCw, Search, Trophy, X } from "lucide-react";
 import "./SevenDSTierApp.css";
 
 type Game = { id: string; title: string; subtitle: string; url: string; color: string; initials: string; image: string };
 const GAMES: Game[] = [
-  { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
-  { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List • Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
-  { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", image: `${import.meta.env.BASE_URL}games-tierlist/hsr.webp`, initials: "HSR" },
-  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List • Fandom", url: "https://7dsgc.fandom.com/wiki/General_Tier_List", color: "grandcross", image: `${import.meta.env.BASE_URL}games-tierlist/grandcross.webp`, initials: "GC" },
+  { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
+  { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List · Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
+  { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", image: `${import.meta.env.BASE_URL}games-tierlist/hsr.webp`, initials: "HSR" },
+  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List · Pocket Gamer", url: "https://www.pocketgamer.com/the-seven-deadly-sins-grand-cross/tier-list/", color: "grandcross", image: `${import.meta.env.BASE_URL}games-tierlist/grandcross.webp`, initials: "GC" },
 ];
 
+type TierCharacter = {
+  name: string;
+  image?: string;
+};
+
+type TierGroup = {
+  tier: string;
+  characters: TierCharacter[];
+};
+
+type TierResponse = {
+  game: string;
+  title: string;
+  source: string;
+  status: string;
+  tiers: TierGroup[];
+  message?: string;
+  updated_at?: string;
+  stale?: boolean;
+};
+
+const TIER_API =
+  "https://wxszznrkuozyptkekhjp.supabase.co/functions/v1/games-tierlist";
 export default function SevenDSTierApp() {
   const [selected, setSelected] = useState<Game | null>(null);
   const [search, setSearch] = useState("");
   const [revision, setRevision] = useState(0);
   const [history, setHistory] = useState<Game[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  const [loading, setLoading] = useState(false);
+
+  const [tierData, setTierData] = useState<TierResponse | null>(null);
+  const [genshinData, setGenshinData] = useState<GenshinData | null>(null);
+  const [genshinTab, setGenshinTab] = useState("main");
+  const [characterSearch, setCharacterSearch] = useState("");
+  const [tierError, setTierError] = useState("");
+  const [tierLoading, setTierLoading] = useState(false);
+
+  useEffect(() => {
+    if (!selected) {
+      setTierData(null);
+    setGenshinData(null);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    setTierLoading(true);
+    setTierError("");
+    setTierData(null);
+    setGenshinData(null);
+
+    fetch(`${TIER_API}?game=${encodeURIComponent(selected.id)}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        return (await response.json()) as TierResponse;
+      })
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          if (data.status !== "available" || !Array.isArray(data.tiers)) {
+            throw new Error(data.message ?? "Rankings are not available yet.");
+          }
+          if (selected.id === "genshin") {
+            setGenshinData(data as unknown as GenshinData);
+            setTierData(null);
+          } else {
+            setTierData(data);
+            setGenshinData(null);
+          }
+        }
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) {
+          setTierError(String(error));
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setTierLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [selected, revision]);
   const open = (game: Game) => {
     setSelected(game);
     setHistory(prev => [...prev.slice(0, historyIndex + 1), game]);
     setHistoryIndex(i => i + 1);
     setRevision(v => v + 1);
-    setLoading(true);
+
   };
   const travel = (index: number) => {
     if (index < 0 || index >= history.length) return;
     setHistoryIndex(index);
     setSelected(history[index]);
     setRevision(v => v + 1);
-    setLoading(true);
+
   };
-  const reload = () => { setLoading(true); setRevision(v => v + 1); };
-  const home = () => { setSelected(null); setLoading(false); };
+  const reload = () => { setRevision(v => v + 1); };
+  const home = () => { setSelected(null); };
   return (
     <div className="gtl-app">
       <div className="gtl-tabs">
@@ -61,10 +162,124 @@ export default function SevenDSTierApp() {
           </div>
         </div>
       ) : (
-        <div className="gtl-viewer">
-          {loading && <div className="gtl-loading">Loading {selected.title}…</div>}
-          <iframe key={`${selected.id}-${revision}`} title={`${selected.title} live tier list`} src={selected.url} onLoad={() => setLoading(false)} referrerPolicy="strict-origin-when-cross-origin"/>
-          <div className="gtl-fallback">If this website prevents embedded viewing, <button type="button" onClick={() => window.open(selected.url, "_blank", "noopener,noreferrer")}>open the live tier list in your browser <ExternalLink size={13}/></button>.</div>
+                <div className="gtl-viewer gtl-native-viewer">
+          <div className="gtl-native-content">
+            <h2>{selected.title}</h2>
+            <p>Character Tier List · {selected.id === "grandcross" ? "Pocket Gamer" : "Game8"}</p>
+
+            {(genshinData?.updated_at || tierData?.updated_at) && (
+              <p className="gtl-genshin-source">
+                Last updated: {new Date((genshinData?.updated_at ?? tierData?.updated_at)!).toLocaleString()}
+                {(genshinData?.stale || tierData?.stale) && " — Showing the last successful rankings; the latest refresh failed."}
+              </p>
+            )}
+
+            {tierLoading && (
+              <div className="gtl-native-status">Loading rankings...</div>
+            )}
+
+            {tierError && (
+              <div className="gtl-native-status">
+                Could not load rankings: {tierError}
+              </div>
+            )}
+
+            {!tierLoading && !tierError && selected.id === "genshin" && genshinData && (
+              <div className="gtl-genshin-panel">
+                <div className="gtl-genshin-tabs">
+                  {[
+                    { id: "main", label: "Main Tier List" },
+                    { id: "c0", label: "C0 Tier List" },
+                    { id: "c6", label: "C6 Tier List" }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      className={genshinTab === tab.id ? "active" : ""}
+                      onClick={() => setGenshinTab(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  className="gtl-character-search"
+                  placeholder="Search characters..."
+                  value={characterSearch}
+                  onChange={event => setCharacterSearch(event.target.value)}
+                />
+
+                <div className="gtl-genshin-table">
+                  <div className="gtl-genshin-header">
+                    <span>Tier</span>
+                    <span>Main DPS</span>
+                    <span>Sub-DPS</span>
+                    <span>Support</span>
+                  </div>
+
+                  {genshinData.grids[genshinTab]?.map(row => (
+                      <div className="gtl-genshin-row" key={row.tier}>
+                        <div className={`gtl-genshin-rank rank-${row.tier.replace("+","plus")}`}>
+                          {row.tier}
+                        </div>
+
+                        {(["mainDps","subDps","support"] as const).map(role => (
+                          <div className="gtl-genshin-characters" key={role}>
+                            {row.roles[role]
+                              .filter(character =>
+                                character.name.toLowerCase().includes(characterSearch.toLowerCase())
+                              )
+                              .map((character,index) => (
+                                <div className="gtl-genshin-character" key={`${character.name}-${index}`}>
+                                  {character.image && (
+                                    <img
+                                      src={character.image}
+                                      alt={character.name}
+                                      loading="lazy"
+                                    />
+                                  )}
+                                  <span>{character.name}</span>
+                                </div>
+                              ))}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                </div>
+
+                <p className="gtl-genshin-source">
+                  Rankings: Game8. Automatically updated daily.
+                </p>
+              </div>
+            )}
+            {!tierLoading && !tierError && selected.id !== "genshin" && tierData?.status !== "available" && (
+              <div className="gtl-native-status">
+                <h3>Rankings unavailable</h3>
+                <p>{tierData?.message ?? "No ranking data is available."}</p>
+              </div>
+            )}
+
+            {!tierLoading && !tierError && selected.id !== "genshin" && tierData?.status === "available" && (
+              <div className="gtl-native-tiers">
+                {tierData.tiers.map((group) => (
+                  <div className="gtl-tier-row" key={group.tier}>
+                    <div className="gtl-tier-label">{group.tier}</div>
+                    <div className="gtl-tier-characters">
+                      {group.characters.map((character) => (
+                        <div className="gtl-character" key={character.name}>
+                          {character.image && (
+                            <img src={character.image} alt={character.name} />
+                          )}
+                          <span>{character.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
