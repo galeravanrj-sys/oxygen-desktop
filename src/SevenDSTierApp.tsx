@@ -2,12 +2,12 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, ExternalLink, Globe2, RefreshCw, Search, Trophy, X } from "lucide-react";
 import "./SevenDSTierApp.css";
 
-type Game = { id: string; title: string; subtitle: string; url: string; color: string; initials: string };
+type Game = { id: string; title: string; subtitle: string; url: string; color: string; initials: string; image: string };
 const GAMES: Game[] = [
-  { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", initials: "GI" },
-  { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List • Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", initials: "7DS" },
-  { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", initials: "HSR" },
-  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List • Fandom", url: "https://7dsgc.fandom.com/wiki/General_Tier_List", color: "grandcross", initials: "GC" },
+  { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
+  { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List • Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
+  { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List • Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", image: `${import.meta.env.BASE_URL}games-tierlist/hsr.webp`, initials: "HSR" },
+  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List • Fandom", url: "https://7dsgc.fandom.com/wiki/General_Tier_List", color: "grandcross", image: `${import.meta.env.BASE_URL}games-tierlist/grandcross.webp`, initials: "GC" },
 ];
 
 export default function SevenDSTierApp() {
@@ -54,7 +54,7 @@ export default function SevenDSTierApp() {
           <div className="gtl-grid">
             {GAMES.filter(game => `${game.title} ${game.subtitle}`.toLowerCase().includes(search.toLowerCase())).map(game => (
               <button className="gtl-card" type="button" key={game.id} onClick={() => open(game)}>
-                <span className={`gtl-art gtl-${game.color}`}><span>{game.initials}</span></span>
+                <span className={`gtl-art gtl-${game.color}`}><img src={game.image} alt={`${game.title} cover artwork`} loading="lazy" /></span>
                 <span className="gtl-card-info"><strong>{game.title}</strong><small>{game.subtitle}</small><span className="gtl-view">View live tier list <ExternalLink size={12}/></span></span>
               </button>
             ))}
