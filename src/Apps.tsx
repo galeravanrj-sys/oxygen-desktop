@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import "./Apps.css";
+import { Camera, Folder, Upload } from "lucide-react";
 
 type Entry = {
   id: string;
@@ -20,9 +21,8 @@ const initial: Entry[] = [
 function loadEntries(): Entry[] {
   try {
     const value = JSON.parse(localStorage.getItem(STORE) || "null");
-    return Array.isArray(value) && value.some((x) => x.id === ROOT)
-      ? value
-      : initial;
+    const valid = Array.isArray(value) ? value.filter((x): x is Entry => x && typeof x.id === "string" && typeof x.name === "string" && (x.parent === null || typeof x.parent === "string") && ["folder", "file"].includes(x.kind) && (x.kind === "folder" || typeof x.data === "string")) : [];
+    return valid.some(x => x.id === ROOT && x.kind === "folder" && x.parent === null) ? valid : initial;
   } catch {
     return initial;
   }
@@ -45,18 +45,19 @@ function download(data: string, name: string) {
 }
 
 export function FilesApp() {
-  const [entries, setEntries] = useState<Entry[]>(loadEntries);
+  const [entries, setSavedEntries] = useState<Entry[]>(loadEntries);
+  const entriesRef = useRef(entries);
+  const [storageError, setStorageError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const setEntries = (update: Entry[] | ((previous: Entry[]) => Entry[])) => {
+    const next = typeof update === "function" ? update(entriesRef.current) : update;
+    try { localStorage.setItem(STORE, JSON.stringify(next)); entriesRef.current = next; setSavedEntries(next); setStorageError(""); return true; }
+    catch { setStorageError("Could not save this change. Browser storage is full; download files you want to keep and remove unused items."); return false; }
+  };
   const [folder, setFolder] = useState(ROOT);
   const [query, setQuery] = useState("");
   const input = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORE, JSON.stringify(entries));
-    } catch {
-      alert("Storage is full. Try smaller files.");
-    }
-  }, [entries]);
 
   const current = entries.find((entry) => entry.id === folder);
 
@@ -68,7 +69,7 @@ export function FilesApp() {
     )
     .sort(
       (a, b) =>
-        Number(b.kind === "folder") - Number(a.kind === "folder")
+        Number(b.kind === "folder") - Number(a.kind === "folder") || a.name.localeCompare(b.name)
     );
 
   const addFolder = () => {
@@ -87,27 +88,12 @@ export function FilesApp() {
   };
 
   const upload = async (event: ChangeEvent<HTMLInputElement>) => {
-    for (const file of Array.from(event.target.files || [])) {
-      try {
-        const data = await readFile(file);
-
-        setEntries((previous) => [
-          ...previous,
-          {
-            id: crypto.randomUUID(),
-            parent: folder,
-            name: file.name,
-            kind: "file",
-            data,
-            mime: file.type,
-          },
-        ]);
-      } catch {
-        alert("Unable to read file.");
-      }
-    }
-
-    event.target.value = "";
+    const files = Array.from(event.target.files || []); event.target.value = ""; setUploading(true); setStorageError("");
+    try { for (const file of files) {
+      if (file.size > 2 * 1024 * 1024) { setStorageError("Choose files up to 2 MB for this browser file cabinet."); continue; }
+      const data = await readFile(file);
+      if (!setEntries(previous => [...previous, { id: crypto.randomUUID(), parent: folder, name: file.name, kind: "file", data, mime: file.type }])) break;
+    } } catch { setStorageError("Unable to read this file. Please try another file."); } finally { setUploading(false); }
   };
 
   const remove = (id: string) => {
@@ -186,10 +172,12 @@ export function FilesApp() {
   };
 
   return (
-    <div className="ox-app">
+    <div className="ox-app utility-app utility-files">
+      <header className="utility-heading"><span className="utility-symbol"><Folder size={22}/></span><div><h2>Files</h2><p>A tidy place for small files on this browser.</p></div></header>
+      <p className="utility-error" role="status">{storageError}</p>
       <div className="ox-toolbar">
         <button
-          onClick={() => setFolder(current?.parent || ROOT)}
+          onClick={() => { setFolder(current?.parent || ROOT); setQuery(""); }}
           disabled={folder === ROOT}
         >
           ← Back
@@ -198,13 +186,14 @@ export function FilesApp() {
         <strong>📁 {current?.name || "Home"}</strong>
 
         <input
+          aria-label="Search this folder"
           placeholder="Search this folder"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
 
         <button onClick={addFolder}>+ Folder</button>
-        <button onClick={() => input.current?.click()}>Upload</button>
+        <button disabled={uploading} onClick={() => input.current?.click()}><Upload size={14}/> {uploading ? "Adding…" : "Upload"}</button>
 
         <input
           ref={input}
@@ -215,6 +204,7 @@ export function FilesApp() {
         />
       </div>
 
+      <div className="utility-file-summary"><span>{visible.length} {visible.length === 1 ? "item" : "items"}</span><span>Up to 2 MB per upload</span></div>
       <div className="ox-list">
         {visible.map((entry) => (
           <div className="ox-entry" key={entry.id}>
@@ -222,7 +212,7 @@ export function FilesApp() {
               className="ox-entry-main"
               onClick={() =>
                 entry.kind === "folder"
-                  ? setFolder(entry.id)
+                  ? (setFolder(entry.id), setQuery(""))
                   : entry.data && download(entry.data, entry.name)
               }
             >
@@ -258,7 +248,7 @@ export function FilesApp() {
         ))}
 
         {visible.length === 0 && (
-          <p className="ox-muted">This folder is empty.</p>
+          <div className="utility-empty"><strong>{query ? "No matching files" : "A fresh folder"}</strong><p>{query ? "Try another search." : "Upload a small file or create a folder to get started."}</p></div>
         )}
       </div>
 
@@ -270,562 +260,9 @@ export function FilesApp() {
   );
 }
 
-type Note = {
-  id: string;
-  title: string;
-  body: string;
-};
+export { NotesApp, CalculatorApp, CalendarApp, BrowserApp, MusicApp } from "./UtilityApps";
 
-export function NotesApp() {
-  const [notes, setNotes] = useState<Note[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem("oxygen-notes-v1") || "[]");
-    } catch {
-      return [];
-    }
-  });
-
-  const [id, setId] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem("oxygen-notes-v1", JSON.stringify(notes));
-  }, [notes]);
-
-  const active = notes.find((note) => note.id === id);
-
-  const update = (key: "title" | "body", value: string) => {
-    setNotes((previous) =>
-      previous.map((note) =>
-        note.id === id ? { ...note, [key]: value } : note
-      )
-    );
-  };
-
-  return (
-    <div className="ox-app ox-notes">
-      <aside>
-        <button
-          onClick={() => {
-            const note = {
-              id: crypto.randomUUID(),
-              title: "Untitled note",
-              body: "",
-            };
-
-            setNotes((previous) => [note, ...previous]);
-            setId(note.id);
-          }}
-        >
-          + New note
-        </button>
-
-        {notes.map((note) => (
-          <button key={note.id} onClick={() => setId(note.id)}>
-            {note.title}
-          </button>
-        ))}
-      </aside>
-
-      <section>
-        {active ? (
-          <>
-            <input
-              value={active.title}
-              onChange={(event) => update("title", event.target.value)}
-            />
-
-            <textarea
-              value={active.body}
-              onChange={(event) => update("body", event.target.value)}
-              placeholder="Write your note..."
-            />
-
-            <button
-              onClick={() => {
-                setNotes((previous) =>
-                  previous.filter((note) => note.id !== id)
-                );
-                setId("");
-              }}
-            >
-              Delete note
-            </button>
-          </>
-        ) : (
-          <p>Select or create a note.</p>
-        )}
-      </section>
-    </div>
-  );
-}
-
-export function CalculatorApp() {
-  const [display, setDisplay] = useState("0");
-  const [stored, setStored] = useState<number | null>(null);
-  const [operator, setOperator] = useState("");
-  const [fresh, setFresh] = useState(false);
-
-  const press = (key: string) => {
-    if ("0123456789.".includes(key)) {
-      if (key === "." && !fresh && display.includes(".")) return;
-
-      setDisplay((previous) =>
-        fresh || previous === "0"
-          ? key === "." ? "0." : key
-          : previous + key
-      );
-      setFresh(false);
-      return;
-    }
-
-    if (key === "C") {
-      setDisplay("0");
-      setStored(null);
-      setOperator("");
-      return;
-    }
-
-    if (key === "±") {
-      setDisplay((previous) => String(-Number(previous)));
-      return;
-    }
-
-    if (key === "%") {
-      setDisplay((previous) => String(Number(previous) / 100));
-      return;
-    }
-
-    const a = stored;
-    const b = Number(display);
-
-    if (key === "=" && a !== null && operator) {
-      const value =
-        operator === "+"
-          ? a + b
-          : operator === "−"
-            ? a - b
-            : operator === "×"
-              ? a * b
-              : b === 0
-                ? NaN
-                : a / b;
-
-      setDisplay(
-        Number.isFinite(value)
-          ? String(Number(value.toPrecision(12)))
-          : "Error"
-      );
-
-      setStored(null);
-      setOperator("");
-      setFresh(true);
-      return;
-    }
-
-    if (["+", "−", "×", "÷"].includes(key)) {
-      setStored(b);
-      setOperator(key);
-      setFresh(true);
-    }
-  };
-
-  return (
-    <div className="ox-app ox-calc">
-      <div className="ox-display">{display}</div>
-
-      <div className="ox-calc-grid">
-        {[
-          "C", "±", "%", "÷",
-          "7", "8", "9", "×",
-          "4", "5", "6", "−",
-          "1", "2", "3", "+",
-          "0", ".", "=",
-        ].map((key) => (
-          <button key={key} onClick={() => press(key)}>
-            {key}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type EventItem = {
-  id: string;
-  date: string;
-  title: string;
-};
-
-export function CalendarApp() {
-  const [events, setEvents] = useState<EventItem[]>(() => {
-    try {
-      return JSON.parse(
-        localStorage.getItem("oxygen-events-v1") || "[]"
-      );
-    } catch {
-      return [];
-    }
-  });
-
-  const [date, setDate] = useState(
-    new Date().toLocaleDateString("en-CA")
-  );
-  const [title, setTitle] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem("oxygen-events-v1", JSON.stringify(events));
-  }, [events]);
-
-  return (
-    <div className="ox-app">
-      <h2>Calendar</h2>
-
-      <div className="ox-toolbar">
-        <input
-          type="date"
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
-        />
-
-        <input
-          placeholder="Event title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-
-        <button
-          onClick={() => {
-            if (!title.trim()) return;
-
-            setEvents((previous) => [
-              ...previous,
-              {
-                id: crypto.randomUUID(),
-                date,
-                title: title.trim(),
-              },
-            ]);
-
-            setTitle("");
-          }}
-        >
-          Add event
-        </button>
-      </div>
-
-      {events
-        .filter((event) => event.date === date)
-        .map((event) => (
-          <div className="ox-entry" key={event.id}>
-            <span>{event.title}</span>
-
-            <button
-              onClick={() =>
-                setEvents((previous) =>
-                  previous.filter((item) => item.id !== event.id)
-                )
-              }
-            >
-              Delete
-            </button>
-          </div>
-        ))}
-
-      <p className="ox-muted">Events for {date}</p>
-    </div>
-  );
-}
-
-type Tab = {
-  id: string;
-  url: string;
-  input: string;
-  history: string[];
-  index: number;
-};
-
-const HOME = "https://example.com";
-
-
-function address(raw: string) {
-  const value = raw.trim();
-
-  if (!value) return "https://example.com";
-
-  // Keep full website addresses
-  if (/^https?:\/\//i.test(value)) {
-    return value;
-  }
-
-  // Automatically add HTTPS to website addresses
-  if (value.includes(".") && !value.includes(" ")) {
-    return "https://" + value;
-  }
-
-  // Search using DuckDuckGo's HTML search page
-  return (
-    "https://html.duckduckgo.com/html/?q=" +
-    encodeURIComponent(value)
-  );
-}
-
-
-export function BrowserApp() {
-  const [tabs, setTabs] = useState<Tab[]>([
-    {
-      id: crypto.randomUUID(),
-      url: HOME,
-      input: HOME,
-      history: [HOME],
-      index: 0,
-    },
-  ]);
-
-  const [id, setId] = useState(tabs[0].id);
-  const active = tabs.find((tab) => tab.id === id) || tabs[0];
-
-  const edit = (patch: Partial<Tab>) => {
-    setTabs((previous) =>
-      previous.map((tab) =>
-        tab.id === id ? { ...tab, ...patch } : tab
-      )
-    );
-  };
-
-
-const go = (url: string) => {
-  const target = address(url);
-
-  // Keep navigation inside the Oxygen Desktop Browser
-  edit({
-    url: target,
-    input: target,
-    history: [
-      ...active.history.slice(0, active.index + 1),
-      target,
-    ],
-    index: active.index + 1,
-  });
-};
-
-
-
-  const nav = (delta: number) => {
-    const index = active.index + delta;
-
-    if (index >= 0 && index < active.history.length) {
-      edit({
-        index,
-        url: active.history[index],
-        input: active.history[index],
-      });
-    }
-  };
-
-  const [bookmarks, setBookmarks] = useState<string[]>(() => {
-    try {
-      return JSON.parse(
-        localStorage.getItem("oxygen-bookmarks-v1") || "[]"
-      );
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem(
-      "oxygen-bookmarks-v1",
-      JSON.stringify(bookmarks)
-    );
-  }, [bookmarks]);
-
-  return (
-    <div className="ox-app ox-browser">
-      <div className="ox-tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={tab.id === id ? "selected" : ""}
-            onClick={() => setId(tab.id)}
-          >
-            {new URL(tab.url).hostname}
-
-            <span
-              onClick={(event) => {
-                event.stopPropagation();
-
-                if (tabs.length <= 1) return;
-
-                setTabs((previous) =>
-                  previous.filter((item) => item.id !== tab.id)
-                );
-
-                if (id === tab.id) {
-                  setId(tabs.find((item) => item.id !== tab.id)!.id);
-                }
-              }}
-            >
-              {" ×"}
-            </span>
-          </button>
-        ))}
-
-        <button
-          onClick={() => {
-            const tab = {
-              id: crypto.randomUUID(),
-              url: HOME,
-              input: HOME,
-              history: [HOME],
-              index: 0,
-            };
-
-            setTabs((previous) => [...previous, tab]);
-            setId(tab.id);
-          }}
-        >
-          +
-        </button>
-      </div>
-
-      <form
-        className="ox-toolbar"
-        onSubmit={(event) => {
-          event.preventDefault();
-          go(active.input);
-        }}
-      >
-        <button type="button" onClick={() => nav(-1)}>
-          ←
-        </button>
-
-        <button type="button" onClick={() => nav(1)}>
-          →
-        </button>
-
-        <button
-          type="button"
-          onClick={() => edit({ url: active.url })}
-        >
-          ↻
-        </button>
-
-        <input
-          value={active.input}
-          onChange={(event) =>
-            edit({ input: event.target.value })
-          }
-        />
-
-        <button type="submit">Go</button>
-
-        <button
-          type="button"
-          onClick={() =>
-            setBookmarks((previous) =>
-              previous.includes(active.url)
-                ? previous.filter((url) => url !== active.url)
-                : [...previous, active.url]
-            )
-          }
-        >
-          ☆
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            window.open(
-              active.url,
-              "_blank",
-              "noopener,noreferrer"
-            )
-          }
-        >
-          Open externally ↗
-        </button>
-      </form>
-
-      <div className="ox-bookmarks">
-        {bookmarks.map((url) => (
-          <button key={url} onClick={() => go(url)}>
-            {new URL(url).hostname}
-          </button>
-        ))}
-      </div>
-
-      <iframe
-        key={active.url}
-        title="Web page"
-        src={active.url}
-        sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
-        referrerPolicy="no-referrer"
-      />
-
-      <p className="ox-muted">
-        Some websites refuse iframe embedding. Use Open externally
-        for those sites.
-      </p>
-    </div>
-  );
-}
-
-export function MusicApp({ volume = 65 }: { volume?: number }) {
-  const [tracks, setTracks] = useState<
-    { name: string; url: string }[]
-  >([]);
-
-  const [playing, setPlaying] = useState("");
-  const audio = useRef<HTMLAudioElement>(null);
-
-  useEffect(() => {
-    if (audio.current) {
-      audio.current.volume = volume / 100;
-    }
-  }, [volume, playing]);
-
-  return (
-    <div className="ox-app">
-      <h2>Music</h2>
-
-      <input
-        type="file"
-        accept="audio/*"
-        multiple
-        onChange={(event) => {
-          const items = Array.from(
-            event.target.files || []
-          ).map((file) => ({
-            name: file.name,
-            url: URL.createObjectURL(file),
-          }));
-
-          setTracks((previous) => [...previous, ...items]);
-        }}
-      />
-
-      {tracks.map((track) => (
-        <div className="ox-entry" key={track.url}>
-          <button onClick={() => setPlaying(track.url)}>
-            ▶ {track.name}
-          </button>
-        </div>
-      ))}
-
-      <audio
-        ref={audio}
-        controls
-        autoPlay={!!playing}
-        src={playing}
-        style={{ width: "100%" }}
-      />
-
-      <p className="ox-muted">
-        Uploaded tracks remain available until you refresh the page.
-      </p>
-    </div>
-  );
-}
+function disposeCamera(request: { current: number }, source: { current: MediaStream | null }) { request.current++; source.current?.getTracks().forEach(track => track.stop()); source.current = null; }
 
 export function CameraApp({
   onCapture,
@@ -841,6 +278,7 @@ export function CameraApp({
   const [shot, setShot] = useState("");
   const [running, setRunning] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [facing, setFacing] = useState<"user" | "environment">("user");
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [deviceId, setDeviceId] = useState("");
@@ -863,8 +301,7 @@ export function CameraApp({
 
   useEffect(() => {
     return () => {
-      requestId.current++;
-      stream.current?.getTracks().forEach(track => track.stop());
+      disposeCamera(requestId, stream);
     };
   }, []);
 
@@ -927,6 +364,7 @@ export function CameraApp({
       if (currentRequest !== requestId.current) return;
 
       console.error("Camera error:", err);
+      stopTracks();
       setError(
         "Unable to open this camera. Check permissions or select another camera."
       );
@@ -971,7 +409,7 @@ export function CameraApp({
   const capture = async () => {
     const element = video.current;
 
-    if (!element || !element.videoWidth || !running) {
+    if (saving || !element || !element.videoWidth || !running) {
       setError("Start the camera before taking a picture.");
       return;
     }
@@ -996,18 +434,19 @@ export function CameraApp({
     setMessage("");
 
     if (onCapture) {
+      setSaving(true);
       try {
         await onCapture(photoData);
         setMessage("Photo saved to Oxygen Desktop Gallery!");
       } catch {
-        setError("Photo captured, but Gallery could not save it.");
-      }
+        setError("Photo captured, but Gallery could not save it. You can still download it below.");
+      } finally { setSaving(false); }
     }
   };
 
   return (
-    <div className="ox-app" style={{ overflowY: "auto" }}>
-      <h2>Camera</h2>
+    <div className="ox-app utility-app utility-camera" style={{ overflowY: "auto" }}>
+      <header className="utility-heading"><span className="utility-symbol"><Camera size={22}/></span><div><h2>Camera</h2><p>Capture a moment and keep it in your Gallery.</p></div></header>
 
       <div
         className="ox-toolbar"
@@ -1029,9 +468,9 @@ export function CameraApp({
 
         <button
           onClick={capture}
-          disabled={!running || busy}
+          disabled={!running || busy || saving}
         >
-          📸 Capture
+          {saving ? "Saving photo…" : "📸 Capture"}
         </button>
 
         <button onClick={stop}>
@@ -1098,7 +537,10 @@ export function CameraApp({
         </p>
       )}
 
+      <div className="utility-camera-stage">
+      {!running && <div className="utility-camera-placeholder"><Camera size={32}/><span>{busy ? "Opening your camera…" : "Choose Start Camera when you’re ready."}</span></div>}
       <video
+        className={facing === "user" ? "mirrored" : ""}
         ref={video}
         autoPlay
         muted
@@ -1112,6 +554,7 @@ export function CameraApp({
           background: "#15151d",
         }}
       />
+      </div>
 
       {shot && (
         <div style={{ marginTop: 16 }}>

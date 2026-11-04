@@ -498,6 +498,7 @@ export default function App() {
 
 {windows
   .filter(w =>
+    ["Music", "Browser"].includes(w.name) ||
     !w.minimized &&
     (!isMobile ||
       w.id === activeId ||
@@ -508,6 +509,7 @@ export default function App() {
 
           const g = geometry(w);
           const fixed = w.mode !== "normal";
+          const visible = !w.minimized && (!isMobile || w.id === activeId || (!activeId && w.id === topWindow(windows)?.id));
           return (
             <Rnd key={w.id} bounds="parent"
               position={{ x: g.x, y: g.y }}
@@ -519,7 +521,7 @@ export default function App() {
               disableDragging={isMobile || fixed}
               enableResizing={!isMobile && !fixed}
               className={`window-rnd ${isMobile ? "mobile-window-rnd" : ""} ${activeId === w.id ? "window-active" : ""}`}
-              style={{ zIndex: w.zIndex }}
+              style={{ zIndex: w.zIndex, display: visible ? undefined : "none" }}
               onMouseDown={() => {
                 if (activeId !== w.id) focus(w.id);
               }}

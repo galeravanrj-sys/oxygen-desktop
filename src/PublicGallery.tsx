@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Camera, Cloud, Download, ImagePlus, LockKeyhole, RefreshCw, Trash2, UploadCloud, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Camera, Cloud, Download, ImagePlus, LockKeyhole, RefreshCw, Trash2, UploadCloud, X } from "lucide-react";
 import { supabase, GALLERY_BUCKET, uploadPublicPhoto } from "./supabase";
 
 type LocalPhoto = { id: string; name: string; data: string };
@@ -56,10 +56,25 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
     };
   }, [refresh]);
 
-  const allPhotos: GalleryPhoto[] = [
+  const allPhotos = useMemo<GalleryPhoto[]>(() => [
     ...localPhotos.map(photo => ({ id: photo.id, name: photo.name, url: photo.data, source: "local" as const })),
     ...cloudPhotos.map(photo => ({ id: photo.name, name: photo.name, url: photo.url, source: "public" as const })),
-  ];
+  ], [localPhotos, cloudPhotos]);
+
+  const viewerIndex = viewer ? allPhotos.findIndex(photo => photo.id === viewer.id && photo.source === viewer.source) : -1;
+  function changePhoto(offset: number) { if (allPhotos.length) setViewer(allPhotos[(viewerIndex + offset + allPhotos.length) % allPhotos.length]); }
+  useEffect(() => {
+    if (!viewer) return;
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); setViewer(null); }
+      if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && allPhotos.length > 1) {
+        event.preventDefault(); const offset = event.key === "ArrowLeft" ? -1 : 1;
+        setViewer(allPhotos[(viewerIndex + offset + allPhotos.length) % allPhotos.length]);
+      }
+    };
+    window.addEventListener("keydown", keydown);
+    return () => window.removeEventListener("keydown", keydown);
+  }, [viewer, viewerIndex, allPhotos]);
 
   async function addLocal(files: FileList | null) {
     if (!files?.length) return;
@@ -143,7 +158,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
         </div>
       </header>
       <div className="unified-gallery-subbar">
-        <span>{allPhotos.length} photos</span>
+        <span>{allPhotos.length} {allPhotos.length === 1 ? "photo" : "photos"}</span>
         <span><Camera size={14}/> Camera photos save here automatically</span>
         <span><Cloud size={14}/> Public photos sync with Supabase</span>
       </div>
@@ -180,6 +195,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
           <button onClick={() => setViewer(null)} aria-label="Close"><X size={20}/></button></div>
         <img src={viewer.url} alt={viewer.name}/>
         <div className="unified-viewer-actions">
+          <button aria-label="Previous photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(-1)}><ChevronLeft size={18}/></button><span>{viewerIndex + 1} / {allPhotos.length}</span><button aria-label="Next photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(1)}><ChevronRight size={18}/></button>
           <a href={viewer.url} download={viewer.name}><Download size={16}/> Download</a>
           {viewer.source === "local" && <button disabled={busy} onClick={() => {
             const local = localPhotos.find(item => item.id === viewer.id);
