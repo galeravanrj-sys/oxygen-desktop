@@ -34,3 +34,6 @@ dist/
 *.tsx.before-hook-fix
 *.tsx.backup-public-gallery
 *.ts.backup
+*.backup-*
+*.before-*
+gallery-backup-before-update/
