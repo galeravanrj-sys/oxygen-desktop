@@ -1,3 +1,7 @@
+import WeatherApp from "./WeatherApp";
+import TodoApp from "./TodoApp";
+import Personalization from "./Personalization";
+import { loadPreferences, PREF_KEY, themes, type Preferences } from "./desktopPreferences";
 import FreeGamesApp from "./FreeGamesApp";
 import SevenDSTierApp from "./SevenDSTierApp";
 import WidgetsApp from "./WidgetsApp";
@@ -6,7 +10,7 @@ import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
-  Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
+  CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -33,6 +37,8 @@ type Win = {
 type Photo = { id: string; name: string; data: string };
 
 const apps = [
+  { name: "Weather", icon: CloudSun, color: "blue" },
+  { name: "To-do List", icon: ListChecks, color: "green" },
   { name: "Free Games", icon: Gift, color: "green" },
   { name: "Gallery", icon: Images, color: "pink" },
   { name: "Games Tierlist", icon: Crown, color: "purple" },
@@ -120,6 +126,9 @@ function fileToData(file: File): Promise<string> {
 }
 
 export default function App() {
+  const [preferences, setPreferences] = useState(() => loadPreferences(apps.map(app => app.name)));
+  const orderedApps = preferences.order.flatMap(name => apps.filter(app => app.name === name));
+  const savePreferences = (next: Preferences) => { localStorage.setItem(PREF_KEY, JSON.stringify(next)); setPreferences(next); };
   const [time, setTime] = useState(new Date());
   const [windows, setWindows] = useState<Win[]>(() =>
     readJSON<Win[]>(SESSION_KEY, []).filter(
@@ -350,6 +359,8 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
+      case "Weather": return <WeatherApp />;
+      case "To-do List": return <TodoApp />;
       case "Free Games": return <FreeGamesApp />;
       case "Games Tierlist": return <SevenDSTierApp />;
       case "Clock & Widgets": return <WidgetsApp time={time} photoCount={photos.length} onOpenGallery={() => launch("Gallery")} onOpenCalendar={() => launch("Calendar")} />;
@@ -379,7 +390,7 @@ export default function App() {
         </div>
       );
       case "Settings": return (
-        <div className="generic-app">
+        <div className="generic-app personal-settings-app">
           <div className="generic-app-icon"><Settings size={38} /></div>
           <h2>Settings</h2>
           <p>Personalize M8M8S and manage your windows.</p>
@@ -402,6 +413,7 @@ export default function App() {
               <RotateCcw size={18} /> Clear desktop session
             </button>
           </div>
+          <Personalization preferences={preferences} onChange={savePreferences} />
         </div>
       );
       default: return null;
@@ -410,7 +422,7 @@ export default function App() {
 
   return (
     <main className={`os-shell ${darkMode ? "dark-mode" : ""}`}>
-      <div className="wallpaper">
+      <div className={`wallpaper ${preferences.wallpaper ? "wallpaper-custom" : ""}`} style={preferences.wallpaper ? { backgroundImage: `url("${preferences.wallpaper}")` } : preferences.theme !== "default" ? { background: themes[preferences.theme] } : undefined}>
         <div className="wallpaper-orb orb-one" />
         <div className="wallpaper-orb orb-two" />
         <div className="wallpaper-orb orb-three" />
@@ -441,7 +453,7 @@ export default function App() {
         </div>
 
         <div className="desktop-shortcuts">
-          {apps.map(app => {
+          {orderedApps.map(app => {
             const Icon = app.icon;
             return (
               <button className="desktop-shortcut" key={app.name}
@@ -449,7 +461,7 @@ export default function App() {
                 <div className={`shortcut-icon ${app.color}`}>
                   <Icon size={25} />
                 </div>
-                <span>{app.name}</span>
+                <span>{app.name}{preferences.favorites.includes(app.name) && <Star className="pa-home-star" size={11} fill="currentColor" aria-label="Favorite" />}</span>
               </button>
             );
           })}
@@ -463,7 +475,7 @@ export default function App() {
   </div>
 
   <div className="oxygen-mobile-grid">
-    {apps.map(app => {
+    {orderedApps.map(app => {
       const Icon = app.icon;
 
       return (
@@ -476,7 +488,7 @@ export default function App() {
             <Icon size={27} />
           </div>
 
-          <span>{app.name}</span>
+          <span>{app.name}{preferences.favorites.includes(app.name) && <Star className="pa-home-star" size={11} fill="currentColor" aria-label="Favorite" />}</span>
         </button>
       );
     })}
@@ -573,6 +585,7 @@ export default function App() {
         </button>
         <div className="taskbar-divider" />
         <div className="taskbar-apps">
+          {orderedApps.filter(app => preferences.favorites.includes(app.name) && !windows.some(w => w.name === app.name)).map(app => { const Icon = app.icon; return <button type="button" className="taskbar-app taskbar-favorite" key={app.name} title={`Open ${app.name} (favorite)`} onClick={() => launch(app.name)}><Icon size={21}/></button>; })}
           {windows.map(w => {
             const Icon = apps.find(a => a.name === w.name)?.icon || Folder;
             return (
@@ -613,7 +626,7 @@ export default function App() {
           </div>
           <p className="start-section-label">ALL APPLICATIONS</p>
           <div className="start-app-list">
-            {apps.filter(a => a.name.toLowerCase().includes(search.toLowerCase()))
+            {orderedApps.filter(a => a.name.toLowerCase().includes(search.toLowerCase()))
               .map(app => {
                 const Icon = app.icon;
                 return (
@@ -621,7 +634,7 @@ export default function App() {
                     <div className={`start-app-icon ${app.color}`}>
                       <Icon size={20} />
                     </div>
-                    <span>{app.name}</span>
+                    <span>{app.name}{preferences.favorites.includes(app.name) && <Star className="pa-home-star" size={11} fill="currentColor" aria-label="Favorite" />}</span>
                   </button>
                 );
               })}
