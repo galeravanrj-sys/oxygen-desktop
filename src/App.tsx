@@ -1,3 +1,4 @@
+import FreeGamesApp from "./FreeGamesApp";
 import SevenDSTierApp from "./SevenDSTierApp";
 import WidgetsApp from "./WidgetsApp";
 import "./App.css";
@@ -5,7 +6,7 @@ import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
-  Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
+  Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -32,6 +33,7 @@ type Win = {
 type Photo = { id: string; name: string; data: string };
 
 const apps = [
+  { name: "Free Games", icon: Gift, color: "green" },
   { name: "Gallery", icon: Images, color: "pink" },
   { name: "Games Tierlist", icon: Crown, color: "purple" },
   { name: "Clock & Widgets", icon: Clock3, color: "blue" },
@@ -348,6 +350,7 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
+      case "Free Games": return <FreeGamesApp />;
       case "Games Tierlist": return <SevenDSTierApp />;
       case "Clock & Widgets": return <WidgetsApp time={time} photoCount={photos.length} onOpenGallery={() => launch("Gallery")} onOpenCalendar={() => launch("Calendar")} />;
       case "Files": return <FilesApp />;
@@ -703,4 +706,3 @@ export default function App() {
     </main>
   );
 }
-

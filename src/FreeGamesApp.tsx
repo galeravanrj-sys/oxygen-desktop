@@ -1,0 +1,51 @@
+import { useEffect, useState } from "react";
+import { ExternalLink, Gift, RefreshCw, Search } from "lucide-react";
+import "./FreeGamesApp.css";
+
+type Offer = { id: number; title: string; description: string; image: string; platforms: string; worth: string; end_date: string; gamerpower_url: string; status: string; type: string };
+const FEED = "https://www.gamerpower.com/api/filter?platform=steam%2Bepic-games-store&type=game&sort-by=date";
+function safeLink(value: string) {
+  try { const url = new URL(value); return url.protocol === "https:" && url.hostname === "www.gamerpower.com" ? url.href : null; } catch { return null; }
+}
+
+export default function FreeGamesApp() {
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [store, setStore] = useState("all");
+  const [search, setSearch] = useState("");
+  const [revision, setRevision] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updated, setUpdated] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      setLoading(true); setError("");
+      try {
+        const response = await fetch(FEED, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(25000)]) });
+        if (!response.ok) throw new Error("The giveaway feed is unavailable. Please try again.");
+        const data: unknown = response.status === 201 ? [] : await response.json();
+        if (!Array.isArray(data)) throw new Error("The giveaway feed returned an unexpected response.");
+        const valid = data.filter((item): item is Offer => item && typeof item.id === "number" && typeof item.title === "string" && typeof item.platforms === "string" && item.status === "Active" && item.type === "Game" && typeof item.description === "string" && typeof item.gamerpower_url === "string" && !!safeLink(item.gamerpower_url) && /Steam|Epic Games Store/i.test(item.platforms));
+        if (!controller.signal.aborted) { setOffers(valid); setUpdated(new Date().toLocaleTimeString()); }
+      } catch (reason) {
+        if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Could not load giveaways.");
+      } finally { if (!controller.signal.aborted) setLoading(false); }
+    }
+    void load();
+    return () => controller.abort();
+  }, [revision]);
+  const visible = offers.filter(offer => (store === "all" || (store === "steam" ? /Steam/i.test(offer.platforms) : /Epic Games Store/i.test(offer.platforms))) && offer.title.toLowerCase().includes(search.toLowerCase()));
+  return <div className="free-games">
+    <header className="fg-heading"><div><span className="fg-eyebrow"><Gift size={16}/> FREE TO CLAIM</span><h2>Your next game, on the house.</h2><p>Discover Steam and Epic giveaways. Claim before the offer ends.</p></div><button className="fg-refresh" type="button" disabled={loading} onClick={() => setRevision(value => value + 1)} aria-label="Refresh giveaways"><RefreshCw size={18}/></button></header>
+    <div className="fg-controls"><div className="fg-stores" aria-label="Filter by store">{[{ id: "all", name: "All stores" }, { id: "steam", name: "Steam" }, { id: "epic", name: "Epic Games" }].map(tab => <button type="button" key={tab.id} aria-pressed={store === tab.id} onClick={() => setStore(tab.id)}>{tab.name}</button>)}</div><label className="fg-search"><Search size={16}/><input aria-label="Search giveaways" placeholder="Find a game…" value={search} onChange={event => setSearch(event.target.value)}/></label></div>
+    <div className="fg-status" role="status">{loading ? "Checking current giveaways…" : error ? error : `${visible.length} offers · Checked at ${updated}`}{error && offers.length > 0 && " Showing previously loaded offers; availability may have changed."}</div>
+    {!loading && !error && visible.length === 0 && <div className="fg-empty"><Gift size={32}/><h3>No matching giveaways right now</h3><p>Try another store or check back later.</p></div>}
+    <div className="fg-grid">{visible.map(offer => <article className="fg-card" key={offer.id}>
+      {typeof offer.image === "string" && offer.image.startsWith("https://") && <img src={offer.image} alt="" loading="lazy"/>}
+      <div className="fg-card-body"><div className="fg-meta"><span>{/Steam/i.test(offer.platforms) && /Epic Games Store/i.test(offer.platforms) ? "Steam · Epic Games" : /Steam/i.test(offer.platforms) ? "Steam" : "Epic Games"}</span><strong>FREE</strong></div><h3>{offer.title}</h3><p className="fg-description">{offer.description}</p><p className="fg-deadline">{offer.end_date && offer.end_date !== "N/A" ? `Listed end: ${offer.end_date} (source time)` : "End date not listed"}</p><a className="fg-claim" href={safeLink(offer.gamerpower_url)!} target="_blank" rel="noopener noreferrer">View giveaway <ExternalLink size={14}/></a></div>
+    </article>)}</div>
+    <footer>Giveaway data by <a href="https://www.gamerpower.com" target="_blank" rel="noopener noreferrer">GamerPower</a>. Check the linked offer for region, account, redemption requirements, and availability. Listed end times use the source’s time zone.</footer>
+  </div>;
+}
+
+
