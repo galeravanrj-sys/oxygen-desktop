@@ -30,7 +30,7 @@ const GAMES: Game[] = [
   { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
   { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List · Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
   { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", image: `${import.meta.env.BASE_URL}games-tierlist/hsr.webp`, initials: "HSR" },
-  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List · Pocket Gamer", url: "https://www.pocketgamer.com/the-seven-deadly-sins-grand-cross/tier-list/", color: "grandcross", image: `${import.meta.env.BASE_URL}games-tierlist/grandcross.webp`, initials: "GC" },
+  { id: "grandcross", title: "7DS Grand Cross", subtitle: "General Tier List · Grand Cross Wiki", url: "https://7dsgc.fandom.com/wiki/General_Tier_List", color: "grandcross", image: `${import.meta.env.BASE_URL}games-tierlist/grandcross.webp`, initials: "GC" },
 ];
 
 type TierCharacter = {
@@ -165,7 +165,7 @@ export default function SevenDSTierApp() {
                 <div className="gtl-viewer gtl-native-viewer">
           <div className="gtl-native-content">
             <h2>{selected.title}</h2>
-            <p>Character Tier List · {selected.id === "grandcross" ? "Pocket Gamer" : "Game8"}</p>
+            <p>Character Tier List · {selected.id === "grandcross" ? "Grand Cross Wiki" : "Game8"}</p>
 
             {(genshinData?.updated_at || tierData?.updated_at) && (
               <p className="gtl-genshin-source">
@@ -266,8 +266,8 @@ export default function SevenDSTierApp() {
                   <div className="gtl-tier-row" key={group.tier}>
                     <div className="gtl-tier-label">{group.tier}</div>
                     <div className="gtl-tier-characters">
-                      {group.characters.map((character) => (
-                        <div className="gtl-character" key={character.name}>
+                      {group.characters.map((character, index) => (
+                        <div className="gtl-character" key={`${character.name}-${index}`}>
                           {character.image && (
                             <img src={character.image} alt={character.name} />
                           )}
