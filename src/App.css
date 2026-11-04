@@ -1669,3 +1669,10 @@ button.oxygen-widget:hover {
 .unified-viewer-top button, .unified-viewer-actions button, .unified-viewer-actions a { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 9px; padding: 10px 12px; background: #6b5ee2; color: white; font-size: 12px; text-decoration: none; }
 .unified-viewer-actions .unified-danger { background: #a9435a; }
 @media(max-width:650px) { .oxygen-unified-gallery { padding: 15px; } .unified-gallery-header h2 { font-size: 24px; } .unified-photo-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; } .unified-gallery-subbar { gap: 7px 12px; } }
+
+/* M8M8S: desktop cards are now inside Clock & Widgets app. */
+.desktop-welcome { max-width: calc(100% - 32px); }
+@media (max-width: 650px) {
+  .oxygen-mobile-apps { display: block; margin-top: 32px; }
+  .desktop-area { padding-bottom: 115px; }
+}

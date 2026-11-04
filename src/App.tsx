@@ -1,10 +1,11 @@
 import SevenDSTierApp from "./SevenDSTierApp";
+import WidgetsApp from "./WidgetsApp";
 import "./App.css";
 import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
-  Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator,
+  Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -33,6 +34,7 @@ type Photo = { id: string; name: string; data: string };
 const apps = [
   { name: "Gallery", icon: Images, color: "pink" },
   { name: "Games Tierlist", icon: Crown, color: "purple" },
+  { name: "Clock & Widgets", icon: Clock3, color: "blue" },
   { name: "Files", icon: Folder, color: "orange" },
   { name: "Browser", icon: Globe, color: "blue" },
   { name: "Settings", icon: Settings, color: "gray" },
@@ -347,6 +349,7 @@ export default function App() {
   const appContent = (name: string) => {
     switch (name) {
       case "Games Tierlist": return <SevenDSTierApp />;
+      case "Clock & Widgets": return <WidgetsApp time={time} photoCount={photos.length} onOpenGallery={() => launch("Gallery")} onOpenCalendar={() => launch("Calendar")} />;
       case "Files": return <FilesApp />;
       case "Notes": return <NotesApp />;
       case "Calculator": return <CalculatorApp />;
@@ -376,7 +379,7 @@ export default function App() {
         <div className="generic-app">
           <div className="generic-app-icon"><Settings size={38} /></div>
           <h2>Settings</h2>
-          <p>Personalize Oxygen Desktop and manage your windows.</p>
+          <p>Personalize M8M8S and manage your windows.</p>
           <div className="settings-options">
             <button onClick={() => setDarkMode(!darkMode)}>
               <Sun size={18} /> {darkMode ? "Light mode" : "Dark mode"}
@@ -413,7 +416,7 @@ export default function App() {
       <header className="top-bar">
         <div className="top-brand">
           <div className="brand-mark">O</div>
-          <span>Oxygen Desktop</span>
+          <span>M8M8S</span>
         </div>
         <div className="top-system">
           <span>{formattedTime}</span>
@@ -450,56 +453,6 @@ export default function App() {
         </div>
 
 
-<div className="oxygen-widgets">
-  <div className="oxygen-widget oxygen-clock-widget">
-    <div className="oxygen-widget-label">
-      <Sun size={17} />
-      <span>Today</span>
-    </div>
-
-    <strong className="oxygen-widget-time">
-      {formattedTime}
-    </strong>
-
-    <span className="oxygen-widget-date">
-      {formattedDate}
-    </span>
-  </div>
-
-  <button
-    className="oxygen-widget oxygen-gallery-widget"
-    onClick={() => launch("Gallery")}
-  >
-    <div className="oxygen-widget-label">
-      <Images size={18} />
-      <span>Gallery</span>
-    </div>
-
-    <strong>{photos.length}</strong>
-    <span>
-      {photos.length === 1 ? "Saved photo" : "Saved photos"}
-    </span>
-  </button>
-
-  <button
-    className="oxygen-widget oxygen-calendar-widget"
-    onClick={() => launch("Calendar")}
-  >
-    <div className="oxygen-widget-label">
-      <CalendarDays size={18} />
-      <span>Calendar</span>
-    </div>
-
-    <strong>{time.getDate()}</strong>
-    <span>
-      {time.toLocaleDateString(undefined, {
-        weekday: "long",
-        month: "long",
-      })}
-    </span>
-  </button>
-</div>
-
 <div className="oxygen-mobile-apps">
   <div className="oxygen-mobile-section-title">
     <span>Applications</span>
@@ -526,18 +479,6 @@ export default function App() {
     })}
   </div>
 </div>
-
-
-        <div className="desktop-widget">
-          <div className="widget-top">
-            <span>LOCAL TIME</span><span className="clock-icon">â—·</span>
-          </div>
-          <h2>{formattedTime}</h2>
-          <p>{formattedDate}</p>
-          <div className="widget-bottom">
-            <span>Oxygen Desktop</span><span>Welcome home</span>
-          </div>
-        </div>
 
 
 {windows
@@ -660,7 +601,7 @@ export default function App() {
         <div className="start-menu">
           <div className="start-menu-header">
             <div className="brand-mark">O</div>
-            <div><strong>Oxygen Desktop</strong><span>Applications</span></div>
+            <div><strong>M8M8S</strong><span>Applications</span></div>
           </div>
           <div className="start-search">
             <Search size={17} />
