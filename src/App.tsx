@@ -498,7 +498,7 @@ export default function App() {
 
 {windows
   .filter(w =>
-    ["Music", "Browser"].includes(w.name) ||
+    ["Music", "Browser", "Calculator"].includes(w.name) ||
     !w.minimized &&
     (!isMobile ||
       w.id === activeId ||

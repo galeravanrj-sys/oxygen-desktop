@@ -1,6 +1,6 @@
-import { useEffect, useReducer, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Globe, Music, Plus, RefreshCw, Search, SkipBack, SkipForward, Star, Trash2, X } from "lucide-react";
-import { BROWSER_HOME, browserAddress, calcPress, dateKey, initialCalc, websiteName } from "./utilityHelpers";
+import { BROWSER_HOME, browserAddress, dateKey, websiteName } from "./utilityHelpers";
 import "./UtilityApps.css";
 
 function useStoredList<T>(key: string, valid: (item: unknown) => item is T): [T[], (next: T[]) => boolean, string] {
@@ -21,11 +21,8 @@ export function NotesApp() {
   function exportNote() { if (!active) return; const url = URL.createObjectURL(new Blob([active.title + "\n\n" + active.body], { type: "text/plain" })); const link = document.createElement("a"); link.href = url; link.download = (active.title || "Note").replace(/[<>:"/\\|?*]/g, "_") + ".txt"; link.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000); }
   return <div className="ox-app utility-app utility-notes"><Heading icon={<FileText size={22}/>} title="Notes">A little space for your ideas. Saved on this browser.</Heading><p className="utility-error" role="status">{error}</p><div className="utility-notes-layout"><aside><button className="utility-primary" onClick={create}><Plus size={16}/> New note</button><label className="utility-search"><Search size={15}/><input aria-label="Search notes" placeholder="Search notes" value={query} onChange={e => setQuery(e.target.value)}/></label><div className="utility-note-list">{notes.filter(note => `${note.title} ${note.body}`.toLowerCase().includes(query.toLowerCase())).map(note => <button key={note.id} aria-pressed={id === note.id} onClick={() => setId(note.id)}><strong>{note.title || "Untitled note"}</strong><small>{note.body.trim().slice(0, 65) || "Start writing…"}</small></button>)}</div></aside><section className="utility-editor">{active ? <><input className="utility-note-title" aria-label="Note title" value={active.title} maxLength={160} onChange={e => update("title", e.target.value)}/><textarea aria-label="Note body" placeholder="Let your ideas flow…" value={active.body} onChange={e => update("body", e.target.value)}/><div className="utility-editor-footer"><span>{active.body.trim() ? active.body.trim().split(/\s+/).length : 0} words</span><button onClick={exportNote}><Download size={15}/> Export</button><button onClick={() => { if (confirm("Delete this note?")) { const next = notes.filter(note => note.id !== id); if (save(next)) setId(next[0]?.id ?? ""); } }}><Trash2 size={15}/> Delete</button></div></> : <Empty title="Make room for an idea">Create a note to start writing.</Empty>}</section></div></div>;
 }
-export function CalculatorApp() {
-  const [state, press] = useReducer(calcPress, initialCalc);
-  const keys = ["C", "⌫", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "±", "0", ".", "="];
-  return <div className="ox-app utility-app utility-calculator" tabIndex={0} aria-label="Calculator" onKeyDown={event => { const key = ({ Enter: "=", Escape: "C", Backspace: "⌫", "*": "×", "/": "÷", "-": "−" } as Record<string, string>)[event.key] ?? event.key; if (keys.includes(key)) { event.preventDefault(); press(key); } }}><div className="utility-calc-top"><span>STANDARD</span><small>Keyboard supported</small></div><div className="utility-calculation">{state.stored !== null ? `${state.stored} ${state.operator}` : "Ready"}</div><output className="ox-display" aria-live="polite">{state.display}</output><div className="ox-calc-grid">{keys.map(key => <button key={key} className={key === "=" ? "utility-equals" : ["+", "−", "×", "÷"].includes(key) ? "utility-operation" : ""} aria-label={key === "⌫" ? "Backspace" : key === "C" ? "Clear" : key} onClick={() => press(key)}>{key}</button>)}</div></div>;
-}
+export { default as CalculatorApp } from "./WindowsCalculator";
+
 type EventItem = { id: string; date: string; title: string };
 function isEvent(value: unknown): value is EventItem { const e = value as EventItem; return !!e && typeof e.id === "string" && typeof e.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.date) && typeof e.title === "string"; }
 export function CalendarApp() {
