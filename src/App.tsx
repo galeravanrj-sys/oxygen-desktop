@@ -1,18 +1,22 @@
+import DailyBriefing from "./DailyBriefing";
+import GamingPassport from "./GamingPassport";
+import ThemeStudio from "./ThemeStudio";
 import GameNotifications from "./GameNotifications";
 import type { GameNotice } from "./gameNotificationLogic";
 import WeatherApp from "./WeatherApp";
 import TodoApp from "./TodoApp";
 import Personalization from "./Personalization";
-import { loadPreferences, PREF_KEY, themes, type Preferences } from "./desktopPreferences";
+import { accentInk, loadPreferences, PREF_KEY, themes, type Preferences } from "./desktopPreferences";
 import FreeGamesApp from "./FreeGamesApp";
 import SevenDSTierApp from "./SevenDSTierApp";
 import WidgetsApp from "./WidgetsApp";
 import "./App.css";
+import "./Appearance.css";
 import PublicGallery from "./PublicGallery";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
 import {
-  CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
+  Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Copy as WindowRestore, Square, Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -39,6 +43,9 @@ type Win = {
 type Photo = { id: string; name: string; data: string };
 
 const apps = [
+  { name: "Daily Briefing", icon: Sparkles, color: "purple" },
+  { name: "Gaming Passport", icon: Gamepad2, color: "blue" },
+  { name: "Theme Studio", icon: Palette, color: "pink" },
   { name: "Weather", icon: CloudSun, color: "blue" },
   { name: "To-do List", icon: ListChecks, color: "green" },
   { name: "Free Games", icon: Gift, color: "green" },
@@ -223,8 +230,8 @@ export default function App() {
       id, name,
       x: 45 + (previous.length % 6) * 32,
       y: 35 + (previous.length % 6) * 26,
-      width: Math.min(name === "Calculator" ? 360 : 760, Math.max(320, viewport.width - 90)),
-      height: Math.min(name === "Calculator" ? 560 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
+      width: Math.min(name === "Calculator" ? 360 : ["Daily Briefing", "Gaming Passport", "Theme Studio"].includes(name) ? 960 : 760, Math.max(320, viewport.width - 90)),
+      height: Math.min(name === "Calculator" ? 560 : name === "Daily Briefing" ? 780 : ["Gaming Passport", "Theme Studio"].includes(name) ? 720 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
       mode: "normal",
       minimized: false,
       zIndex: z
@@ -372,6 +379,9 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
+      case "Daily Briefing": return <DailyBriefing time={time} onOpen={name => launch(name)} onNotice={notice => launch("Games Tierlist", notice)} onOffer={id => launch("Free Games", { id: `briefing-offer:${id}:${Date.now()}`, kind: "freegames", title: "Giveaway", body: "", offerId: id, createdAt: Date.now(), read: true })} />;
+      case "Gaming Passport": return <GamingPassport />;
+      case "Theme Studio": return <ThemeStudio preferences={preferences} onChange={savePreferences} />;
       case "Weather": return <WeatherApp />;
       case "To-do List": return <TodoApp />;
       case "Free Games": return <FreeGamesApp key={offerNotice?.id ?? "offers-home"} initialOfferId={offerNotice?.offerId} />;
@@ -408,6 +418,7 @@ export default function App() {
           <h2>Settings</h2>
           <p>Personalize M8M8S and manage your windows.</p>
           <div className="settings-options">
+            <button onClick={() => launch("Theme Studio")}><Palette size={18}/> Open Theme Studio</button>
             <button onClick={() => setDarkMode(!darkMode)}>
               <Sun size={18} /> {darkMode ? "Light mode" : "Dark mode"}
             </button>
@@ -434,7 +445,7 @@ export default function App() {
   };
 
   return (
-    <main className={`os-shell ${darkMode ? "dark-mode" : ""}`}>
+    <main className={`os-shell ${darkMode ? "dark-mode" : ""}`} data-icon-style={preferences.iconStyle} style={{ "--m8-accent": preferences.accent, "--m8-accent-ink": accentInk(preferences.accent), "--m8-window-opacity": preferences.windowOpacity } as CSSProperties}>
       <div className={`wallpaper ${preferences.wallpaper ? "wallpaper-custom" : ""}`} style={preferences.wallpaper ? { backgroundImage: `url("${preferences.wallpaper}")` } : preferences.theme !== "default" ? { background: themes[preferences.theme] } : undefined}>
         <div className="wallpaper-orb orb-one" />
         <div className="wallpaper-orb orb-two" />
@@ -512,7 +523,7 @@ export default function App() {
 
 {windows
   .filter(w =>
-    ["Music", "Browser", "Calculator"].includes(w.name) ||
+    ["Music", "Browser", "Calculator", "Gaming Passport"].includes(w.name) ||
     !w.minimized &&
     (!isMobile ||
       w.id === activeId ||

@@ -10,6 +10,9 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 | App | What you can do |
 | --- | --- |
+| Daily Briefing | Bring together your saved city’s weather, tasks, today’s events, current giveaways, ranking changes, and games you’re playing. |
+| Gaming Passport | Keep a personal Wishlist, Owned, Playing, and Finished library, with ratings, notes, and JSON export. Save giveaways to your wishlist from Free Games. |
+| Theme Studio | Preview accent colors, icon shapes, backgrounds, and window transparency, with appearance reset that preserves app order and favorites. |
 | Weather | Search for a city, check current conditions, and view a seven-day forecast. |
 | To-do List | Create tasks, set due dates, check off completed work, and filter your list. |
 | Free Games | Discover full-game giveaways for Steam, Epic Games, GOG, and itch.io, with store filters and links to offer details. |
@@ -27,7 +30,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 ### A desktop that feels personal
 
-- All 14 apps are available from the home screen and launcher.
+- All 17 apps are available from the home screen and launcher.
 - Drag, resize, minimize, maximize, or arrange windows side by side on desktop.
 - Use **Settings → Make it yours** for wallpapers and color themes.
 - Reorder your apps with the arrows in Settings, and select stars to pin favorites.
@@ -47,9 +50,11 @@ The bell in the top bar tracks changes to the four tier lists and new full-game 
 
 The first successful check establishes a baseline without generating old alerts. Tier-list alerts compare rankings, so an unchanged daily refresh does not create a notification. Checks run every five minutes while the website is open and visible, with a manual **Check now** option. Notifications and the last-seen baseline are saved in this browser; they are not push alerts and do not arrive while the site is closed. Each category can be paused from the bell’s notification settings.
 
+Theme Studio changes appearance across the desktop and saves it in this browser. Daily Briefing reads your existing personal data without creating duplicate task or event lists. Saving a giveaway to Gaming Passport does not claim or purchase it.
+
 ## Your data
 
-Most personal data stays in the browser you use: notes, tasks, events, bookmarks, calculator history, small uploaded files, wallpaper preferences, app order, and favorites. Private Gallery photos use the browser's IndexedDB storage. These items do **not** automatically sync between devices, and clearing website data can remove them. Export or download anything you want to keep separately.
+Most personal data stays in the browser you use: notes, tasks, events, bookmarks, calculator history, your Gaming Passport, small uploaded files, wallpaper preferences, app order, and favorites. Private Gallery photos use the browser's IndexedDB storage. These items do **not** automatically sync between devices, and clearing website data can remove them. Export or download anything you want to keep separately.
 
 Camera captures and **Add photos** stay private on that device. Gallery's **Publish to everyone** action creates a separate public copy in Supabase after confirmation and subject to the configured access rules. Community photos are visible to other visitors.
 

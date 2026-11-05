@@ -45,8 +45,10 @@ export default function GameNotifications({ onOpen, onPanelOpen }: { onOpen: (no
     const first = window.setTimeout(() => { void check(); }, 0); const timer = window.setInterval(() => { void check(); }, 5 * 60000);
     const visible = () => { if (document.visibilityState === "visible") void check(); };
     const synchronize = (event: StorageEvent) => { if (event.key === NOTIFICATION_KEY) { const next = parseNoticeStore(event.newValue); current.current = next; setState(next); } };
+    const localUpdate = () => { const next = load(); current.current = next; setState(next); };
+    window.addEventListener("m8m8s-notifications-change", localUpdate);
     document.addEventListener("visibilitychange", visible); window.addEventListener("focus", visible); window.addEventListener("storage", synchronize);
-    return () => { active = false; request?.abort(); window.clearTimeout(first); window.clearInterval(timer); document.removeEventListener("visibilitychange", visible); window.removeEventListener("focus", visible); window.removeEventListener("storage", synchronize); };
+    return () => { active = false; request?.abort(); window.clearTimeout(first); window.clearInterval(timer); document.removeEventListener("visibilitychange", visible); window.removeEventListener("focus", visible); window.removeEventListener("storage", synchronize); window.removeEventListener("m8m8s-notifications-change", localUpdate); };
   }, [commit]);
   useEffect(() => {
     if (!open) return; panel.current?.focus({ preventScroll: true });

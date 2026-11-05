@@ -1,3 +1,5 @@
+import { addGiveawayToPassport } from "./gamingPassportStore";
+import { useGameLibrary } from "./useGameLibrary";
 import { useEffect, useState } from "react";
 import { ExternalLink, Gift, RefreshCw, Search } from "lucide-react";
 import "./FreeGamesApp.css";
@@ -16,6 +18,8 @@ function safeLink(value: string) {
 }
 
 export default function FreeGamesApp({ initialOfferId }: { initialOfferId?: number } = {}) {
+  const passport = useGameLibrary();
+  const [passportMessage, setPassportMessage] = useState("");
   const [focusedOffer, setFocusedOffer] = useState(initialOfferId ?? null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [store, setStore] = useState("all");
@@ -49,9 +53,10 @@ export default function FreeGamesApp({ initialOfferId }: { initialOfferId?: numb
     <div className="fg-controls"><div className="fg-stores" aria-label="Filter by store">{[{ id: "all", name: "All stores" }, ...STORES].map(tab => <button type="button" key={tab.id} aria-pressed={store === tab.id} onClick={() => setStore(tab.id)}>{tab.name}</button>)}</div><label className="fg-search"><Search size={16}/><input aria-label="Search giveaways" placeholder="Find a game…" value={search} onChange={event => setSearch(event.target.value)}/></label></div>
     <div className="fg-status" role="status">{loading ? "Checking current giveaways…" : error ? error : `${visible.length} offers · Checked at ${updated}`}{error && offers.length > 0 && " Showing previously loaded offers; availability may have changed."}</div>
     {!loading && !error && visible.length === 0 && <div className="fg-empty"><Gift size={32}/><h3>No matching giveaways right now</h3><p>{focusedOffer !== null ? "This offer may have ended or is no longer listed. Choose Show all offers to browse current giveaways." : "Try another store or check back later."}</p></div>}
+    {passportMessage && <p className="fg-status" role="status">{passportMessage}</p>}
     <div className="fg-grid">{visible.map(offer => <article className="fg-card" key={offer.id}>
       {typeof offer.image === "string" && offer.image.startsWith("https://") && <img src={offer.image} alt="" loading="lazy"/>}
-      <div className="fg-card-body"><div className="fg-meta"><span>{matchingStores(offer.platforms).map(platform => platform.name).join(" · ")}</span><strong>FREE</strong></div><h3>{offer.title}</h3><p className="fg-description">{offer.description}</p><p className="fg-deadline">{offer.end_date && offer.end_date !== "N/A" ? `Listed end: ${offer.end_date} (source time)` : "End date not listed"}</p><a className="fg-claim" href={safeLink(offer.gamerpower_url)!} target="_blank" rel="noopener noreferrer">View giveaway <ExternalLink size={14}/></a></div>
+      <div className="fg-card-body"><div className="fg-meta"><span>{matchingStores(offer.platforms).map(platform => platform.name).join(" · ")}</span><strong>FREE</strong></div><h3>{offer.title}</h3><p className="fg-description">{offer.description}</p><p className="fg-deadline">{offer.end_date && offer.end_date !== "N/A" ? `Listed end: ${offer.end_date} (source time)` : "End date not listed"}</p><a className="fg-claim" href={safeLink(offer.gamerpower_url)!} target="_blank" rel="noopener noreferrer">View giveaway <ExternalLink size={14}/></a><button type="button" className="passport-save" disabled={passport.some(game => game.title.toLowerCase() === offer.title.toLowerCase() && game.platform === (matchingStores(offer.platforms)[0]?.name ?? "Other"))} onClick={() => { try { addGiveawayToPassport(offer.title, matchingStores(offer.platforms)[0]?.name ?? "Other"); setPassportMessage("Saved to your Gaming Passport wishlist. Open the giveaway page to claim it separately."); } catch { setPassportMessage("Could not save this game. Browser storage may be full."); } }}>{passport.some(game => game.title.toLowerCase() === offer.title.toLowerCase() && game.platform === (matchingStores(offer.platforms)[0]?.name ?? "Other")) ? "Saved in Passport" : "Save to Passport"}</button></div>
     </article>)}</div>
     <footer>Giveaway data by <a href="https://www.gamerpower.com" target="_blank" rel="noopener noreferrer">GamerPower</a>. Check the linked offer for region, account, redemption requirements, and availability. Listed end times use the source’s time zone.</footer>
   </div>;
