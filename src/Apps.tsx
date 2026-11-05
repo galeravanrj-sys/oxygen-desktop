@@ -1,3 +1,4 @@
+import { sitePrompt, siteConfirm, siteAlert } from "./websiteDialogStore";
 
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import "./Apps.css";
@@ -72,8 +73,8 @@ export function FilesApp() {
         Number(b.kind === "folder") - Number(a.kind === "folder") || a.name.localeCompare(b.name)
     );
 
-  const addFolder = () => {
-    const name = prompt("Folder name?")?.trim();
+  const addFolder = async () => {
+    const name = (await sitePrompt("Folder name?"))?.trim();
     if (!name) return;
 
     setEntries((previous) => [
@@ -96,8 +97,8 @@ export function FilesApp() {
     } } catch { setStorageError("Unable to read this file. Please try another file."); } finally { setUploading(false); }
   };
 
-  const remove = (id: string) => {
-    if (!confirm("Delete this item and its contents?")) return;
+  const remove = async (id: string) => {
+    if (!(await siteConfirm("Delete this item and its contents?"))) return;
 
     setEntries((previous) => {
       const ids = new Set([id]);
@@ -122,8 +123,8 @@ export function FilesApp() {
     });
   };
 
-  const rename = (id: string, name: string) => {
-    const value = prompt("Rename", name)?.trim();
+  const rename = async (id: string, name: string) => {
+    const value = (await sitePrompt("Rename", name))?.trim();
     if (!value) return;
 
     setEntries((previous) =>
@@ -133,12 +134,12 @@ export function FilesApp() {
     );
   };
 
-  const move = (id: string) => {
+  const move = async (id: string) => {
     const destinations = entries.filter(
       (entry) => entry.kind === "folder" && entry.id !== id
     );
 
-    const target = prompt("Move to folder name:", "Home");
+    const target = (await sitePrompt("Move to folder name:", "Home"));
     if (!target) return;
 
     const destination = destinations.find(
@@ -146,7 +147,7 @@ export function FilesApp() {
     );
 
     if (!destination) {
-      alert("Folder not found.");
+      (await siteAlert("Folder not found."));
       return;
     }
 
@@ -154,7 +155,7 @@ export function FilesApp() {
 
     while (ancestor) {
       if (ancestor === id) {
-        alert("Cannot move a folder inside itself.");
+        (await siteAlert("Cannot move a folder inside itself."));
         return;
       }
 

@@ -1,3 +1,4 @@
+import { siteConfirm } from "./websiteDialogStore";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Hash, MessageCircle, RefreshCw, Send, Trash2 } from "lucide-react";
@@ -76,7 +77,7 @@ export default function CommunityChat() {
       const result = authMode === "signin" ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password });
       if (result.error) { setNotice(result.error.message); return; }
       setPassword("");
-      setNotice(authMode === "signup" && !result.data.session ? "Check your email to confirm your account, then sign in." : "You’re signed in. Join the conversation.");
+      setNotice(authMode === "signup" && !result.data.session ? "If a new account was created, check your inbox and spam folder for confirmation. Already registered? Choose Sign in and use your existing password." : "You’re signed in. Join the conversation.");
     } catch { setNotice("Could not sign in. Check your connection and try again."); }
     finally { setAuthBusy(false); }
   }
@@ -95,7 +96,7 @@ export default function CommunityChat() {
     finally { inFlight.current = false; setSending(false); }
   }
   async function remove(message: Message) {
-    if (!confirm("Delete your message for everyone?")) return;
+    if (!(await siteConfirm("Delete your message for everyone?"))) return;
     try {
       const { error } = await supabase.from("community_messages").delete().eq("id", message.id).eq("user_id", user?.id || "");
       if (error) setNotice("Could not delete the message. Try again.");

@@ -1,3 +1,4 @@
+import { siteConfirm } from "./websiteDialogStore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Camera, Cloud, Download, ImagePlus, LockKeyhole, RefreshCw, Trash2, UploadCloud, X } from "lucide-react";
 import { supabase, GALLERY_BUCKET, uploadPublicPhoto } from "./supabase";
@@ -11,7 +12,7 @@ type Props = {
   loadingLocal: boolean;
   localError: string;
   onSaveLocal: (file: File) => Promise<void>;
-  onDeleteLocal: (id: string) => Promise<void>;
+  onDeleteLocal: (id: string) => Promise<boolean>;
 };
 
 export default function PublicGallery({ localPhotos, loadingLocal, localError, onSaveLocal, onDeleteLocal }: Props) {
@@ -24,6 +25,15 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signedIn, setSignedIn] = useState(false);
+  const viewerRef = useRef<HTMLDialogElement>(null);
+  const [imageError, setImageError] = useState("");
+  const viewerOpen = !!viewer;
+  useEffect(() => {
+    const node = viewerRef.current;
+    if (!viewerOpen || !node) return;
+    node.showModal();
+    return () => { node.close(); };
+  }, [viewerOpen]);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refresh = useCallback(async () => {
@@ -66,6 +76,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   useEffect(() => {
     if (!viewer) return;
     const keydown = (event: KeyboardEvent) => {
+      if (document.querySelector(".website-dialog[open]")) return;
       if (event.key === "Escape") { event.preventDefault(); setViewer(null); }
       if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && allPhotos.length > 1) {
         event.preventDefault(); const offset = event.key === "ArrowLeft" ? -1 : 1;
@@ -97,7 +108,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   }
 
   async function publish(file: File) {
-    if (!window.confirm("Publish this photo for EVERYONE to view and download? You cannot make it private again without deleting the public copy.")) return;
+    if (!(await siteConfirm("Publish this photo for EVERYONE to view and download? You cannot make it private again without deleting the public copy."))) return;
     setBusy(true);
     setMessage("");
     try {
@@ -123,11 +134,10 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
 
   async function deletePhoto(photo: GalleryPhoto) {
     if (photo.source === "local") {
-      await onDeleteLocal(photo.id);
-      setViewer(null);
+      if (await onDeleteLocal(photo.id)) setViewer(null);
       return;
     }
-    if (!window.confirm("Permanently delete this public photo?")) return;
+    if (!(await siteConfirm("Permanently delete this public photo?"))) return;
     setBusy(true);
     const { error: deleteError } = await supabase.storage.from(GALLERY_BUCKET).remove([`photos/${photo.id}`]);
     if (deleteError) setError(`Delete denied: ${deleteError.message}`);
@@ -190,10 +200,10 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
           <button disabled={busy} onClick={() => void signIn()}>Sign in</button>
         </>}
       </div>}
-      {viewer && <div className="unified-photo-viewer" role="dialog" aria-label="Photo preview">
-        <div className="unified-viewer-top"><strong>{viewer.source === "local" ? "Private photo" : "Public photo"}</strong>
+      {viewer && <dialog ref={viewerRef} className="unified-photo-viewer" aria-label="Photo preview" onCancel={event => { event.preventDefault(); setViewer(null); }} onKeyDown={event => { if (event.key === "Escape") { event.stopPropagation(); event.preventDefault(); setViewer(null); } }}>
+        <div className="unified-viewer-top"><div className="unified-viewer-title"><strong>{viewer.source === "local" ? "Private photo" : "Public photo"}</strong><small>{viewer.name}</small></div>
           <button onClick={() => setViewer(null)} aria-label="Close"><X size={20}/></button></div>
-        <img src={viewer.url} alt={viewer.name}/>
+        <div className="unified-viewer-stage">{imageError === viewer.url ? <p role="status">This image could not be loaded. You can still browse other photos.</p> : <img src={viewer.url} alt={viewer.name} onError={() => setImageError(viewer.url)}/>}</div>
         <div className="unified-viewer-actions">
           <button aria-label="Previous photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(-1)}><ChevronLeft size={18}/></button><span>{viewerIndex + 1} / {allPhotos.length}</span><button aria-label="Next photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(1)}><ChevronRight size={18}/></button>
           <a href={viewer.url} download={viewer.name}><Download size={16}/> Download</a>
@@ -205,7 +215,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
             <Trash2 size={16}/> Delete
           </button>}
         </div>
-      </div>}
+      </dialog>}
     </section>
   );
 }

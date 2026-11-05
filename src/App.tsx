@@ -1,3 +1,5 @@
+import WebsiteDialogs from "./WebsiteDialogs";
+import { siteAlert, siteConfirm } from "./websiteDialogStore";
 import CommunityChat from "./CommunityChat";
 import { useDesktopMotion } from "./useDesktopMotion";
 import "./DesktopMotion.css";
@@ -284,11 +286,11 @@ export default function App() {
     ));
   };
 
-  const splitTwo = () => {
+  const splitTwo = async () => {
     const visible = [...windows].filter(w => !w.minimized)
       .sort((a, b) => b.zIndex - a.zIndex);
     if (visible.length < 2) {
-      alert("Open at least two apps first.");
+      (await siteAlert("Open at least two apps first."));
       return;
     }
     setWindows(previous => previous.map(w =>
@@ -351,12 +353,14 @@ export default function App() {
     setGalleryError("");
   };
   const removePhoto = async (id: string) => {
-    if (!confirm("Delete this photo?")) return;
+    if (!(await siteConfirm("Delete this photo?"))) return false;
     try {
       await galleryDelete(id);
       setPhotos(previous => previous.filter(p => p.id !== id));
+      return true;
     } catch {
       setGalleryError("Could not delete photo.");
+      return false;
     }
   };
 
@@ -451,8 +455,8 @@ export default function App() {
             <button onClick={splitTwo}>
               <Columns2 size={18} /> Split two open apps
             </button>
-            <button onClick={() => {
-              if (confirm("Close all open windows?")) {
+            <button onClick={async () => {
+              if ((await siteConfirm("Close all open windows?"))) {
                 setWindows([]);
                 setActiveId(null);
               }
@@ -775,6 +779,7 @@ export default function App() {
           <button onClick={() => setContext(null)}>Dismiss</button>
         </div>
       )}
+      <WebsiteDialogs />
     </main>
   );
 }
