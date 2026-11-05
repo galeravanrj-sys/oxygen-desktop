@@ -10,6 +10,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 | App | What you can do |
 | --- | --- |
+| Community Chat | Public General, Gaming, and Help rooms; sign in to send messages, delete your own posts, and receive live updates. Requires the chat database migration. |
 | Daily Briefing | Bring together your saved city’s weather, tasks, today’s events, current giveaways, ranking changes, and games you’re playing. |
 | Gaming Passport | Keep a personal Wishlist, Owned, Playing, and Finished library, with ratings, notes, and JSON export. Save giveaways to your wishlist from Free Games. |
 | Theme Studio | Preview accent colors, icon shapes, backgrounds, and window transparency, with appearance reset that preserves app order and favorites. |
@@ -30,7 +31,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 ### A desktop that feels personal
 
-- All 17 apps are available from the home screen and launcher.
+- All 18 apps are available from the home screen and launcher.
 - Drag, resize, minimize, maximize, or arrange windows side by side on desktop.
 - Use **Settings → Make it yours** for wallpapers and color themes.
 - Reorder your apps with the arrows in Settings, and select stars to pin favorites.
@@ -111,3 +112,24 @@ Publishing the frontend does not provision the Supabase Gallery bucket, access p
 React · TypeScript · Vite · Supabase · react-rnd · Lucide icons · decimal.js
 
 M8M8S runs inside a web browser. Its desktop interface does not provide direct access to your Windows folders or replace your operating system.
+
+## Project folders
+
+- `src/`: active website apps, styles, and shared logic.
+- `public/`: website assets served by Vite.
+- `supabase/`: backend functions and local CLI configuration.
+- `docs/`: documentation and screenshots.
+- `archive/legacy-desktop/`: older nested project, retained for reference.
+- `backups/`: local recovery copies, excluded from Git. Dated `organized-*` folders include a move manifest.
+- `tierlist-diagnostics/`: fixtures used by `install-m8m8s-tierlist.ps1`; keep them together.
+- `dist/` and `node_modules/`: generated build output and installed dependencies.
+
+Use the main `oxygen-desktop` folder for all development commands.
+
+## Community Chat setup
+
+The frontend uses the existing Supabase client and Auth session. Before chat can run, review and execute `supabase/migrations/20261105000100_community_chat.sql` once in the Supabase SQL Editor. Do not run an unreviewed full database push: this checkout also contains other backend work. This migration creates only chat messages, protected throttle state, policies, a trigger, and the Realtime publication entry. It does not change secrets, Gallery, existing tier-list tables, or Auth configuration.
+
+Visitors can read the latest 60 messages per room. Email/password accounts can send; account creation follows your existing Supabase email-confirmation settings. Public posting is limited to one message per account every five seconds on the server. Users can delete their own messages; updates are not allowed. Administrators can remove abusive content in the Supabase Table Editor. The app refreshes every 15 seconds while visible if Realtime is unavailable. Display names are self-chosen, with a short account identifier beside them. Emails are never included in messages. Account sign-in/sign-out is shared with Gallery. Messages are public, not encrypted private conversations.
+
+Before public launch, verify the migration, email sign-up/confirmation, and cross-account permissions in a test project. The frontend can be built without applying the migration; it shows a setup-required state until the backend is ready.

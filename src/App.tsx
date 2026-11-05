@@ -1,3 +1,4 @@
+import CommunityChat from "./CommunityChat";
 import { useDesktopMotion } from "./useDesktopMotion";
 import "./DesktopMotion.css";
 import DailyBriefing from "./DailyBriefing";
@@ -18,7 +19,7 @@ import PublicGallery from "./PublicGallery";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
 import {
-  Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
+  MessageCircle, Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Copy as WindowRestore, Square, Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -45,6 +46,7 @@ type Win = {
 type Photo = { id: string; name: string; data: string };
 
 const apps = [
+  { name: "Community Chat", icon: MessageCircle, color: "blue" },
   { name: "Daily Briefing", icon: Sparkles, color: "purple" },
   { name: "Gaming Passport", icon: Gamepad2, color: "blue" },
   { name: "Theme Studio", icon: Palette, color: "pink" },
@@ -239,7 +241,7 @@ export default function App() {
       x: 45 + (previous.length % 6) * 32,
       y: 35 + (previous.length % 6) * 26,
       width: Math.min(name === "Calculator" ? 360 : ["Daily Briefing", "Gaming Passport", "Theme Studio"].includes(name) ? 960 : 760, Math.max(320, viewport.width - 90)),
-      height: Math.min(name === "Calculator" ? 560 : name === "Daily Briefing" ? 780 : ["Gaming Passport", "Theme Studio"].includes(name) ? 720 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
+      height: Math.min(name === "Calculator" ? 560 : name === "Community Chat" ? 740 : name === "Daily Briefing" ? 780 : ["Gaming Passport", "Theme Studio"].includes(name) ? 720 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
       mode: "normal",
       minimized: false,
       zIndex: z
@@ -399,6 +401,7 @@ export default function App() {
 
   const appContent = (name: string) => {
     switch (name) {
+      case "Community Chat": return <CommunityChat />;
       case "Daily Briefing": return <DailyBriefing time={time} onOpen={name => launch(name)} onNotice={notice => launch("Games Tierlist", notice)} onOffer={id => launch("Free Games", { id: `briefing-offer:${id}:${Date.now()}`, kind: "freegames", title: "Giveaway", body: "", offerId: id, createdAt: Date.now(), read: true })} />;
       case "Gaming Passport": return <GamingPassport />;
       case "Theme Studio": return <ThemeStudio preferences={preferences} onChange={savePreferences} />;
@@ -543,7 +546,7 @@ export default function App() {
 
 {windows
   .filter(w =>
-    ["Music", "Browser", "Calculator", "Gaming Passport"].includes(w.name) ||
+    ["Music", "Browser", "Calculator", "Gaming Passport", "Community Chat"].includes(w.name) ||
     !w.minimized &&
     (!mobileFullScreen ||
       w.id === activeId ||
