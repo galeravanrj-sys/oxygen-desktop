@@ -41,6 +41,12 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 - **Tier lists:** Genshin, Origin, and Honkai: Star Rail rankings come from [Game8](https://game8.co/). Grand Cross uses the [Grand Cross Wiki general tier list](https://7dsgc.fandom.com/wiki/General_Tier_List), retrieved through its wiki API.
 - The hosted tier-list backend uses Supabase functions and a private cache, with a daily refresh scheduled for **3:00 AM Philippine time**. If a source fails, the last successful rankings remain available and are marked stale.
 
+## Update notifications
+
+The bell in the top bar tracks changes to the four tier lists and new full-game giveaways from Steam, Epic Games, GOG, and itch.io. It shows unread updates, supports marking alerts as read, and opens the relevant game or offer when selected.
+
+The first successful check establishes a baseline without generating old alerts. Tier-list alerts compare rankings, so an unchanged daily refresh does not create a notification. Checks run every five minutes while the website is open and visible, with a manual **Check now** option. Notifications and the last-seen baseline are saved in this browser; they are not push alerts and do not arrive while the site is closed. Each category can be paused from the bell’s notification settings.
+
 ## Your data
 
 Most personal data stays in the browser you use: notes, tasks, events, bookmarks, calculator history, small uploaded files, wallpaper preferences, app order, and favorites. Private Gallery photos use the browser's IndexedDB storage. These items do **not** automatically sync between devices, and clearing website data can remove them. Export or download anything you want to keep separately.

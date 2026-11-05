@@ -1,3 +1,5 @@
+import GameNotifications from "./GameNotifications";
+import type { GameNotice } from "./gameNotificationLogic";
 import WeatherApp from "./WeatherApp";
 import TodoApp from "./TodoApp";
 import Personalization from "./Personalization";
@@ -129,6 +131,8 @@ export default function App() {
   const [preferences, setPreferences] = useState(() => loadPreferences(apps.map(app => app.name)));
   const orderedApps = preferences.order.flatMap(name => apps.filter(app => app.name === name));
   const savePreferences = (next: Preferences) => { localStorage.setItem(PREF_KEY, JSON.stringify(next)); setPreferences(next); };
+  const [tierNotice, setTierNotice] = useState<GameNotice | null>(null);
+  const [offerNotice, setOfferNotice] = useState<GameNotice | null>(null);
   const [time, setTime] = useState(new Date());
   const [windows, setWindows] = useState<Win[]>(() =>
     readJSON<Win[]>(SESSION_KEY, []).filter(
@@ -200,11 +204,15 @@ export default function App() {
     setActiveId(id);
   };
 
-  const launch = (name: string) => {
+  const launch = (name: string, notice?: GameNotice) => {
     setStartMenu(false);
     setQuickSettings(false);
     setContext(null);
     const existing = windows.find(w => w.name === name);
+    if (notice?.kind === "tierlist") setTierNotice(notice);
+    else if (!existing && name === "Games Tierlist") setTierNotice(null);
+    if (notice?.kind === "freegames") setOfferNotice(notice);
+    else if (!existing && name === "Free Games") setOfferNotice(null);
     if (existing) {
       focus(existing.id);
       return;
@@ -366,8 +374,8 @@ export default function App() {
     switch (name) {
       case "Weather": return <WeatherApp />;
       case "To-do List": return <TodoApp />;
-      case "Free Games": return <FreeGamesApp />;
-      case "Games Tierlist": return <SevenDSTierApp />;
+      case "Free Games": return <FreeGamesApp key={offerNotice?.id ?? "offers-home"} initialOfferId={offerNotice?.offerId} />;
+      case "Games Tierlist": return <SevenDSTierApp key={tierNotice?.id ?? "tiers-home"} initialGame={tierNotice?.game} />;
       case "Clock & Widgets": return <WidgetsApp time={time} photoCount={photos.length} onOpenGallery={() => launch("Gallery")} onOpenCalendar={() => launch("Calendar")} />;
       case "Files": return <FilesApp />;
       case "Notes": return <NotesApp />;
@@ -440,6 +448,7 @@ export default function App() {
         </div>
         <div className="top-system">
           <span>{formattedTime}</span>
+          <GameNotifications onOpen={notice => launch(notice.kind === "tierlist" ? "Games Tierlist" : "Free Games", notice)} onPanelOpen={() => { setStartMenu(false); setQuickSettings(false); setContext(null); }} />
           <button className="system-button" onClick={() => setQuickSettings(true)}>
             <Wifi size={16} /><Bluetooth size={15} /><BatteryFull size={19} />
           </button>

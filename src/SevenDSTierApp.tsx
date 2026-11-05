@@ -56,12 +56,13 @@ type TierResponse = {
 
 const TIER_API =
   "https://wxszznrkuozyptkekhjp.supabase.co/functions/v1/games-tierlist";
-export default function SevenDSTierApp() {
-  const [selected, setSelected] = useState<Game | null>(null);
+export default function SevenDSTierApp({ initialGame }: { initialGame?: string } = {}) {
+  const initialSelection = GAMES.find(game => game.id === initialGame) ?? null;
+  const [selected, setSelected] = useState<Game | null>(initialSelection);
   const [search, setSearch] = useState("");
   const [revision, setRevision] = useState(0);
-  const [history, setHistory] = useState<Game[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [history, setHistory] = useState<Game[]>(initialSelection ? [initialSelection] : []);
+  const [historyIndex, setHistoryIndex] = useState(initialSelection ? 0 : -1);
 
   const [tierData, setTierData] = useState<TierResponse | null>(null);
   const [genshinData, setGenshinData] = useState<GenshinData | null>(null);
