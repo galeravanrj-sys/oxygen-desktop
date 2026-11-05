@@ -1,7 +1,7 @@
 export const TIER_ENDPOINT = "https://wxszznrkuozyptkekhjp.supabase.co/functions/v1/games-tierlist";
 export const GIVEAWAY_FEED = "https://www.gamerpower.com/api/filter?platform=steam%2Bepic-games-store%2Bgog%2Bitchio&type=game&sort-by=date";
 export const NOTIFICATION_KEY = "oxygen-game-notifications-v1";
-export const GAME_NAMES = { genshin: "Genshin Impact", origin: "Seven Deadly Sins: Origin", hsr: "Honkai: Star Rail", grandcross: "7DS Grand Cross" };
+export const GAME_NAMES = { zzz: "Zenless Zone Zero", genshin: "Genshin Impact", origin: "Seven Deadly Sins: Origin", hsr: "Honkai: Star Rail", grandcross: "7DS Grand Cross" };
 export type GameId = keyof typeof GAME_NAMES;
 export type GameNotice = { id: string; kind: "tierlist" | "freegames"; title: string; body: string; createdAt: number; read: boolean; game?: GameId; offerId?: number };
 export type NoticeStore = { version: 1; items: GameNotice[]; tiers: Partial<Record<GameId, string>>; seenOffers: number[] | null; tierAlerts: boolean; freeGameAlerts: boolean };

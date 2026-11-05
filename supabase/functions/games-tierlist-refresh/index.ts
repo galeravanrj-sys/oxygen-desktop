@@ -1,5 +1,6 @@
 import * as cheerio from 'npm:cheerio@1.0.0';
 const SOURCES: Record<string,string> = {
+ zzz:'https://game8.co/games/Zenless-Zone-Zero/archives/435685',
  genshin:'https://game8.co/games/Genshin-Impact/archives/297465',
  origin:'https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624',
  hsr:'https://game8.co/games/Honkai-Star-Rail/archives/409604',
@@ -61,6 +62,40 @@ function parse(html:string,game:string) {
      grids[key]=rows;
    });
    tiers=grids.overall;
+ } else if(game==='zzz') {
+   const categories:Record<string,string>={overall:'Agents',dps:'DPS Agents',stun:'Stun Agents',support:'Supporter Agents'};
+   const ranks=['T0','T1+','T1','T2','T3','T4'];
+   for(const [category,heading] of Object.entries(categories)) {
+     const candidates=tables.filter(table=>{
+       const headers=$(table).find('tr').first().children('th').toArray().map(cell=>clean($(cell).text()));
+       return headers.length===2&&headers[0]==='Tier'&&headers[1]===heading;
+     });
+     if(candidates.length!==1)throw Error('ZZZ '+category+' tier table missing or ambiguous');
+     const rows:Tier[]=[];const seen=new Set<string>();
+     $(candidates[0]).find('tr').slice(1).each((_:number,row:any)=>{
+       const head=$(row).children('th').first();
+       const label=clean(head.find('img').first().attr('alt')||head.text());
+       const match=label.match(/^Tier\s+(0|1\+|1|2|3|4)$/i);
+       if(!match)throw Error('Unknown ZZZ rank: '+label);
+       const tier='T'+match[1];
+       if(rows.some(item=>item.tier===tier))throw Error('Duplicate ZZZ tier');
+       const characters:Character[]=[];
+       $(row).children('td').find('a img').each((_:number,img:any)=>{
+         const image=String($(img).attr('data-src')||$(img).attr('src')||'');
+         const href=String($(img).closest('a').attr('href')||'');
+         const name=clean($(img).attr('alt')||'');
+         if(!/^https:\/\/img\.game8\.co\//.test(image)||!/^https:\/\/game8\.co\/games\/Zenless-Zone-Zero\/archives\/\d+$/.test(href)||!name||name.length>100)throw Error('Invalid ZZZ agent');
+         if(seen.has(name))throw Error('Duplicate ZZZ agent: '+name);
+         seen.add(name);characters.push({name,image});
+       });
+       if(!characters.length)throw Error('Empty ZZZ tier');
+       rows.push({tier,characters});
+     });
+     if(rows.length<3||rows.some((row,i)=>row.tier!==ranks[i]))throw Error('Incomplete or unordered ZZZ '+category+' tiers');
+     grids[category]=rows;
+   }
+   tiers=grids.overall;
+   if(tiers.length!==ranks.length)throw Error('Incomplete ZZZ overall rankings');
  } else if(game==='grandcross') {
    const ranks=['SSS','SS','S','A','B','C','D'];
    const rankTables=tables.filter(t=>$(t).find('tr').toArray().some(r=>clean($(r).children('th,td').first().text())==='SSS'));
@@ -84,8 +119,8 @@ function parse(html:string,game:string) {
    if(tiers.map(t=>t.tier).join(',')!==ranks.join(',')||tiers.some(t=>!t.characters.length))throw Error('Incomplete Grand Cross tiers');
  }
  const count=tiers.reduce((n,t)=>n+t.characters.length,0);
- const minimum:Record<string,number>={genshin:100,origin:30,hsr:30,grandcross:300};
- if(count<minimum[game]||tiers.length<4||tiers.some(t=>!(game==='grandcross'&&t.tier==='SSS')&&!allowed.has(t.tier)))throw Error(`Invalid ${game}: ${count} placements, ${tiers.length} tiers`);
+ const minimum:Record<string,number>={genshin:100,origin:30,hsr:30,grandcross:300,zzz:30};
+ if(count<minimum[game]||tiers.length<4||tiers.some(t=>!(game==='grandcross'&&t.tier==='SSS')&&!(game==='zzz'&&/^T(?:0|1\+|1|2|3|4)$/.test(t.tier))&&!allowed.has(t.tier)))throw Error(`Invalid ${game}: ${count} placements, ${tiers.length} tiers`);
  if(tiers.some(t=>t.characters.some(c=>!c.name||c.name.length>150)))throw Error('Invalid character name');
  return {game,title: $('title').first().text().trim() || (game==='grandcross' ? 'Grand Cross General Tier List' : ''),source:SOURCES[game],status:'available',tiers,grids,character_count:count};
 }

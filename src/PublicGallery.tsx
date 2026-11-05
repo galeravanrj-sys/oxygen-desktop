@@ -1,10 +1,10 @@
+import { usePublicGallerySync } from "./usePublicGallerySync";
 import { siteConfirm } from "./websiteDialogStore";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Camera, Cloud, Download, ImagePlus, LockKeyhole, RefreshCw, Trash2, UploadCloud, X } from "lucide-react";
 import { supabase, GALLERY_BUCKET, uploadPublicPhoto } from "./supabase";
 
 type LocalPhoto = { id: string; name: string; data: string };
-type CloudPhoto = { name: string; url: string };
 type GalleryPhoto = { id: string; name: string; url: string; source: "local" | "public" };
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function PublicGallery({ localPhotos, loadingLocal, localError, onSaveLocal, onDeleteLocal }: Props) {
-  const [cloudPhotos, setCloudPhotos] = useState<CloudPhoto[]>([]);
+  const { photos: cloudPhotos, syncError, syncStatus, refresh, announce } = usePublicGallerySync();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -36,35 +36,14 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   }, [viewerOpen]);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const refresh = useCallback(async () => {
-    const { data, error: listError } = await supabase.storage.from(GALLERY_BUCKET)
-      .list("photos", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
-    if (listError) {
-      setError(`Public photos unavailable: ${listError.message}`);
-      return;
-    }
-    setError("");
-    setCloudPhotos((data ?? [])
-      .filter(item => /\.(jpe?g|png|webp)$/i.test(item.name))
-      .map(item => ({
-        name: item.name,
-        url: supabase.storage.from(GALLERY_BUCKET).getPublicUrl(`photos/${item.name}`).data.publicUrl,
-      })));
-  }, []);
-
   useEffect(() => {
-    const initial = window.setTimeout(() => { void refresh(); }, 0);
-    const interval = window.setInterval(() => { void refresh(); }, 10000);
-    void supabase.auth.getUser().then(({ data }) => setSignedIn(Boolean(data.user)));
+    let alive = true;
+    void supabase.auth.getUser().then(({ data }) => { if (alive) setSignedIn(Boolean(data.user)); }).catch(() => {});
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(Boolean(session?.user));
+      if (alive) setSignedIn(Boolean(session?.user));
     });
-    return () => {
-      window.clearTimeout(initial);
-      window.clearInterval(interval);
-      subscription.subscription.unsubscribe();
-    };
-  }, [refresh]);
+    return () => { alive = false; subscription.subscription.unsubscribe(); };
+  }, []);
 
   const allPhotos = useMemo<GalleryPhoto[]>(() => [
     ...localPhotos.map(photo => ({ id: photo.id, name: photo.name, url: photo.data, source: "local" as const })),
@@ -113,6 +92,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
     setMessage("");
     try {
       await uploadPublicPhoto(file);
+      announce();
       setMessage("Photo published to the community Gallery.");
       await refresh();
     } catch (cause) {
@@ -141,7 +121,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
     setBusy(true);
     const { error: deleteError } = await supabase.storage.from(GALLERY_BUCKET).remove([`photos/${photo.id}`]);
     if (deleteError) setError(`Delete denied: ${deleteError.message}`);
-    else { setViewer(null); setMessage("Public photo deleted."); await refresh(); }
+    else { announce(); setViewer(null); setMessage("Public photo deleted."); await refresh(); }
     setBusy(false);
   }
 
@@ -170,8 +150,9 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
       <div className="unified-gallery-subbar">
         <span>{allPhotos.length} {allPhotos.length === 1 ? "photo" : "photos"}</span>
         <span><Camera size={14}/> Camera photos save here automatically</span>
-        <span><Cloud size={14}/> Public photos sync with Supabase</span>
+        <span role="status" className="unified-sync-status"><Cloud size={14}/>{syncError ? "Auto-sync reconnecting" : syncStatus}</span>
       </div>
+      {syncError && <p className="unified-error" role="alert">{syncError}</p>}
       {localError && <p className="unified-error" role="alert">{localError}</p>}
       {error && <p className="unified-error" role="alert">{error}</p>}
       {message && <p className="unified-success" role="status">{message}</p>}
@@ -205,7 +186,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
           <button onClick={() => setViewer(null)} aria-label="Close"><X size={20}/></button></div>
         <div className="unified-viewer-stage">{imageError === viewer.url ? <p role="status">This image could not be loaded. You can still browse other photos.</p> : <img src={viewer.url} alt={viewer.name} onError={() => setImageError(viewer.url)}/>}</div>
         <div className="unified-viewer-actions">
-          <button aria-label="Previous photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(-1)}><ChevronLeft size={18}/></button><span>{viewerIndex + 1} / {allPhotos.length}</span><button aria-label="Next photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(1)}><ChevronRight size={18}/></button>
+          <button aria-label="Previous photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(-1)}><ChevronLeft size={18}/></button><span>{viewerIndex < 0 ? "No longer in Gallery" : `${viewerIndex + 1} / ${allPhotos.length}`}</span><button aria-label="Next photo" disabled={allPhotos.length < 2} onClick={() => changePhoto(1)}><ChevronRight size={18}/></button>
           <a href={viewer.url} download={viewer.name}><Download size={16}/> Download</a>
           {viewer.source === "local" && <button disabled={busy} onClick={() => {
             const local = localPhotos.find(item => item.id === viewer.id);

@@ -217,3 +217,10 @@
   .gtl-genshin-character { width: 58px; }
   .gtl-genshin-character img { width: 48px; height: 48px; }
 }
+.gtl-zzz { background: linear-gradient(135deg,#171a26,#bfca36); }
+.gtl-zzz-controls { margin-bottom: 18px; }
+.gtl-zzz-search { display: flex; gap: 8px; align-items: center; border: 1px solid #626980; border-radius: 10px; padding: 9px 12px; margin-top: 12px; color: #b7bed5; }
+.gtl-zzz-search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: inherit; font: inherit; }
+.gtl-zzz-controls .gtl-genshin-source { margin-top: 10px; }
+.gtl-native-tiers .gtl-genshin-source a { color: #bfb5ff; }
+.gtl-zzz-tiers .gtl-tier-label { width: 64px; place-items: start center; padding-top: 20px; }

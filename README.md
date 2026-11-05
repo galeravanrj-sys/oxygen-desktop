@@ -18,7 +18,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 | To-do List | Create tasks, set due dates, check off completed work, and filter your list. |
 | Free Games | Discover full-game giveaways for Steam, Epic Games, GOG, and itch.io, with store filters and links to offer details. |
 | Gallery | Keep private photos on your device, browse community photos, and move through images with buttons or arrow keys. |
-| Games Tierlist | Browse cached rankings for Genshin Impact, Seven Deadly Sins: Origin, Honkai: Star Rail, and Seven Deadly Sins: Grand Cross. |
+| Games Tierlist | Browse cached rankings for Zenless Zone Zero, Genshin Impact, Seven Deadly Sins: Origin, Honkai: Star Rail, and Seven Deadly Sins: Grand Cross. |
 | Clock & Widgets | See the time, date, saved-photo count, and shortcuts to Gallery and Calendar. |
 | Files | Upload small files, create folders, search, rename, copy, move, and download items. |
 | Browser | Open websites in tabs, use back/forward and reload, and save bookmarks. |
@@ -47,7 +47,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 ## Update notifications
 
-The bell in the top bar tracks changes to the four tier lists and new full-game giveaways from Steam, Epic Games, GOG, and itch.io. It shows unread updates, supports marking alerts as read, and opens the relevant game or offer when selected.
+The bell in the top bar tracks changes to the five tier lists and new full-game giveaways from Steam, Epic Games, GOG, and itch.io. It shows unread updates, supports marking alerts as read, and opens the relevant game or offer when selected.
 
 The first successful check establishes a baseline without generating old alerts. Tier-list alerts compare rankings, so an unchanged daily refresh does not create a notification. Checks run every five minutes while the website is open and visible, with a manual **Check now** option. Notifications and the last-seen baseline are saved in this browser; they are not push alerts and do not arrive while the site is closed. Each category can be paused from the bell’s notification settings.
 
@@ -133,3 +133,11 @@ The frontend uses the existing Supabase client and Auth session. Before chat can
 Visitors can read the latest 60 messages per room. Email/password accounts can send; account creation follows your existing Supabase email-confirmation settings. Public posting is limited to one message per account every five seconds on the server. Users can delete their own messages; updates are not allowed. Administrators can remove abusive content in the Supabase Table Editor. The app refreshes every 15 seconds while visible if Realtime is unavailable. Display names are self-chosen, with a short account identifier beside them. Emails are never included in messages. Account sign-in/sign-out is shared with Gallery. Messages are public, not encrypted private conversations.
 
 Before public launch, verify the migration, email sign-up/confirmation, and cross-account permissions in a test project. The frontend can be built without applying the migration; it shows a setup-required state until the backend is ready.
+
+### Zenless Zone Zero rankings
+
+Game8’s [agent tier list](https://game8.co/games/Zenless-Zone-Zero/archives/435685) supplies Overall, DPS, Stun, and Support rankings. The app preserves Game8’s T0/T1+/T1/T2/T3/T4 labels and supports agent search and ranking-change notifications. The daily refresh validates all four category tables before replacing the last successful cache. Deploy the updated `games-tierlist` and `games-tierlist-refresh` functions and apply the ZZZ cache migration before publishing this frontend change.
+
+### Gallery auto-sync
+
+Open Gallery windows receive a public Realtime change signal after uploads or deletions made through the website, then fetch the latest authorized Storage listing. Signals contain no photo contents, filenames, or account information. Changes made outside the website, missed signals, or unavailable Realtime are picked up by the 10-second fallback while the tab is visible; returning to the tab or reconnecting also refreshes. The list keeps the latest 100 public images and preserves its current photos on sync failures. Camera captures and Add photos remain private on the device until explicitly published. No new database tables, Storage policies, or secrets are required.

@@ -27,6 +27,7 @@ import "./SevenDSTierApp.css";
 
 type Game = { id: string; title: string; subtitle: string; url: string; color: string; initials: string; image: string };
 const GAMES: Game[] = [
+  { id: "zzz", title: "Zenless Zone Zero", subtitle: "Agent Tier List · Game8", url: "https://game8.co/games/Zenless-Zone-Zero/archives/435685", color: "zzz", image: `${import.meta.env.BASE_URL}games-tierlist/zzz.png`, initials: "ZZZ" },
   { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
   { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List · Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
   { id: "hsr", title: "Honkai: Star Rail", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Honkai-Star-Rail/archives/409604", color: "hsr", image: `${import.meta.env.BASE_URL}games-tierlist/hsr.webp`, initials: "HSR" },
@@ -49,6 +50,7 @@ type TierResponse = {
   source: string;
   status: string;
   tiers: TierGroup[];
+  grids?: Record<string, TierGroup[]>;
   message?: string;
   updated_at?: string;
   stale?: boolean;
@@ -66,6 +68,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
 
   const [tierData, setTierData] = useState<TierResponse | null>(null);
   const [genshinData, setGenshinData] = useState<GenshinData | null>(null);
+  const [zzzTab, setZzzTab] = useState("overall");
   const [genshinTab, setGenshinTab] = useState("main");
   const [characterSearch, setCharacterSearch] = useState("");
   const [tierError, setTierError] = useState("");
@@ -120,6 +123,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
     return () => controller.abort();
   }, [selected, revision]);
   const open = (game: Game) => {
+    setCharacterSearch(""); setZzzTab("overall");
     setSelected(game);
     setHistory(prev => [...prev.slice(0, historyIndex + 1), game]);
     setHistoryIndex(i => i + 1);
@@ -262,8 +266,9 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
             )}
 
             {!tierLoading && !tierError && selected.id !== "genshin" && tierData?.status === "available" && (
-              <div className="gtl-native-tiers">
-                {tierData.tiers.map((group) => (
+              <div className={`gtl-native-tiers ${selected.id === "zzz" ? "gtl-zzz-tiers" : ""}`}>
+                {selected.id === "zzz" && <div className="gtl-zzz-controls"><div className="gtl-genshin-tabs" role="group" aria-label="Zenless ranking category">{[{id:"overall",label:"Overall"},{id:"dps",label:"DPS"},{id:"stun",label:"Stun"},{id:"support",label:"Support"}].map(tab => <button key={tab.id} type="button" className={zzzTab === tab.id ? "active" : ""} aria-pressed={zzzTab === tab.id} onClick={() => setZzzTab(tab.id)}>{tab.label}</button>)}</div><label className="gtl-zzz-search"><Search size={15}/><input aria-label="Search Zenless agents" placeholder="Search agents…" value={characterSearch} onChange={event => setCharacterSearch(event.target.value)}/></label><p className="gtl-genshin-source">Game8’s original ranks: T0, T1+, T1, T2, T3, T4. Lower tiers may be absent in individual role lists.</p></div>}
+                {(selected.id === "zzz" ? tierData.grids?.[zzzTab] ?? tierData.tiers : tierData.tiers).map(group => ({ ...group, characters: selected.id === "zzz" ? group.characters.filter(character => character.name.toLowerCase().includes(characterSearch.trim().toLowerCase())) : group.characters })).filter(group => group.characters.length > 0).map((group) => (
                   <div className="gtl-tier-row" key={group.tier}>
                     <div className="gtl-tier-label">{group.tier}</div>
                     <div className="gtl-tier-characters">
@@ -278,6 +283,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
                     </div>
                   </div>
                 ))}
+                {selected.id === "zzz" && <p className="gtl-genshin-source">{(tierData.grids?.[zzzTab] ?? tierData.tiers).some(group => group.characters.some(character => character.name.toLowerCase().includes(characterSearch.trim().toLowerCase()))) ? "Rankings from Game8 · Refreshed by the daily cache." : "No agents match your search."} <a href={selected.url} target="_blank" rel="noopener noreferrer">View original guide</a></p>}
               </div>
             )}
           </div>
