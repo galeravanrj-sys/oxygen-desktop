@@ -1,3 +1,5 @@
+import { useDesktopMotion } from "./useDesktopMotion";
+import "./DesktopMotion.css";
 import DailyBriefing from "./DailyBriefing";
 import GamingPassport from "./GamingPassport";
 import ThemeStudio from "./ThemeStudio";
@@ -135,6 +137,8 @@ function fileToData(file: File): Promise<string> {
 }
 
 export default function App() {
+  const motion = useDesktopMotion();
+  const [interacting, setInteracting] = useState<string | null>(null);
   const [preferences, setPreferences] = useState(() => loadPreferences(apps.map(app => app.name)));
   const orderedApps = preferences.order.flatMap(name => apps.filter(app => app.name === name));
   const savePreferences = (next: Preferences) => { localStorage.setItem(PREF_KEY, JSON.stringify(next)); setPreferences(next); };
@@ -153,6 +157,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(() =>
     readJSON(SETTINGS_KEY, { darkMode: false }).darkMode
   );
+  const [mobileFloating, setMobileFloating] = useState(() => readJSON(SETTINGS_KEY, { mobileFloating: false }).mobileFloating === true);
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(true);
   const [brightness, setBrightness] = useState(80);
@@ -166,6 +171,7 @@ export default function App() {
     height: window.innerHeight
   });
   const isMobile = viewport.width <= 650;
+  const mobileFullScreen = isMobile && !mobileFloating;
   const zRef = useRef(
     Math.max(10, ...readJSON<Win[]>(SESSION_KEY, []).map(w => w.zIndex))
   );
@@ -189,8 +195,8 @@ export default function App() {
   }, [windows]);
 
   useEffect(() => {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ darkMode }));
-  }, [darkMode]);
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ darkMode, mobileFloating }));
+  }, [darkMode, mobileFloating]);
 
   useEffect(() => {
     galleryAll()
@@ -204,6 +210,8 @@ export default function App() {
     [...list].filter(w => !w.minimized).sort((a, b) => b.zIndex - a.zIndex)[0];
 
   const focus = (id: string) => {
+    motion.cancel(id);
+    if (windows.find(w => w.id === id)?.minimized) requestAnimationFrame(() => motion.reveal(id));
     const z = ++zRef.current;
     setWindows(previous => previous.map(w =>
       w.id === id ? { ...w, minimized: false, zIndex: z } : w
@@ -239,18 +247,22 @@ export default function App() {
     setActiveId(id);
   };
 
-  const close = (id: string) => {
-    const remaining = windows.filter(w => w.id !== id);
-    setWindows(remaining);
-    if (activeId === id) setActiveId(topWindow(remaining)?.id ?? null);
+  const close = async (id: string) => {
+    if (!await motion.dismiss(id, "close")) return;
+    setWindows(previous => {
+      const remaining = previous.filter(w => w.id !== id);
+      setActiveId(active => active === id ? topWindow(remaining)?.id ?? null : active);
+      return remaining;
+    });
   };
 
-  const minimize = (id: string) => {
-    const updated = windows.map(w =>
-      w.id === id ? { ...w, minimized: true } : w
-    );
-    setWindows(updated);
-    if (activeId === id) setActiveId(topWindow(updated)?.id ?? null);
+  const minimize = async (id: string) => {
+    if (!await motion.dismiss(id, "minimize")) return;
+    setWindows(previous => {
+      const updated = previous.map(w => w.id === id ? { ...w, minimized: true } : w);
+      setActiveId(active => active === id ? topWindow(updated)?.id ?? null : active);
+      return updated;
+    });
   };
 
   const mode = (id: string, value: Mode) => {
@@ -285,13 +297,21 @@ export default function App() {
 
   const geometry = (w: Win) => {
     
-    if (isMobile) {
+    if (mobileFullScreen) {
       return {
         x: 0,
         y: 0,
         width: viewport.width,
         height: Math.max(200, viewport.height - 115),
       };
+    }
+
+    if (isMobile) {
+      const availableHeight = Math.max(200, viewport.height - 115);
+      if (w.mode !== "normal") return { x: 0, y: 0, width: viewport.width, height: availableHeight };
+      const width = Math.min(Math.max(280, w.width), viewport.width - 16);
+      const height = Math.min(Math.max(240, w.height), availableHeight - 16);
+      return { x: Math.max(8, Math.min(w.x, viewport.width - width - 8)), y: Math.max(8, Math.min(w.y, availableHeight - height - 8)), width, height };
     }
 
     const width = Math.max(320, viewport.width - 30);
@@ -445,7 +465,7 @@ export default function App() {
   };
 
   return (
-    <main className={`os-shell ${darkMode ? "dark-mode" : ""}`} data-icon-style={preferences.iconStyle} style={{ "--m8-accent": preferences.accent, "--m8-accent-ink": accentInk(preferences.accent), "--m8-window-opacity": preferences.windowOpacity } as CSSProperties}>
+    <main className={`os-shell ${darkMode ? "dark-mode" : ""}`} data-mobile-floating={mobileFloating} data-icon-style={preferences.iconStyle} style={{ "--m8-accent": preferences.accent, "--m8-accent-ink": accentInk(preferences.accent), "--m8-window-opacity": preferences.windowOpacity } as CSSProperties}>
       <div className={`wallpaper ${preferences.wallpaper ? "wallpaper-custom" : ""}`} style={preferences.wallpaper ? { backgroundImage: `url("${preferences.wallpaper}")` } : preferences.theme !== "default" ? { background: themes[preferences.theme] } : undefined}>
         <div className="wallpaper-orb orb-one" />
         <div className="wallpaper-orb orb-two" />
@@ -525,7 +545,7 @@ export default function App() {
   .filter(w =>
     ["Music", "Browser", "Calculator", "Gaming Passport"].includes(w.name) ||
     !w.minimized &&
-    (!isMobile ||
+    (!mobileFullScreen ||
       w.id === activeId ||
       (!activeId &&
         w.id === topWindow(windows)?.id))
@@ -539,20 +559,27 @@ export default function App() {
             <Rnd key={w.id} bounds="parent"
               position={{ x: g.x, y: g.y }}
               size={{ width: g.width, height: g.height }}
-              minWidth={isMobile ? 0 : 320}
-              minHeight={isMobile ? 0 : w.name === "Calculator" ? Math.min(500, Math.max(240, viewport.height - 135)) : 260}
+              minWidth={mobileFullScreen ? 0 : isMobile ? Math.min(280, viewport.width - 16) : 320}
+              minHeight={isMobile ? (mobileFloating ? 240 : 0) : w.name === "Calculator" ? Math.min(500, Math.max(240, viewport.height - 135)) : 260}
               dragHandleClassName="app-window-titlebar"
               cancel=".window-controls, .window-controls *"
-              disableDragging={isMobile || fixed}
-              enableResizing={!isMobile && !fixed}
-              className={`window-rnd ${isMobile ? "mobile-window-rnd" : ""} ${activeId === w.id ? "window-active" : ""}`}
-              style={{ zIndex: w.zIndex, display: visible ? undefined : "none" }}
+              disableDragging={mobileFullScreen || fixed}
+              enableResizing={mobileFullScreen || fixed ? false : isMobile ? { bottomRight: true } : true}
+              resizeHandleComponent={isMobile && mobileFloating ? { bottomRight: <span className="mobile-resize-grip" aria-label="Drag to resize window">◢</span> } : undefined}
+              resizeHandleStyles={isMobile && mobileFloating ? { bottomRight: { width: 32, height: 32, right: 0, bottom: 0, zIndex: 5 } } : undefined}
+              className={`window-rnd ${interacting === w.id ? "window-interacting" : ""} ${isMobile ? `mobile-window-rnd ${mobileFloating ? "mobile-floating-window" : ""}` : ""} ${activeId === w.id ? "window-active" : ""}`}
+              style={{ "--mobile-window-z": 901 + windows.filter(item => item.zIndex < w.zIndex).length, zIndex: isMobile && mobileFloating ? 901 + windows.filter(item => item.zIndex < w.zIndex).length : w.zIndex, display: visible ? undefined : "none" } as CSSProperties}
+              onTouchStart={() => { if (activeId !== w.id) focus(w.id); }}
               onMouseDown={() => {
                 if (activeId !== w.id) focus(w.id);
               }}
+              onDragStart={() => setInteracting(w.id)}
+              onResizeStart={() => setInteracting(w.id)}
               onDragStop={(_, data) => {
+                setInteracting(null);
                 const edge = 30;
                 const snapped =
+                  isMobile ? "normal" :
                   data.x <= edge ? "left" :
                   data.x + g.width >= viewport.width - edge ? "right" :
                   data.y <= 0 ? "maximized" : "normal";
@@ -560,19 +587,21 @@ export default function App() {
                   x: data.x, y: data.y, mode: snapped
                 });
               }}
-              onResizeStop={(_, __, ref, ___, position) =>
+              onResizeStop={(_, __, ref, ___, position) => {
+                setInteracting(null);
                 updateWindow(w.id, {
                   x: position.x, y: position.y,
                   width: ref.offsetWidth, height: ref.offsetHeight
-                })
-              }>
-              <section className={`app-window ${w.name === "Calculator" ? "calculator-window" : ""}`}>
-                <div className="app-window-titlebar">
+                });
+              }}>
+              <section ref={element => motion.register(w.id, element)} className={`app-window ${w.name === "Calculator" ? "calculator-window" : ""}`}>
+                <div className="app-window-titlebar" onDoubleClick={event => { if (!(event.target as HTMLElement).closest("button")) mode(w.id, "maximized"); }}>
                   <div className="window-app-title">
                     {w.name === "Calculator" ? <Calculator size={13} /> : <span className="window-dot" />}
                     <strong>{w.name}</strong>
                   </div>
                   <div className="window-controls">
+                    {isMobile && <button className="mobile-layout-toggle" title={mobileFloating ? "Use full-screen apps" : "Use floating windows"} onClick={() => setMobileFloating(value => !value)}><WindowRestore size={15}/></button>}
                     <button title="Snap left" onClick={() => mode(w.id, "left")}>
                       <PanelLeft size={15} />
                     </button>
@@ -585,7 +614,7 @@ export default function App() {
                     <button title="Minimize" onClick={() => minimize(w.id)}>
                       <Minus size={16} />
                     </button>
-                    <button title="Maximize or restore"
+                    <button className="window-maximize" title="Maximize or restore"
                       onClick={() => mode(w.id, "maximized")}>
                       {w.mode === "maximized"
                         ? (w.name === "Calculator" ? <WindowRestore size={12} /> : <Minimize2 size={15} />) : (w.name === "Calculator" ? <Square size={12} /> : <Maximize2 size={15} />)}
@@ -603,7 +632,7 @@ export default function App() {
       </section>
 
       <footer className="taskbar">
-        <button className={`taskbar-start ${startMenu ? "selected" : ""}`}
+        <button className={`taskbar-start ${startMenu ? "selected" : ""}`} aria-label="Open app launcher" aria-expanded={startMenu}
           onClick={() => {
             setStartMenu(!startMenu);
             setQuickSettings(false);

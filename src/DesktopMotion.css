@@ -1,0 +1,52 @@
+/* One motion language for the desktop. Geometry never eases during direct manipulation. */
+.os-shell { --os-ease: cubic-bezier(.16,1,.3,1); }
+.os-shell .window-rnd { transition: transform 260ms var(--os-ease), width 260ms var(--os-ease), height 260ms var(--os-ease); }
+.os-shell .window-rnd.window-interacting { transition: none; }
+.os-shell .app-window { transform-origin: 50% 90%; transition: box-shadow 220ms ease, border-color 220ms ease; }
+.os-shell .window-rnd:not(.window-active) .app-window { box-shadow: 0 8px 30px #17234320; }
+.os-shell .window-active .app-window { box-shadow: 0 28px 70px #17234340, 0 4px 14px #17234318; }
+.os-shell .desktop-shortcut, .os-shell .oxygen-mobile-app, .os-shell .start-app-list button { transition: background 150ms ease, transform 180ms var(--os-ease); }
+.os-shell .shortcut-icon, .os-shell .start-app-icon { transition: transform 220ms var(--os-ease), box-shadow 220ms ease; }
+@media (hover: hover) {
+  .os-shell .desktop-shortcut:hover .shortcut-icon, .os-shell .oxygen-mobile-app:hover .shortcut-icon { transform: translateY(-5px) scale(1.06); box-shadow: 0 14px 26px #26335b30; }
+  .os-shell .taskbar-app:hover, .os-shell .taskbar-start:hover { transform: translateY(-4px); }
+  .os-shell .start-app-list button:hover { transform: translateX(3px); }
+}
+.os-shell .desktop-shortcut:active .shortcut-icon, .os-shell .oxygen-mobile-app:active .shortcut-icon { transform: scale(.91); }
+.os-shell .taskbar-app, .os-shell .taskbar-start { transition: transform 180ms var(--os-ease), background 160ms ease, opacity 160ms ease; }
+.os-shell .taskbar-app:active, .os-shell .taskbar-start:active { transform: scale(.9); }
+.os-shell .taskbar-app::after { transition: width 180ms var(--os-ease), background 180ms ease; }
+.os-shell .window-controls button { transition: background 120ms ease, color 120ms ease; }
+.os-shell .window-controls button:last-child:hover { background: #e5484d; color: white; }
+.os-shell .start-menu { transform-origin: 50% 100%; animation: os-panel-in 240ms var(--os-ease) both; }
+.os-shell .quick-panel { animation: os-panel-in 260ms var(--os-ease) both; }
+.os-shell .ox-context, .os-shell .gn-panel { animation: os-panel-in 180ms var(--os-ease) both; }
+.os-shell .desktop-welcome { animation: os-welcome-in 650ms var(--os-ease) both; }
+.os-shell button:focus-visible, .os-shell input:focus-visible, .os-shell select:focus-visible, .os-shell textarea:focus-visible { outline: 2px solid var(--m8-accent); outline-offset: 3px; }
+.os-shell .app-window-titlebar { user-select: none; }
+@keyframes os-panel-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes os-welcome-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .os-shell *, .os-shell *::before, .os-shell *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: 0s !important; scroll-behavior: auto !important; }
+  .os-shell .desktop-shortcut:hover .shortcut-icon, .os-shell .oxygen-mobile-app:hover .shortcut-icon, .os-shell .taskbar-app:hover, .os-shell .taskbar-start:hover, .os-shell .start-app-list button:hover { transform: none; }
+}
+
+@media (max-width: 650px) {
+ .os-shell .mobile-window-rnd .window-controls button { display: none; }
+ .os-shell .mobile-window-rnd .window-controls button[title="Minimize"],
+ .os-shell .mobile-window-rnd .window-controls button[title="Close"],
+ .os-shell .mobile-window-rnd .window-controls .mobile-layout-toggle { display: grid; place-items: center; }
+ .os-shell .mobile-floating-window .window-controls .window-maximize { display: grid; place-items: center; }
+ .os-shell .mobile-floating-window { z-index: auto; }
+ .os-shell[data-mobile-floating="true"] .desktop-area { overflow: hidden; }
+ .os-shell[data-mobile-floating="true"] .oxygen-mobile-apps { max-height: 100%; overflow-y: auto; }
+ .os-shell .mobile-floating-window .app-window { border-radius: 16px; border: 1px solid #ffffff60; }
+ .os-shell .mobile-floating-window .app-window-titlebar { touch-action: none; padding: 0 6px 0 10px; }
+ .os-shell .mobile-floating-window .window-app-title { min-width: 0; overflow: hidden; }
+ .os-shell .mobile-floating-window .window-app-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ .os-shell .mobile-floating-window .window-controls { flex-shrink: 0; }
+ .os-shell .mobile-floating-window .window-controls button { width: 30px; }
+ .mobile-resize-grip { width: 32px; height: 32px; display: grid; place-items: center; color: var(--m8-accent); background: #ffffffd9; border-radius: 10px 0 14px 0; font-size: 19px; touch-action: none; user-select: none; }
+}
+
+.os-shell .mobile-floating-window { z-index: var(--mobile-window-z, 901) !important; }
