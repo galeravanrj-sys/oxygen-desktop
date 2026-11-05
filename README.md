@@ -1,75 +1,102 @@
-# React + TypeScript + Vite
+# M8M8S · Your Personal Space
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A desktop-style website with everyday apps, game discoveries, and a home screen you can make your own. Open apps in movable windows on a desktop, or use the responsive layout on a phone or tablet.
 
-Currently, two official plugins are available:
+**[Open M8M8S](https://galeravanrj-sys.github.io/oxygen-desktop/)** · [Deployment status](https://github.com/galeravanrj-sys/oxygen-desktop/actions)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![M8M8S home screen with its app shortcuts and Windows-style calculator](docs/screenshots/desktop.png)
 
-## React Compiler
+## Inside M8M8S
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| App | What you can do |
+| --- | --- |
+| Weather | Search for a city, check current conditions, and view a seven-day forecast. |
+| To-do List | Create tasks, set due dates, check off completed work, and filter your list. |
+| Free Games | Discover full-game giveaways for Steam, Epic Games, GOG, and itch.io, with store filters and links to offer details. |
+| Gallery | Keep private photos on your device, browse community photos, and move through images with buttons or arrow keys. |
+| Games Tierlist | Browse cached rankings for Genshin Impact, Seven Deadly Sins: Origin, Honkai: Star Rail, and Seven Deadly Sins: Grand Cross. |
+| Clock & Widgets | See the time, date, saved-photo count, and shortcuts to Gallery and Calendar. |
+| Files | Upload small files, create folders, search, rename, copy, move, and download items. |
+| Browser | Open websites in tabs, use back/forward and reload, and save bookmarks. |
+| Settings | Choose a color theme, upload a wallpaper, rearrange home-screen apps, and pin favorites to the taskbar. |
+| Calendar | Browse a month view and save events against individual dates. |
+| Calculator | Use a dark Windows-style Standard calculator with memory, saved history, percentages, square roots, keyboard input, and copy/paste. |
+| Music | Build a playlist from your device, switch tracks, and keep listening while the app is minimized. |
+| Notes | Write and search notes, see word counts, and export notes as text files. |
+| Camera | Choose a camera, capture photos, and save them privately to Gallery or download them. |
 
-## Expanding the ESLint configuration
+### A desktop that feels personal
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- All 14 apps are available from the home screen and launcher.
+- Drag, resize, minimize, maximize, or arrange windows side by side on desktop.
+- Use **Settings → Make it yours** for wallpapers and color themes.
+- Reorder your apps with the arrows in Settings, and select stars to pin favorites.
+- Music and Browser keep their contents when minimized; Calculator keeps its current calculation too. Camera releases its stream when its window is hidden or closed.
+- Open the launcher with **Ctrl + Alt + L**.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Games and live information
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Free Games:** giveaway listings from [GamerPower](https://www.gamerpower.com/). Open an offer to check its claim deadline, region, account, and redemption requirements. A store may have no active offers.
+- **Weather:** city search and forecasts from [Open-Meteo](https://open-meteo.com/). Forecast times use the selected city's time zone.
+- **Tier lists:** Genshin, Origin, and Honkai: Star Rail rankings come from [Game8](https://game8.co/). Grand Cross uses the [Grand Cross Wiki general tier list](https://7dsgc.fandom.com/wiki/General_Tier_List), retrieved through its wiki API.
+- The hosted tier-list backend uses Supabase functions and a private cache, with a daily refresh scheduled for **3:00 AM Philippine time**. If a source fails, the last successful rankings remain available and are marked stale.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Your data
 
+Most personal data stays in the browser you use: notes, tasks, events, bookmarks, calculator history, small uploaded files, wallpaper preferences, app order, and favorites. Private Gallery photos use the browser's IndexedDB storage. These items do **not** automatically sync between devices, and clearing website data can remove them. Export or download anything you want to keep separately.
+
+Camera captures and **Add photos** stay private on that device. Gallery's **Publish to everyone** action creates a separate public copy in Supabase after confirmation and subject to the configured access rules. Community photos are visible to other visitors.
+
+Music files are not uploaded and remain available while the app is open; closing the app or refreshing the page removes that playlist. Files supports uploads up to **2 MB per file**, subject to available browser storage.
+
+Some websites block embedded viewing or sign-in. Use **Open externally** in Browser for those sites. Camera access requires HTTPS or localhost and browser permission.
+
+## Run locally
+
+Use **Node.js 22** and npm, matching the GitHub deployment workflow.
+
+```powershell
+git clone https://github.com/galeravanrj-sys/oxygen-desktop.git
+cd oxygen-desktop
+npm ci
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Create `.env.local` in the project folder with your Supabase project's public connection settings:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```dotenv
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 ```
+
+Then start the development server:
+
+```powershell
+npm run dev
+```
+
+Open the URL printed in the terminal, normally `http://localhost:5173/oxygen-desktop/`.
+
+Only public client configuration belongs in `VITE_` variables because it is included in the website build. Keep `.env.local` out of Git, and never place a service-role key, database password, or refresh token there.
+
+### Build and preview
+
+```powershell
+npm run build
+npm run preview
+```
+
+`npm run lint` runs the repository's ESLint checks.
+
+## Publishing
+
+GitHub Actions builds and deploys the website to **GitHub Pages** when `main` is updated. The workflow reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from GitHub repository variables.
+
+The Vite base path is `/oxygen-desktop/`. Update it if you host the project at a different path.
+
+Publishing the frontend does not provision the Supabase Gallery bucket, access policies, tier-list cache, secrets, or scheduled jobs. Those backend resources must be configured separately. The current hosted tier-list endpoints are specified in the frontend and must also be updated for an independent deployment.
+
+## Built with
+
+React · TypeScript · Vite · Supabase · react-rnd · Lucide icons · decimal.js
+
+M8M8S runs inside a web browser. Its desktop interface does not provide direct access to your Windows folders or replace your operating system.
