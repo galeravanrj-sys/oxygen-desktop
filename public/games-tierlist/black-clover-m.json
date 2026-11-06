@@ -1,0 +1,1034 @@
+{
+  "game": "black-clover-m",
+  "title": "Black Clover M",
+  "source_title": "Black Clover: UNDEAD Tier List",
+  "source": "https://www.hideoutgacha.com/games/black-clover-m/tier-list",
+  "provider": "Hideout Guides",
+  "imported_at": "2026-11-06T17:10:58.795Z",
+  "modes": [
+    {
+      "id": "pvp",
+      "label": "PvP",
+      "title": "Player vs Player",
+      "tiers": [
+        {
+          "tier": "T0",
+          "characters": [
+            {
+              "id": "asta-clover-academy",
+              "name": "Asta",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/asta-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/asta-clover-academy",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "yami-sukehiro-clover-academy",
+              "name": "Yami Sukehiro",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yami-sukehiro-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yami-sukehiro-clover-academy",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "fana",
+              "name": "Fana",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/fana.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/fana",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yami-sukehiro",
+              "name": "Yami Sukehiro",
+              "subtitle": "Captain of the Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yami-sukehiro.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yami-sukehiro",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "noelle-silva-swimsuit",
+              "name": "Noelle Silva",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/noelle-silva-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/noelle-silva-swimsuit",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "licht",
+              "name": "Licht",
+              "subtitle": "Leader of the Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/licht.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/licht",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "vetto",
+              "name": "Vetto",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/vetto.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/vetto",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "nozel-silva",
+              "name": "Nozel Silva",
+              "subtitle": "Captain of the Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/nozel-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/nozel-silva",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "lotus-whomalt",
+              "name": "Lotus Whomalt",
+              "subtitle": "Diamond Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/lotus-whomalt.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/lotus-whomalt",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yuno-swimsuit",
+              "name": "Yuno",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yuno-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yuno-swimsuit",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "rill-boismortier",
+              "name": "Rill Boismortier",
+              "subtitle": "Captain of the Aqua Deer",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rill-boismortier.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rill-boismortier",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "mars",
+              "name": "Mars",
+              "subtitle": "Diamond Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mars.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mars",
+              "role": "Defender",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "rades-spirito",
+              "name": "Rades Spirito",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rades-spirito.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rades-spirito",
+              "role": "Defender",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "william-vangeance",
+              "name": "William Vangeance",
+              "subtitle": "Captain of the Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/william-vangeance.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/william-vangeance",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "gauche-adlai-swimsuit",
+              "name": "Gauche Adlai",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gauche-adlai-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gauche-adlai-swimsuit",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "mimosa-vermillion-clover-academy",
+              "name": "Mimosa Vermillion",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mimosa-vermillion-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mimosa-vermillion-clover-academy",
+              "role": "Healer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "sister-lily",
+              "name": "Sister Lily",
+              "subtitle": "Sister of Hage Village",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sister-lily.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sister-lily",
+              "role": "Healer",
+              "rarity": "R",
+              "attribute": "Power"
+            }
+          ]
+        },
+        {
+          "tier": "T1",
+          "characters": [
+            {
+              "id": "fuegoleon-vermillion",
+              "name": "Fuegoleon Vermillion",
+              "subtitle": "Captain of the Crimson Lion Kings",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/fuegoleon-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/fuegoleon-vermillion",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "rhya",
+              "name": "Rhya",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rhya.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rhya",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "gauche-adlai",
+              "name": "Gauche Adlai",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gauche-adlai.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gauche-adlai",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yuno",
+              "name": "Yuno",
+              "subtitle": "Four-Leaf Clover",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yuno.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yuno",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "charlotte-roselei",
+              "name": "Charlotte Roselei",
+              "subtitle": "Captain of the Blue Rose Knights",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/charlotte-roselei.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/charlotte-roselei",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "asta",
+              "name": "Asta",
+              "subtitle": "Iron Will",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/asta.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/asta",
+              "role": "Defender",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "sally",
+              "name": "Sally",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sally.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sally",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "finral-roulacase",
+              "name": "Finral Roulacase",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/finral-roulacase.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/finral-roulacase",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "charmy-pappitson",
+              "name": "Charmy Pappitson",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/charmy-pappitson.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/charmy-pappitson",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Technique"
+            }
+          ]
+        },
+        {
+          "tier": "T2",
+          "characters": [
+            {
+              "id": "leopold-vermillion",
+              "name": "Leopold Vermillion",
+              "subtitle": "Crimson Lion Kings",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/leopold-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/leopold-vermillion",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "heath-grice",
+              "name": "Heath Grice",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/heath-grice.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/heath-grice",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "sekke-bronzazza",
+              "name": "Sekke Bronzazza",
+              "subtitle": "Green Praying Mantises",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sekke-bronzazza.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sekke-bronzazza",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "noelle-silva",
+              "name": "Noelle Silva",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/noelle-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/noelle-silva",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "vanessa-enoteca",
+              "name": "Vanessa Enoteca",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/vanessa-enoteca.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/vanessa-enoteca",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "sister-theresa",
+              "name": "Sister Theresa",
+              "subtitle": "Sister of Nean Village",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sister-theresa.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sister-theresa",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Power"
+            }
+          ]
+        },
+        {
+          "tier": "T3",
+          "characters": [
+            {
+              "id": "jack-the-ripper",
+              "name": "Jack the Ripper",
+              "subtitle": "Captain of the Green Praying Mantises",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/jack-the-ripper.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/jack-the-ripper",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "solid-silva",
+              "name": "Solid Silva",
+              "subtitle": "Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/solid-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/solid-silva",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "nebra-silva",
+              "name": "Nebra Silva",
+              "subtitle": "Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/nebra-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/nebra-silva",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "magna-swing",
+              "name": "Magna Swing",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/magna-swing.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/magna-swing",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "shiren-tium",
+              "name": "Shiren Tium",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/shiren-tium.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/shiren-tium",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "neige",
+              "name": "Neige",
+              "subtitle": "Snow Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/neige.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/neige",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Power"
+            },
+            {
+              "id": "sol-marron",
+              "name": "Sol Marron",
+              "subtitle": "Blue Rose Knights",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sol-marron.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sol-marron",
+              "role": "Defender",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "gifso",
+              "name": "Gifso",
+              "subtitle": "High Priest of the Underwater Temple",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gifso.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gifso",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "mimosa-vermillion",
+              "name": "Mimosa Vermillion",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mimosa-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mimosa-vermillion",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Power"
+            }
+          ]
+        },
+        {
+          "tier": "T4",
+          "characters": [
+            {
+              "id": "luck-voltia",
+              "name": "Luck Voltia",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/luck-voltia.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/luck-voltia",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "alecdora-sandler",
+              "name": "Alecdora Sandler",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/alecdora-sandler.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/alecdora-sandler",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "gordon-agrippa",
+              "name": "Gordon Agrippa",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gordon-agrippa.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gordon-agrippa",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "revchi-salik",
+              "name": "Revchi Salik",
+              "subtitle": "Chain Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/revchi-salik.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/revchi-salik",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "klaus-lunettes",
+              "name": "Klaus Lunettes",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/klaus-lunettes.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/klaus-lunettes",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Sense"
+            },
+            {
+              "id": "baro",
+              "name": "Baro",
+              "subtitle": "Mud Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/baro.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/baro",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Power"
+            },
+            {
+              "id": "marx-francois",
+              "name": "Marx Francois",
+              "subtitle": "Clover Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/marx-francois.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/marx-francois",
+              "role": "Supporter",
+              "rarity": "R",
+              "attribute": "Sense"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pve",
+      "label": "PvE",
+      "title": "Player vs Environment",
+      "tiers": [
+        {
+          "tier": "T0",
+          "characters": [
+            {
+              "id": "asta-clover-academy",
+              "name": "Asta",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/asta-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/asta-clover-academy",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "rhya",
+              "name": "Rhya",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rhya.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rhya",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "fana",
+              "name": "Fana",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/fana.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/fana",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yami-sukehiro",
+              "name": "Yami Sukehiro",
+              "subtitle": "Captain of the Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yami-sukehiro.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yami-sukehiro",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "gauche-adlai",
+              "name": "Gauche Adlai",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gauche-adlai.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gauche-adlai",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "lotus-whomalt",
+              "name": "Lotus Whomalt",
+              "subtitle": "Diamond Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/lotus-whomalt.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/lotus-whomalt",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yuno-swimsuit",
+              "name": "Yuno",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yuno-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yuno-swimsuit",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "charlotte-roselei",
+              "name": "Charlotte Roselei",
+              "subtitle": "Captain of the Blue Rose Knights",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/charlotte-roselei.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/charlotte-roselei",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "rill-boismortier",
+              "name": "Rill Boismortier",
+              "subtitle": "Captain of the Aqua Deer",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rill-boismortier.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rill-boismortier",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "mars",
+              "name": "Mars",
+              "subtitle": "Diamond Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mars.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mars",
+              "role": "Defender",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "rades-spirito",
+              "name": "Rades Spirito",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/rades-spirito.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/rades-spirito",
+              "role": "Defender",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "asta",
+              "name": "Asta",
+              "subtitle": "Iron Will",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/asta.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/asta",
+              "role": "Defender",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "william-vangeance",
+              "name": "William Vangeance",
+              "subtitle": "Captain of the Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/william-vangeance.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/william-vangeance",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "gauche-adlai-swimsuit",
+              "name": "Gauche Adlai",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gauche-adlai-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gauche-adlai-swimsuit",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "sally",
+              "name": "Sally",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sally.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sally",
+              "role": "Supporter",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "finral-roulacase",
+              "name": "Finral Roulacase",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/finral-roulacase.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/finral-roulacase",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "gifso",
+              "name": "Gifso",
+              "subtitle": "High Priest of the Underwater Temple",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gifso.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gifso",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "mimosa-vermillion-clover-academy",
+              "name": "Mimosa Vermillion",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mimosa-vermillion-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mimosa-vermillion-clover-academy",
+              "role": "Healer",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "sister-lily",
+              "name": "Sister Lily",
+              "subtitle": "Sister of Hage Village",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sister-lily.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sister-lily",
+              "role": "Healer",
+              "rarity": "R",
+              "attribute": "Power"
+            },
+            {
+              "id": "charmy-pappitson",
+              "name": "Charmy Pappitson",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/charmy-pappitson.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/charmy-pappitson",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Technique"
+            }
+          ]
+        },
+        {
+          "tier": "T1",
+          "characters": [
+            {
+              "id": "fuegoleon-vermillion",
+              "name": "Fuegoleon Vermillion",
+              "subtitle": "Captain of the Crimson Lion Kings",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/fuegoleon-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/fuegoleon-vermillion",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "noelle-silva-swimsuit",
+              "name": "Noelle Silva",
+              "subtitle": "Swimsuit",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/noelle-silva-swimsuit.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/noelle-silva-swimsuit",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "yuno",
+              "name": "Yuno",
+              "subtitle": "Four-Leaf Clover",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yuno.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yuno",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "vetto",
+              "name": "Vetto",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/vetto.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/vetto",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "nebra-silva",
+              "name": "Nebra Silva",
+              "subtitle": "Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/nebra-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/nebra-silva",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "nozel-silva",
+              "name": "Nozel Silva",
+              "subtitle": "Captain of the Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/nozel-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/nozel-silva",
+              "role": "Debuffer",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "sekke-bronzazza",
+              "name": "Sekke Bronzazza",
+              "subtitle": "Green Praying Mantises",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sekke-bronzazza.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sekke-bronzazza",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "noelle-silva",
+              "name": "Noelle Silva",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/noelle-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/noelle-silva",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "sister-theresa",
+              "name": "Sister Theresa",
+              "subtitle": "Sister of Nean Village",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sister-theresa.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sister-theresa",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Power"
+            }
+          ]
+        },
+        {
+          "tier": "T2",
+          "characters": [
+            {
+              "id": "licht",
+              "name": "Licht",
+              "subtitle": "Leader of the Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/licht.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/licht",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "jack-the-ripper",
+              "name": "Jack the Ripper",
+              "subtitle": "Captain of the Green Praying Mantises",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/jack-the-ripper.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/jack-the-ripper",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "yami-sukehiro-clover-academy",
+              "name": "Yami Sukehiro",
+              "subtitle": "Clover Academy",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/yami-sukehiro-clover-academy.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/yami-sukehiro-clover-academy",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "leopold-vermillion",
+              "name": "Leopold Vermillion",
+              "subtitle": "Crimson Lion Kings",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/leopold-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/leopold-vermillion",
+              "role": "Attacker",
+              "rarity": "SSR",
+              "attribute": "Power"
+            },
+            {
+              "id": "heath-grice",
+              "name": "Heath Grice",
+              "subtitle": "Eye of the Midnight Sun",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/heath-grice.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/heath-grice",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "sol-marron",
+              "name": "Sol Marron",
+              "subtitle": "Blue Rose Knights",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/sol-marron.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/sol-marron",
+              "role": "Defender",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "vanessa-enoteca",
+              "name": "Vanessa Enoteca",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/vanessa-enoteca.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/vanessa-enoteca",
+              "role": "Supporter",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "mimosa-vermillion",
+              "name": "Mimosa Vermillion",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/mimosa-vermillion.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/mimosa-vermillion",
+              "role": "Healer",
+              "rarity": "SR",
+              "attribute": "Power"
+            }
+          ]
+        },
+        {
+          "tier": "T3",
+          "characters": [
+            {
+              "id": "solid-silva",
+              "name": "Solid Silva",
+              "subtitle": "Silver Eagles",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/solid-silva.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/solid-silva",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "magna-swing",
+              "name": "Magna Swing",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/magna-swing.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/magna-swing",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "shiren-tium",
+              "name": "Shiren Tium",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/shiren-tium.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/shiren-tium",
+              "role": "Debuffer",
+              "rarity": "SR",
+              "attribute": "Power"
+            },
+            {
+              "id": "neige",
+              "name": "Neige",
+              "subtitle": "Snow Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/neige.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/neige",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Power"
+            },
+            {
+              "id": "klaus-lunettes",
+              "name": "Klaus Lunettes",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/klaus-lunettes.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/klaus-lunettes",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Sense"
+            }
+          ]
+        },
+        {
+          "tier": "T4",
+          "characters": [
+            {
+              "id": "luck-voltia",
+              "name": "Luck Voltia",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/luck-voltia.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/luck-voltia",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Technique"
+            },
+            {
+              "id": "alecdora-sandler",
+              "name": "Alecdora Sandler",
+              "subtitle": "Golden Dawn",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/alecdora-sandler.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/alecdora-sandler",
+              "role": "Attacker",
+              "rarity": "SR",
+              "attribute": "Sense"
+            },
+            {
+              "id": "gordon-agrippa",
+              "name": "Gordon Agrippa",
+              "subtitle": "Black Bulls",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/gordon-agrippa.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/gordon-agrippa",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "revchi-salik",
+              "name": "Revchi Salik",
+              "subtitle": "Chain Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/revchi-salik.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/revchi-salik",
+              "role": "Debuffer",
+              "rarity": "R",
+              "attribute": "Technique"
+            },
+            {
+              "id": "baro",
+              "name": "Baro",
+              "subtitle": "Mud Magic",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/baro.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/baro",
+              "role": "Defender",
+              "rarity": "R",
+              "attribute": "Power"
+            },
+            {
+              "id": "marx-francois",
+              "name": "Marx Francois",
+              "subtitle": "Clover Kingdom",
+              "image": "https://www.hideoutgacha.com/images/black-clover-m/faces/marx-francois.webp",
+              "url": "https://www.hideoutgacha.com/games/black-clover-m/mages/marx-francois",
+              "role": "Supporter",
+              "rarity": "R",
+              "attribute": "Sense"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -161,3 +161,7 @@ Then deploy only the updated games-tierlist reader. The existing daily refresher
 ### Grand Cross LR Heroes
 
 Open Games Tierlist → 7DS Grand Cross → LR Heroes for the LR-specific rankings from [Grand Cross Wiki](https://7dsgc.fandom.com/wiki/LR_HERO). The bundled snapshot preserves SSS, SS, S, A, and Collection, with hero search and links to individual guides. Its wiki update date and import date are displayed. This LR snapshot is versioned with the frontend; it is separate from the automatically refreshed General Tier List and does not require a backend migration or secret changes.
+
+### Hideout Guides tier lists
+
+Naruto Blazing includes PVE and Phantom Castle lists; Black Clover M includes PvP/PvE with class filtering. The supplied Black Clover page currently describes the UNDEAD revival server, which is disclosed in the app. Character variants, source tier labels, guide links, and snapshot import dates are preserved. The bundled Hideout data is updated with website deployments, separately from the daily five-game backend cache. No backend migration or secrets are needed.

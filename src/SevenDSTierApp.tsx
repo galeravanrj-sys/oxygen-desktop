@@ -1,3 +1,4 @@
+import HideoutTierList from "./HideoutTierList";
 import GrandCrossLR from "./GrandCrossLR";
 import TierComparison from "./RankingChanges";
 import type { RankingPayload } from "./tierComparison";
@@ -32,6 +33,8 @@ import "./SevenDSTierApp.css";
 
 type Game = { id: string; title: string; subtitle: string; url: string; color: string; initials: string; image: string };
 const GAMES: Game[] = [
+  { id: "naruto-blazing", title: "Naruto Blazing", subtitle: "PVE & Phantom Castle · Hideout Guides", url: "https://www.hideoutgacha.com/games/naruto-blazing/tier-list", color: "naruto", image: `${import.meta.env.BASE_URL}games-tierlist/naruto-blazing.jpg`, initials: "NB" },
+  { id: "black-clover-m", title: "Black Clover M", subtitle: "PvP & PvE · Hideout Guides", url: "https://www.hideoutgacha.com/games/black-clover-m/tier-list", color: "blackclover", image: `${import.meta.env.BASE_URL}games-tierlist/black-clover-m.jpg`, initials: "BC" },
   { id: "zzz", title: "Zenless Zone Zero", subtitle: "Agent Tier List · Game8", url: "https://game8.co/games/Zenless-Zone-Zero/archives/435685", color: "zzz", image: `${import.meta.env.BASE_URL}games-tierlist/zzz.png`, initials: "ZZZ" },
   { id: "genshin", title: "Genshin Impact", subtitle: "Character Tier List · Game8", url: "https://game8.co/games/Genshin-Impact/archives/297465", color: "genshin", image: `${import.meta.env.BASE_URL}games-tierlist/genshin.webp`, initials: "GI" },
   { id: "origin", title: "The Seven Deadly Sins: Origin", subtitle: "Tier List · Game8", url: "https://game8.co/games/The-Seven-Deadly-Sins-Origin/archives/584624", color: "origin", image: `${import.meta.env.BASE_URL}games-tierlist/origin.webp`, initials: "7DS" },
@@ -83,8 +86,10 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
   const [tierLoading, setTierLoading] = useState(false);
 
   const currentSource = selected?.id === "grandcross" && grandCrossTab === "lr" ? "https://7dsgc.fandom.com/wiki/LR_HERO" : selected?.url;
+  const hideoutGame = selected?.id === "naruto-blazing" || selected?.id === "black-clover-m";
   useEffect(() => {
-    if (!selected) {
+    if (!selected || selected.id === "naruto-blazing" || selected.id === "black-clover-m") {
+      setTierLoading(false); setTierError("");
       setTierData(null);
     setGenshinData(null);
       return;
@@ -179,7 +184,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
                 <div className="gtl-viewer gtl-native-viewer">
           <div className="gtl-native-content">
             <h2>{selected.title}</h2>
-            <p>Character Tier List · {selected.id === "grandcross" ? "Grand Cross Wiki" : "Game8"}</p>
+            <p>Character Tier List · {hideoutGame ? "Hideout Guides" : selected.id === "grandcross" ? "Grand Cross Wiki" : "Game8"}</p>
 
             {(selected.id !== "grandcross" || grandCrossTab === "general") && (genshinData?.updated_at || tierData?.updated_at) && (
               <p className="gtl-genshin-source">
@@ -190,7 +195,8 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
 
             {selected.id === "grandcross" && <div className="gtl-genshin-tabs gtl-grandcross-tabs" role="group" aria-label="Grand Cross category">{[{id:"general",label:"General Tier List"},{id:"lr",label:"LR Heroes"}].map(tab=><button key={tab.id} aria-pressed={grandCrossTab===tab.id} className={grandCrossTab===tab.id?"active":""} onClick={()=>setGrandCrossTab(tab.id)}>{tab.label}</button>)}</div>}
             {selected.id === "grandcross" && grandCrossTab === "lr" && <GrandCrossLR revision={revision}/>}
-            {(selected.id !== "grandcross" || grandCrossTab === "general") && <>
+            {hideoutGame && <HideoutTierList key={selected.id} game={selected.id} revision={revision}/>}
+            {!hideoutGame && (selected.id !== "grandcross" || grandCrossTab === "general") && <>
             {(tierData || genshinData) && <TierComparison current={(tierData || genshinData) as unknown as RankingPayload} previous={(tierData || genshinData)?.previous} previousAt={(tierData || genshinData)?.previous_updated_at} />}
             {tierLoading && (
               <div className="gtl-native-status">Loading rankings...</div>
