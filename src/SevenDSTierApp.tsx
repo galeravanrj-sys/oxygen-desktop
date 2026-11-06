@@ -1,3 +1,4 @@
+import GrandCrossLR from "./GrandCrossLR";
 import TierComparison from "./RankingChanges";
 import type { RankingPayload } from "./tierComparison";
 type GenshinCharacter = {
@@ -74,12 +75,14 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
 
   const [tierData, setTierData] = useState<TierResponse | null>(null);
   const [genshinData, setGenshinData] = useState<GenshinData | null>(null);
+  const [grandCrossTab, setGrandCrossTab] = useState("general");
   const [zzzTab, setZzzTab] = useState("overall");
   const [genshinTab, setGenshinTab] = useState("main");
   const [characterSearch, setCharacterSearch] = useState("");
   const [tierError, setTierError] = useState("");
   const [tierLoading, setTierLoading] = useState(false);
 
+  const currentSource = selected?.id === "grandcross" && grandCrossTab === "lr" ? "https://7dsgc.fandom.com/wiki/LR_HERO" : selected?.url;
   useEffect(() => {
     if (!selected) {
       setTierData(null);
@@ -129,7 +132,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
     return () => controller.abort();
   }, [selected, revision]);
   const open = (game: Game) => {
-    setCharacterSearch(""); setZzzTab("overall");
+    setCharacterSearch(""); setZzzTab("overall"); setGrandCrossTab("general");
     setSelected(game);
     setHistory(prev => [...prev.slice(0, historyIndex + 1), game]);
     setHistoryIndex(i => i + 1);
@@ -156,8 +159,8 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
         <button type="button" aria-label="Forward" title="Forward" disabled={historyIndex >= history.length - 1} onClick={() => travel(historyIndex + 1)}><ArrowRight size={17}/></button>
         <button type="button" aria-label="Refresh" title="Refresh" onClick={selected ? reload : home}><RefreshCw size={17}/></button>
         <button type="button" title="All tier lists" onClick={home}><Trophy size={17}/></button>
-        <div className="gtl-address"><Globe2 size={15}/><span>{selected ? selected.url.replace(/^https:\/\//, "") : "oxygen://games-tierlist"}</span></div>
-        {selected && <button type="button" title="Open current live tier list in browser" aria-label="Open in browser" onClick={() => window.open(selected.url, "_blank", "noopener,noreferrer")}><ExternalLink size={17}/></button>}
+        <div className="gtl-address"><Globe2 size={15}/><span>{selected ? currentSource!.replace(/^https:\/\//, "") : "oxygen://games-tierlist"}</span></div>
+        {selected && <button type="button" title="Open current live tier list in browser" aria-label="Open in browser" onClick={() => window.open(currentSource!, "_blank", "noopener,noreferrer")}><ExternalLink size={17}/></button>}
       </div>
       {!selected ? (
         <div className="gtl-home">
@@ -178,13 +181,16 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
             <h2>{selected.title}</h2>
             <p>Character Tier List · {selected.id === "grandcross" ? "Grand Cross Wiki" : "Game8"}</p>
 
-            {(genshinData?.updated_at || tierData?.updated_at) && (
+            {(selected.id !== "grandcross" || grandCrossTab === "general") && (genshinData?.updated_at || tierData?.updated_at) && (
               <p className="gtl-genshin-source">
                 Last updated: {new Date((genshinData?.updated_at ?? tierData?.updated_at)!).toLocaleString()}
                 {(genshinData?.stale || tierData?.stale) && " — Showing the last successful rankings; the latest refresh failed."}
               </p>
             )}
 
+            {selected.id === "grandcross" && <div className="gtl-genshin-tabs gtl-grandcross-tabs" role="group" aria-label="Grand Cross category">{[{id:"general",label:"General Tier List"},{id:"lr",label:"LR Heroes"}].map(tab=><button key={tab.id} aria-pressed={grandCrossTab===tab.id} className={grandCrossTab===tab.id?"active":""} onClick={()=>setGrandCrossTab(tab.id)}>{tab.label}</button>)}</div>}
+            {selected.id === "grandcross" && grandCrossTab === "lr" && <GrandCrossLR revision={revision}/>}
+            {(selected.id !== "grandcross" || grandCrossTab === "general") && <>
             {(tierData || genshinData) && <TierComparison current={(tierData || genshinData) as unknown as RankingPayload} previous={(tierData || genshinData)?.previous} previousAt={(tierData || genshinData)?.previous_updated_at} />}
             {tierLoading && (
               <div className="gtl-native-status">Loading rankings...</div>
@@ -293,6 +299,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
                 {selected.id === "zzz" && <p className="gtl-genshin-source">{(tierData.grids?.[zzzTab] ?? tierData.tiers).some(group => group.characters.some(character => character.name.toLowerCase().includes(characterSearch.trim().toLowerCase()))) ? "Rankings from Game8 · Refreshed by the daily cache." : "No agents match your search."} <a href={selected.url} target="_blank" rel="noopener noreferrer">View original guide</a></p>}
               </div>
             )}
+            </>}
           </div>
         </div>
       )}

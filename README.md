@@ -157,3 +157,7 @@ Review and apply only these new migrations in order:
 2. supabase/migrations/20261106000200_chat_features.sql
 
 Then deploy only the updated games-tierlist reader. The existing daily refresher automatically records history through the database trigger. Existing chat text messages continue working without the chat tools migration; advanced tools show setup notices if unavailable. No secrets or existing Storage permissions need changing. Do not rerun previously applied migrations or push every unrelated backend file.
+
+### Grand Cross LR Heroes
+
+Open Games Tierlist → 7DS Grand Cross → LR Heroes for the LR-specific rankings from [Grand Cross Wiki](https://7dsgc.fandom.com/wiki/LR_HERO). The bundled snapshot preserves SSS, SS, S, A, and Collection, with hero search and links to individual guides. Its wiki update date and import date are displayed. This LR snapshot is versioned with the frontend; it is separate from the automatically refreshed General Tier List and does not require a backend migration or secret changes.
