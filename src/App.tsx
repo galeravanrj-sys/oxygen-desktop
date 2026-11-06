@@ -1,3 +1,6 @@
+import GlobalSearch, { type SearchHit } from "./GlobalSearch";
+import HomeWidgets from "./HomeWidgets";
+import "./DesktopExtras.css";
 import WebsiteDialogs from "./WebsiteDialogs";
 import { siteAlert, siteConfirm } from "./websiteDialogStore";
 import CommunityChat from "./CommunityChat";
@@ -141,6 +144,8 @@ function fileToData(file: File): Promise<string> {
 }
 
 export default function App() {
+  const [globalSearch, setGlobalSearch] = useState(false);
+  const [navigation, setNavigation] = useState<(SearchHit & { request: string }) | null>(null);
   const motion = useDesktopMotion();
   const [interacting, setInteracting] = useState<string | null>(null);
   const [preferences, setPreferences] = useState(() => loadPreferences(apps.map(app => app.name)));
@@ -366,6 +371,8 @@ export default function App() {
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); if (!document.querySelector("dialog[open]")) setGlobalSearch(value => !value); return; }
+      if (document.querySelector("dialog[open]")) return;
       const target = event.target as HTMLElement;
       const typing = ["INPUT", "TEXTAREA"].includes(target.tagName) ||
         target.isContentEditable;
@@ -403,19 +410,19 @@ export default function App() {
     weekday: "long", month: "long", day: "numeric"
   });
 
-  const appContent = (name: string) => {
+  const appContent = (name: string, visible = true) => {
     switch (name) {
-      case "Community Chat": return <CommunityChat />;
+      case "Community Chat": return <CommunityChat active={visible} />;
       case "Daily Briefing": return <DailyBriefing time={time} onOpen={name => launch(name)} onNotice={notice => launch("Games Tierlist", notice)} onOffer={id => launch("Free Games", { id: `briefing-offer:${id}:${Date.now()}`, kind: "freegames", title: "Giveaway", body: "", offerId: id, createdAt: Date.now(), read: true })} />;
-      case "Gaming Passport": return <GamingPassport />;
+      case "Gaming Passport": return <GamingPassport key={navigation?.app === "Gaming Passport" ? navigation.request : "passport"} initialGameId={navigation?.app === "Gaming Passport" ? navigation.id : undefined} />;
       case "Theme Studio": return <ThemeStudio preferences={preferences} onChange={savePreferences} />;
       case "Weather": return <WeatherApp />;
-      case "To-do List": return <TodoApp />;
+      case "To-do List": return <TodoApp key={navigation?.app === "To-do List" ? navigation.request : "tasks"} initialTaskId={navigation?.app === "To-do List" ? navigation.id : undefined} />;
       case "Free Games": return <FreeGamesApp key={offerNotice?.id ?? "offers-home"} initialOfferId={offerNotice?.offerId} />;
       case "Games Tierlist": return <SevenDSTierApp key={tierNotice?.id ?? "tiers-home"} initialGame={tierNotice?.game} />;
       case "Clock & Widgets": return <WidgetsApp time={time} photoCount={photos.length} onOpenGallery={() => launch("Gallery")} onOpenCalendar={() => launch("Calendar")} />;
       case "Files": return <FilesApp />;
-      case "Notes": return <NotesApp />;
+      case "Notes": return <NotesApp key={navigation?.app === "Notes" ? navigation.request : "notes"} initialId={navigation?.app === "Notes" ? navigation.id : undefined} />;
       case "Calculator": return <CalculatorApp />;
       case "Calendar": return <CalendarApp />;
       case "Browser": return <BrowserApp />;
@@ -548,6 +555,8 @@ export default function App() {
 </div>
 
 
+<HomeWidgets time={time} onOpen={name => launch(name)} />
+
 {windows
   .filter(w =>
     ["Music", "Browser", "Calculator", "Gaming Passport", "Community Chat"].includes(w.name) ||
@@ -631,7 +640,7 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-                {appContent(w.name)}
+                {appContent(w.name, visible && (!activeId || w.id === activeId))}
               </section>
             </Rnd>
           );
@@ -646,6 +655,7 @@ export default function App() {
           }}>
           <LayoutGrid size={23} />
         </button>
+        <button className="taskbar-app" title="Search desktop (Ctrl+K)" aria-label="Search desktop" onClick={() => setGlobalSearch(true)}><Search size={20}/></button>
         <div className="taskbar-divider" />
         <div className="taskbar-apps">
           {orderedApps.filter(app => preferences.favorites.includes(app.name) && !windows.some(w => w.name === app.name)).map(app => { const Icon = app.icon; return <button type="button" className="taskbar-app taskbar-favorite" key={app.name} title={`Open ${app.name} (favorite)`} onClick={() => launch(app.name)}><Icon size={21}/></button>; })}
@@ -779,6 +789,7 @@ export default function App() {
           <button onClick={() => setContext(null)}>Dismiss</button>
         </div>
       )}
+      {globalSearch && <GlobalSearch apps={apps.map(app => app.name)} onClose={() => setGlobalSearch(false)} onSelect={hit => { setGlobalSearch(false); if (hit.kind !== "app") setNavigation({ ...hit, request: crypto.randomUUID() }); launch(hit.app); }} />}
       <WebsiteDialogs />
     </main>
   );

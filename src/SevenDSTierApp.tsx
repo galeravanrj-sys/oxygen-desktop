@@ -1,3 +1,5 @@
+import TierComparison from "./RankingChanges";
+import type { RankingPayload } from "./tierComparison";
 type GenshinCharacter = {
   name: string;
   image?: string;
@@ -19,6 +21,8 @@ type GenshinData = {
   status: string;
   grids: Record<string, GenshinRow[]>;
   updated_at?: string;
+  previous?: RankingPayload | null;
+  previous_updated_at?: string | null;
   stale?: boolean;
 };
 import { useEffect, useState } from "react";
@@ -45,6 +49,8 @@ type TierGroup = {
 };
 
 type TierResponse = {
+  previous?: RankingPayload | null;
+  previous_updated_at?: string | null;
   game: string;
   title: string;
   source: string;
@@ -179,6 +185,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
               </p>
             )}
 
+            {(tierData || genshinData) && <TierComparison current={(tierData || genshinData) as unknown as RankingPayload} previous={(tierData || genshinData)?.previous} previousAt={(tierData || genshinData)?.previous_updated_at} />}
             {tierLoading && (
               <div className="gtl-native-status">Loading rankings...</div>
             )}

@@ -1,0 +1,10 @@
+import { useEffect, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
+import { searchDesktop, type SearchHit } from "./desktopSearch";
+export type { SearchHit } from "./desktopSearch";
+export default function GlobalSearch({ apps, onSelect, onClose }: { apps: string[]; onSelect: (hit: SearchHit) => void; onClose: () => void }) {
+  const [query, setQuery] = useState(""); const [active, setActive] = useState(0); const ref = useRef<HTMLDialogElement>(null);
+  const hits = searchDesktop(apps, query);
+  useEffect(() => { const node = ref.current; node?.showModal(); node?.querySelector("input")?.focus(); return () => node?.close(); }, []);
+  return <dialog ref={ref} className="global-search" aria-label="Search your desktop" onCancel={event => { event.preventDefault(); onClose(); }} onKeyDown={event => { event.stopPropagation(); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); const next = Math.max(0, Math.min(hits.length - 1, active + (event.key === "ArrowDown" ? 1 : -1))); setActive(next); ref.current?.querySelector(`[data-search-index="${next}"]`)?.scrollIntoView({ block: "nearest" }); } if (event.key === "Enter" && hits[active]) { event.preventDefault(); onSelect(hits[active]); } }}><header><Search size={19}/><input aria-label="Search apps, notes, tasks and games" placeholder="Search your desktop…" value={query} onChange={event => { setQuery(event.target.value); setActive(0); }}/><button aria-label="Close search" onClick={onClose}><X size={18}/></button></header><p className="search-hint">Apps, notes, tasks and saved games · This browser only</p><div className="search-results">{hits.map((hit, index) => <button key={`${hit.kind}:${hit.id}`} data-search-index={index} className={active === index ? "search-selected" : ""} onMouseEnter={() => setActive(index)} onClick={() => onSelect(hit)}><span><strong>{hit.title}</strong><small>{hit.detail || hit.app}</small></span><em>{hit.app}</em></button>)}{!hits.length && <p className="search-hint">No matches. Try a different word.</p>}</div><footer>↑ ↓ to navigate · Enter to open · Escape to close</footer></dialog>;
+}

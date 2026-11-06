@@ -14,8 +14,8 @@ function Heading({ icon, title, children }: { icon: ReactNode; title: string; ch
 function Empty({ title, children }: { title: string; children: ReactNode }) { return <div className="utility-empty"><strong>{title}</strong><p>{children}</p></div>; }
 type Note = { id: string; title: string; body: string };
 function isNote(value: unknown): value is Note { const n = value as Note; return !!n && typeof n.id === "string" && typeof n.title === "string" && typeof n.body === "string"; }
-export function NotesApp() {
-  const [notes, save, error] = useStoredList<Note>("oxygen-notes-v1", isNote); const [id, setId] = useState(() => notes[0]?.id ?? ""); const [query, setQuery] = useState("");
+export function NotesApp({ initialId }: { initialId?: string } = {}) {
+  const [notes, save, error] = useStoredList<Note>("oxygen-notes-v1", isNote); const [id, setId] = useState(() => notes.find(note => note.id === initialId)?.id ?? notes[0]?.id ?? ""); const [query, setQuery] = useState("");
   const active = notes.find(note => note.id === id);
   function create() { const note = { id: crypto.randomUUID(), title: "Untitled note", body: "" }; if (save([note, ...notes])) { setId(note.id); setQuery(""); } }
   function update(key: "title" | "body", value: string) { save(notes.map(note => note.id === id ? { ...note, [key]: value } : note)); }

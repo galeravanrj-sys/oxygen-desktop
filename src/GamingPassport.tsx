@@ -7,8 +7,8 @@ import { dateKey } from "./utilityHelpers";
 import "./SignatureApps.css";
 type Draft = Pick<PassportGame, "title" | "platform" | "status" | "notes" | "rating">;
 const freshDraft = (): Draft => ({ title: "", platform: "Steam", status: "wishlist", notes: "", rating: 0 });
-export default function GamingPassport() {
-  const games = useGameLibrary(); const [filter, setFilter] = useState("all"); const [search, setSearch] = useState(""); const [editing, setEditing] = useState<string | null>(null); const [showForm, setShowForm] = useState(false); const [draft, setDraft] = useState<Draft>(freshDraft); const [error, setError] = useState("");
+export default function GamingPassport({ initialGameId }: { initialGameId?: string } = {}) {
+  const games = useGameLibrary(); const [filter, setFilter] = useState("all"); const [search, setSearch] = useState(() => games.find(game => game.id === initialGameId)?.title ?? ""); const [editing, setEditing] = useState<string | null>(null); const [showForm, setShowForm] = useState(false); const [draft, setDraft] = useState<Draft>(freshDraft); const [error, setError] = useState("");
   function persist(next: PassportGame[]) { try { saveGameLibrary(next); setError(""); return true; } catch (reason) { setError(reason instanceof Error ? reason.message : "Could not save your games. Browser storage may be full."); return false; } }
   function changeStatus(game: PassportGame, status: GameStatus) { persist(games.map(item => item.id === game.id ? { ...item, status, finishedAt: status === "finished" ? item.finishedAt ?? dateKey(new Date()) : undefined } : item)); }
   function submit(event: FormEvent) {

@@ -141,3 +141,19 @@ Game8’s [agent tier list](https://game8.co/games/Zenless-Zone-Zero/archives/43
 ### Gallery auto-sync
 
 Open Gallery windows receive a public Realtime change signal after uploads or deletions made through the website, then fetch the latest authorized Storage listing. Signals contain no photo contents, filenames, or account information. Changes made outside the website, missed signals, or unavailable Realtime are picked up by the 10-second fallback while the tab is visible; returning to the tab or reconnecting also refreshes. The list keeps the latest 100 public images and preserves its current photos on sync failures. Camera captures and Add photos remain private on the device until explicitly published. No new database tables, Storage policies, or secrets are required.
+
+## Home widgets, search, ranking comparisons, and chat tools
+
+- Pin Tasks, Weather, and Giveaway countdowns from **Your widgets** on the home screen. Drag headers and resize on desktop; on phones widgets stack and the up-arrow changes their order. Widget layout stays on this browser. Weather uses the city already selected in Weather. Giveaway clocks use explicit source offsets when present; otherwise the visible timezone selector defines the estimate (UTC by default). Check the giveaway page before claiming.
+- Open **Global search** with Ctrl+K (Cmd+K on macOS) or the dock search button. It searches apps, full note text, tasks, and the Gaming Passport stored on this browser, and opens the matching item. Search text is not sent to a server.
+- **What changed?** in each tier list compares the current rankings with the previous changed snapshot. Roles and categories are compared separately. The database keeps the previous successful payload only when tiers or role grids change; timestamp-only updates and failed refreshes do not replace history. History begins after the first changed refresh following migration, so no earlier history is fabricated.
+- Chat adds same-room replies, toggleable thumbs-up/heart/game reactions, per-room unread counts, and private reports. Unread state is browser-local and separated by signed-in account; an actively focused chat marks the current room read only while scrolled to the bottom. Visitors cannot read reports or edit another account's reactions. The site owner reviews reports in Supabase Table Editor (community_reports). Deleting a parent message clears its reply references and removes dependent reactions/reports.
+
+### Backend update required
+
+Review and apply only these new migrations in order:
+
+1. supabase/migrations/20261106000100_tier_history.sql
+2. supabase/migrations/20261106000200_chat_features.sql
+
+Then deploy only the updated games-tierlist reader. The existing daily refresher automatically records history through the database trigger. Existing chat text messages continue working without the chat tools migration; advanced tools show setup notices if unavailable. No secrets or existing Storage permissions need changing. Do not rerun previously applied migrations or push every unrelated backend file.
