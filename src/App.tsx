@@ -144,6 +144,7 @@ function fileToData(file: File): Promise<string> {
 }
 
 export default function App() {
+  const [widgetsOpen, setWidgetsOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState(false);
   const [navigation, setNavigation] = useState<(SearchHit & { request: string }) | null>(null);
   const motion = useDesktopMotion();
@@ -555,7 +556,7 @@ export default function App() {
 </div>
 
 
-<HomeWidgets time={time} onOpen={name => launch(name)} />
+<HomeWidgets time={time} onOpen={name => launch(name)} open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
 
 {windows
   .filter(w =>
@@ -655,6 +656,7 @@ export default function App() {
           }}>
           <LayoutGrid size={23} />
         </button>
+        <button className={`taskbar-app ${widgetsOpen ? "running" : ""}`} title="Widgets" aria-label="Open widgets" onClick={() => setWidgetsOpen(true)}><CloudSun size={21}/></button>
         <button className="taskbar-app" title="Search desktop (Ctrl+K)" aria-label="Search desktop" onClick={() => setGlobalSearch(true)}><Search size={20}/></button>
         <div className="taskbar-divider" />
         <div className="taskbar-apps">
