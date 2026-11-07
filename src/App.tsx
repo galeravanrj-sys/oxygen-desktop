@@ -1,3 +1,6 @@
+import BrandLogo from "./BrandLogo";
+import { isTauri } from "@tauri-apps/api/core";
+import NativeMobileShell from "./NativeMobileShell";
 import GlobalSearch, { type SearchHit } from "./GlobalSearch";
 import HomeWidgets from "./HomeWidgets";
 import "./DesktopExtras.css";
@@ -144,6 +147,7 @@ function fileToData(file: File): Promise<string> {
 }
 
 export default function App() {
+  const nativeApp = isTauri();
   const [widgetsOpen, setWidgetsOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState(false);
   const [navigation, setNavigation] = useState<(SearchHit & { request: string }) | null>(null);
@@ -416,7 +420,7 @@ export default function App() {
       case "Community Chat": return <CommunityChat active={visible} />;
       case "Daily Briefing": return <DailyBriefing time={time} onOpen={name => launch(name)} onNotice={notice => launch("Games Tierlist", notice)} onOffer={id => launch("Free Games", { id: `briefing-offer:${id}:${Date.now()}`, kind: "freegames", title: "Giveaway", body: "", offerId: id, createdAt: Date.now(), read: true })} />;
       case "Gaming Passport": return <GamingPassport key={navigation?.app === "Gaming Passport" ? navigation.request : "passport"} initialGameId={navigation?.app === "Gaming Passport" ? navigation.id : undefined} />;
-      case "Theme Studio": return <ThemeStudio preferences={preferences} onChange={savePreferences} />;
+      case "Theme Studio": return <ThemeStudio mobile={nativeApp} preferences={preferences} onChange={savePreferences} />;
       case "Weather": return <WeatherApp />;
       case "To-do List": return <TodoApp key={navigation?.app === "To-do List" ? navigation.request : "tasks"} initialTaskId={navigation?.app === "To-do List" ? navigation.id : undefined} />;
       case "Free Games": return <FreeGamesApp key={offerNotice?.id ?? "offers-home"} initialOfferId={offerNotice?.offerId} />;
@@ -451,13 +455,13 @@ export default function App() {
         <div className="generic-app personal-settings-app">
           <div className="generic-app-icon"><Settings size={38} /></div>
           <h2>Settings</h2>
-          <p>Personalize M8M8S and manage your windows.</p>
+          <p>{nativeApp ? "Make your app feel like you." : "Personalize M8M8S and manage your windows."}</p>
           <div className="settings-options">
             <button onClick={() => launch("Theme Studio")}><Palette size={18}/> Open Theme Studio</button>
             <button onClick={() => setDarkMode(!darkMode)}>
               <Sun size={18} /> {darkMode ? "Light mode" : "Dark mode"}
             </button>
-            <button onClick={() => setQuickSettings(true)}>
+            {!nativeApp && <><button onClick={() => setQuickSettings(true)}>
               <Wifi size={18} /> Quick settings
             </button>
             <button onClick={splitTwo}>
@@ -470,7 +474,7 @@ export default function App() {
               }
             }}>
               <RotateCcw size={18} /> Clear desktop session
-            </button>
+            </button></>}
           </div>
           <Personalization preferences={preferences} onChange={savePreferences} />
         </div>
@@ -478,6 +482,22 @@ export default function App() {
       default: return null;
     }
   };
+
+  if (nativeApp) {
+    const selected = windows.find(w => w.id === activeId && !w.minimized) ?? topWindow(windows);
+    const home = () => { setWindows(previous => previous.map(w => ({ ...w, minimized: true }))); setActiveId(null); };
+    return <NativeMobileShell apps={orderedApps} time={time} preferences={preferences} dark={darkMode}
+      activeName={selected?.name} recent={[...windows].sort((a,b) => b.zIndex-a.zIndex).map(w => w.name)}
+      onLaunch={name => launch(name)} onHome={home} onCloseApp={() => { if (selected) void close(selected.id).then(home); }}
+      onSearch={() => setGlobalSearch(true)} onWidgets={() => setWidgetsOpen(true)}
+      notifications={<GameNotifications onPanelOpen={() => setGlobalSearch(false)} onOpen={notice => launch(notice.kind === "tierlist" ? "Games Tierlist" : "Free Games", notice)} />}
+      overlays={<><HomeWidgets time={time} onOpen={name => launch(name)} open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
+        {globalSearch && <GlobalSearch apps={apps.map(app => app.name)} onClose={() => setGlobalSearch(false)} onSelect={hit => { setGlobalSearch(false); if (hit.kind !== "app") setNavigation({ ...hit, request: crypto.randomUUID() }); launch(hit.app); }} />}
+        <WebsiteDialogs /></>}>
+      {windows.filter(w => ["Music", "Browser", "Calculator", "Gaming Passport", "Community Chat"].includes(w.name) || w.id === selected?.id).map(w =>
+        <div className="nm-app-surface" key={w.id} hidden={w.id !== selected?.id}>{appContent(w.name, w.id === selected?.id)}</div>)}
+    </NativeMobileShell>;
+  }
 
   return (
     <main className={`os-shell ${darkMode ? "dark-mode" : ""}`} data-mobile-floating={mobileFloating} data-icon-style={preferences.iconStyle} style={{ "--m8-accent": preferences.accent, "--m8-accent-ink": accentInk(preferences.accent), "--m8-window-opacity": preferences.windowOpacity } as CSSProperties}>
@@ -489,8 +509,7 @@ export default function App() {
 
       <header className="top-bar">
         <div className="top-brand">
-          <div className="brand-mark">O</div>
-          <span>M8M8S</span>
+          <BrandLogo />
         </div>
         <div className="top-system">
           <span>{formattedTime}</span>
@@ -691,7 +710,7 @@ export default function App() {
       {startMenu && (
         <div className="start-menu">
           <div className="start-menu-header">
-            <div className="brand-mark">O</div>
+            <BrandLogo />
             <div><strong>M8M8S</strong><span>Applications</span></div>
           </div>
           <div className="start-search">

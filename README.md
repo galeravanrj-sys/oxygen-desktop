@@ -4,6 +4,8 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 **[Open M8M8S](https://galeravanrj-sys.github.io/oxygen-desktop/)** · [Deployment status](https://github.com/galeravanrj-sys/oxygen-desktop/actions)
 
+**[Download the Android APK](https://github.com/galeravanrj-sys/oxygen-desktop/releases)** — ARM64 preview for Android 7.0+. Install instructions and checksums are included with each release.
+
 ![M8M8S home screen with its app shortcuts and Windows-style calculator](docs/screenshots/desktop.png)
 
 ## Inside M8M8S
@@ -165,3 +167,7 @@ Open Games Tierlist → 7DS Grand Cross → LR Heroes for the LR-specific rankin
 ### Hideout Guides tier lists
 
 Naruto Blazing includes PVE and Phantom Castle lists; Black Clover M includes PvP/PvE with class filtering. The supplied Black Clover page currently describes the UNDEAD revival server, which is disclosed in the app. Character variants, source tier labels, guide links, and snapshot import dates are preserved. The bundled Hideout data is updated with website deployments, separately from the daily five-game backend cache. No backend migration or secrets are needed.
+
+## Android app
+
+M8M8S also has a Tauri 2 Android project. Run `npm run android:doctor` to check local tools and `npm run android:build` for an ARM64 debug APK. See [Android setup and testing](docs/ANDROID.md). The web build remains separate and continues using GitHub Pages.

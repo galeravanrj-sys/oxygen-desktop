@@ -1,0 +1,44 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "M8M8S",
+  "version": "0.2.1",
+  "identifier": "com.m8m8s.oxygen",
+  "build": {
+    "frontendDist": "../dist-android",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev:android",
+    "beforeBuildCommand": "npm run build:android"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "M8M8S",
+        "width": 1100,
+        "height": 780,
+        "resizable": true,
+        "fullscreen": false,
+        "minWidth": 320,
+        "minHeight": 480
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost https: wss:; img-src 'self' asset: http://asset.localhost https: data: blob:; media-src 'self' https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'",
+      "devCsp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "android": {
+      "debugApplicationIdSuffix": ".debug",
+      "minSdkVersion": 24
+    }
+  }
+}

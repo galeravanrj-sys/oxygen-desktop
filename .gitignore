@@ -38,3 +38,20 @@ dist/
 *.before-*
 gallery-backup-before-update/
 backups/
+
+# Supabase CLI local state
+supabase/.temp/
+
+# Android and Rust build outputs / machine-local paths
+dist-android/
+src-tauri/target/
+src-tauri/gen/android/.gradle/
+src-tauri/gen/android/.idea/
+src-tauri/gen/android/**/build/
+src-tauri/gen/android/local.properties
+*.keystore
+*.jks
+
+# Generated Android native libraries and runtime glue
+src-tauri/gen/android/app/src/main/jniLibs/
+src-tauri/gen/android/app/src/main/java/**/generated/

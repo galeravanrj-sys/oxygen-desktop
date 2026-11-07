@@ -1,11 +1,17 @@
 ﻿import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: "/oxygen-desktop/",
+  base: mode === "android" ? "/" : "/oxygen-desktop/",
+  clearScreen: false,
+  server: {
+    ...(mode === "android" ? { port: 1420, strictPort: true, host: process.env.TAURI_DEV_HOST || "0.0.0.0", hmr: process.env.TAURI_DEV_HOST ? { host: process.env.TAURI_DEV_HOST, protocol: "ws", port: 1421 } : undefined } : {}),
+    watch: { ignored: ["**/src-tauri/**"] },
+  },
 
   build: {
+    outDir: mode === "android" ? "dist-android" : "dist",
     rolldownOptions: {
       output: {
         codeSplitting: {
@@ -31,4 +37,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

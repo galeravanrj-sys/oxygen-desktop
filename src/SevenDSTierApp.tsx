@@ -1,3 +1,4 @@
+import { openExternal } from "./nativePlatform";
 import HideoutTierList from "./HideoutTierList";
 import GrandCrossLR from "./GrandCrossLR";
 import TierComparison from "./RankingChanges";
@@ -165,7 +166,7 @@ export default function SevenDSTierApp({ initialGame }: { initialGame?: string }
         <button type="button" aria-label="Refresh" title="Refresh" onClick={selected ? reload : home}><RefreshCw size={17}/></button>
         <button type="button" title="All tier lists" onClick={home}><Trophy size={17}/></button>
         <div className="gtl-address"><Globe2 size={15}/><span>{selected ? currentSource!.replace(/^https:\/\//, "") : "oxygen://games-tierlist"}</span></div>
-        {selected && <button type="button" title="Open current live tier list in browser" aria-label="Open in browser" onClick={() => window.open(currentSource!, "_blank", "noopener,noreferrer")}><ExternalLink size={17}/></button>}
+        {selected && <button type="button" title="Open current live tier list in browser" aria-label="Open in browser" onClick={() => void openExternal(currentSource!)}><ExternalLink size={17}/></button>}
       </div>
       {!selected ? (
         <div className="gtl-home">

@@ -27,3 +27,7 @@ input {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Android WebView uses the same responsive interface as the website. */
+.native-app body { overscroll-behavior: none; }
+.native-app .os-shell { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
