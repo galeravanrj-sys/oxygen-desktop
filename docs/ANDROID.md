@@ -86,3 +86,7 @@ Install M8M8S.apk for both members and administrators. In Settings, sign into yo
 The standalone Admin APK and build configuration were removed. Only the user application ID, com.m8m8s.oxygen.debug, is built. Existing administrator membership and the announcement backend are unchanged. No new passwords, tokens, or backend deployment are required. If a separate Admin app was installed on a phone, it can be uninstalled after switching to this version; the M8M8S user app and public announcements are separate from that app's local storage.
 
 Build with npm run android:build. Notification preferences remain in Settings. Announcements use the existing public feed and Android background checks; phone timing and permission restrictions still apply.
+
+## Gallery publishing fix (0.4.3)
+
+Saved photos are converted directly from their FileReader/Camera data URLs into upload files. The native Content Security Policy blocks fetch(data:...), so local-image preparation must not use fetch. The policy and Storage permissions are unchanged. Publish confirmation, JPG/PNG/WebP restrictions, the 5 MB limit, duplicate-click protection, and visible preview feedback are verified with mocked Storage requests under the actual APK policy. No real photos are published by these checks.

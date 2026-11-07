@@ -1,3 +1,4 @@
+import { galleryPhotoFile } from "./galleryPhotoFile";
 import { usePublicGallerySync } from "./usePublicGallerySync";
 import { siteConfirm } from "./websiteDialogStore";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -35,6 +36,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
     return () => { node.close(); };
   }, [viewerOpen]);
   const fileRef = useRef<HTMLInputElement>(null);
+  const publishing = useRef(false);
 
   useEffect(() => {
     let alive = true;
@@ -101,17 +103,15 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   }
 
   async function publishLocal(photo: LocalPhoto) {
+    if (publishing.current) return;
+    publishing.current = true;
+    setBusy(true); setError(""); setMessage("");
     try {
-      const response = await fetch(photo.data);
-      const blob = await response.blob();
-      const mime = ["image/jpeg", "image/png", "image/webp"].includes(blob.type) ? blob.type : "image/png";
-      const extension = mime === "image/jpeg" ? "jpg" : mime === "image/webp" ? "webp" : "png";
-      await publish(new File([blob], `camera-or-local-${Date.now()}.${extension}`, { type: mime }));
+      await publish(galleryPhotoFile(photo.data, photo.name));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not prepare photo for publishing.");
-    }
+    } finally { publishing.current = false; setBusy(false); }
   }
-
   async function deletePhoto(photo: GalleryPhoto) {
     if (photo.source === "local") {
       if (await onDeleteLocal(photo.id)) setViewer(null);
@@ -163,7 +163,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
       ) : (
         <div className="unified-photo-grid">
           {allPhotos.map(photo => (
-            <button key={`${photo.source}-${photo.id}`} className="unified-photo-card" onClick={() => setViewer(photo)}>
+            <button key={`${photo.source}-${photo.id}`} className="unified-photo-card" onClick={() => { setError(""); setMessage(""); setViewer(photo); }}>
               <img src={photo.url} alt={photo.name} loading="lazy"/>
               <span className="unified-photo-label">{photo.source === "local" ? "On this device" : "Community"}</span>
             </button>
@@ -191,10 +191,12 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
           {viewer.source === "local" && <button disabled={busy} onClick={() => {
             const local = localPhotos.find(item => item.id === viewer.id);
             if (local) void publishLocal(local);
-          }}><UploadCloud size={16}/> Publish to everyone</button>}
+          }}><UploadCloud size={16}/> {busy ? "Publishing…" : "Publish to everyone"}</button>}
           {(viewer.source === "local" || signedIn) && <button disabled={busy} className="unified-danger" onClick={() => void deletePhoto(viewer)}>
             <Trash2 size={16}/> Delete
           </button>}
+          {error && <p className="unified-viewer-feedback unified-error" role="alert">{error}</p>}
+          {message && <p className="unified-viewer-feedback unified-success" role="status">{message}</p>}
         </div>
       </dialog>}
     </section>
