@@ -1,3 +1,4 @@
+import { phoneNotifications, type PhoneOpen } from "./phoneNotifications";
 import BrandLogo from "./BrandLogo";
 import { isTauri } from "@tauri-apps/api/core";
 import NativeMobileShell from "./NativeMobileShell";
@@ -24,7 +25,7 @@ import WidgetsApp from "./WidgetsApp";
 import "./App.css";
 import "./Appearance.css";
 import PublicGallery from "./PublicGallery";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
 import {
   MessageCircle, Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
@@ -260,6 +261,23 @@ export default function App() {
     }]);
     setActiveId(id);
   };
+
+  const openPhoneNotice = useEffectEvent((item: PhoneOpen) => {
+    if (item.kind === "tierlist" && item.game && ["zzz", "genshin", "origin", "hsr", "grandcross"].includes(item.game)) {
+      launch("Games Tierlist", { id: "phone:" + crypto.randomUUID(), kind: "tierlist", title: "Tier-list update", body: "", createdAt: Date.now(), read: true, game: item.game as GameNotice["game"] });
+    } else if (item.kind === "freegames") launch("Free Games", { id: "phone:" + crypto.randomUUID(), kind: "freegames", title: "New giveaway", body: "", createdAt: Date.now(), read: true, offerId: item.offerId });
+  });
+  useEffect(() => {
+    if (!nativeApp) return;
+    let active = true;
+    const consume = () => { void phoneNotifications<PhoneOpen>("consumeOpen").then(item => {
+      if (active && item) openPhoneNotice(item);
+    }).catch(() => {}); };
+    const first = window.setTimeout(consume, 0);
+    const visible = () => { if (document.visibilityState === "visible") consume(); };
+    document.addEventListener("visibilitychange", visible); window.addEventListener("focus", consume);
+    return () => { active = false; window.clearTimeout(first); document.removeEventListener("visibilitychange", visible); window.removeEventListener("focus", consume); };
+  }, [nativeApp]);
 
   const close = async (id: string) => {
     if (!await motion.dismiss(id, "close")) return;

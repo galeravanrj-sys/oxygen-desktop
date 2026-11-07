@@ -67,3 +67,15 @@ Official setup reference: https://v2.tauri.app/start/prerequisites/
 ## Mobile interface (0.2.0)
 
 The APK uses a dedicated mobile shell with Home, Games, Apps, and You tabs. Apps open full-screen with a back button; the desktop website keeps its existing window layout. Favorites, task summaries, recent apps, search, notifications, and appearance use the existing app data. Calculator history opens as a panel on phones. Browser layout checks cover 320–768px; physical-device testing is still required.
+
+## Phone notifications (0.3.0)
+
+Open the bell on the mobile home screen, choose **Enable phone alerts**, and allow Android's notification permission. Use **Send test** to verify the notification drawer. Tier-list changes and free-game alerts follow the category switches in the notification panel. **Android settings** opens system notification controls, including the separate tier and giveaway channels.
+
+A native WorkManager job checks the existing public feeds approximately every 15 minutes, even while the WebView is closed. Android may delay work during Doze, battery saving, or manufacturer restrictions; this is periodic background checking, not instant FCM push. Force-stopping the app prevents checks until it is opened again. No backend deployment, Firebase account, private tokens, or new secrets are required.
+
+The first successful check quietly establishes a baseline. Only actual ranking changes and previously unseen active game giveaways create phone alerts. Failed/stale responses retain the previous baseline. Turning alerts off cancels scheduled checks and clears this app's visible notifications. Notification taps open the relevant tier list or giveaway.
+
+Verification: five native ranking fingerprint tests cover timestamp/image-only changes, reordered lists, changed ranks, role grids, and stale/unavailable feeds. Browser bridge simulations cover permission, enable, test, disable, desktop separation, and existing mobile navigation. The signed APK builds; notification delivery, process death/reboot scheduling, and tap routing still require physical-device checks.
+
+References: https://developer.android.com/reference/androidx/work/PeriodicWorkRequest and https://developer.android.com/develop/ui/compose/notifications/notification-permission
