@@ -34,6 +34,7 @@ else{
   for(const folder of readdirSync(iconSource,{withFileTypes:true}).filter(item=>item.isDirectory()&&/^mipmap-/.test(item.name))){
    const destination=path.join(resourceRoot,folder.name);mkdirSync(destination,{recursive:true});
    for(const icon of readdirSync(path.join(iconSource,folder.name)).filter(name=>name.endsWith('.png')))copyFileSync(path.join(iconSource,folder.name,icon),path.join(destination,icon));
+   for(const icon of ['ic_launcher.png','ic_launcher_foreground.png','ic_launcher_round.png'])if(existsSync(path.join(iconSource,folder.name,icon)))copyFileSync(path.join(iconSource,folder.name,icon),path.join(destination,icon.replace('ic_launcher','m8m8s_launcher')));
   }
  }
  const cli=path.join(root,'node_modules/@tauri-apps/cli/tauri.js');
