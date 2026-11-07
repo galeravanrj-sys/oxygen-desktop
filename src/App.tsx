@@ -29,6 +29,7 @@ import SevenDSTierApp from "./SevenDSTierApp";
 import WidgetsApp from "./WidgetsApp";
 import "./App.css";
 import "./Appearance.css";
+import "./HomeLauncher.css";
 import PublicGallery from "./PublicGallery";
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
@@ -557,7 +558,7 @@ export default function App() {
         setContext({ x: event.clientX, y: event.clientY });
       }}>
         <div className="desktop-welcome">
-          <p className="eyebrow">YOUR PERSONAL SPACE</p>
+
           <h1>Good day.</h1>
           <p className="desktop-date">{formattedDate}</p>
         </div>
