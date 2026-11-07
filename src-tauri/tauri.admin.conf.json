@@ -1,0 +1,7 @@
+{
+  "productName": "M8M8S Admin",
+  "build": {
+    "frontendDist": "../dist-admin",
+    "beforeBuildCommand": "npm run build:admin"
+  }
+}

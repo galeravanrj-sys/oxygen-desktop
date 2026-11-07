@@ -12,6 +12,7 @@ A desktop-style website with everyday apps, game discoveries, and a home screen 
 
 | App | What you can do |
 | --- | --- |
+| Notifications | A dedicated history page with New, Today, and Earlier groups, announcement details, read status, and preferences in Settings. |
 | Community Chat | Public General, Gaming, and Help rooms; sign in to send messages, delete your own posts, and receive live updates. Requires the chat database migration. |
 | Daily Briefing | Bring together your saved city’s weather, tasks, today’s events, current giveaways, ranking changes, and games you’re playing. |
 | Gaming Passport | Keep a personal Wishlist, Owned, Playing, and Finished library, with ratings, notes, and JSON export. Save giveaways to your wishlist from Free Games. |

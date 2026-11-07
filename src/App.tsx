@@ -1,3 +1,6 @@
+import NotificationsPage from "./NotificationsPage";
+import NotificationSettings from "./NotificationSettings";
+import useNotificationPolling from "./useNotificationPolling";
 import { phoneNotifications, type PhoneOpen } from "./phoneNotifications";
 import BrandLogo from "./BrandLogo";
 import { isTauri } from "@tauri-apps/api/core";
@@ -28,7 +31,7 @@ import PublicGallery from "./PublicGallery";
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
 import {
-  MessageCircle, Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
+  Bell, MessageCircle, Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
   BatteryFull, Volume2, Sun, X, Minus, Maximize2,
   Copy as WindowRestore, Square, Minimize2, PanelLeft, PanelRight, LayoutGrid,
@@ -55,6 +58,7 @@ type Win = {
 type Photo = { id: string; name: string; data: string };
 
 const apps = [
+  { name: "Notifications", icon: Bell, color: "purple" },
   { name: "Community Chat", icon: MessageCircle, color: "blue" },
   { name: "Daily Briefing", icon: Sparkles, color: "purple" },
   { name: "Gaming Passport", icon: Gamepad2, color: "blue" },
@@ -149,6 +153,8 @@ function fileToData(file: File): Promise<string> {
 
 export default function App() {
   const nativeApp = isTauri();
+  useNotificationPolling();
+  const [announcementNotice, setAnnouncementNotice] = useState<string | undefined>();
   const [widgetsOpen, setWidgetsOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState(false);
   const [navigation, setNavigation] = useState<(SearchHit & { request: string }) | null>(null);
@@ -263,7 +269,8 @@ export default function App() {
   };
 
   const openPhoneNotice = useEffectEvent((item: PhoneOpen) => {
-    if (item.kind === "tierlist" && item.game && ["zzz", "genshin", "origin", "hsr", "grandcross"].includes(item.game)) {
+    if (item.kind === "announcement" && item.announcementId) { setAnnouncementNotice("announcement:" + item.announcementId); launch("Notifications"); }
+    else if (item.kind === "tierlist" && item.game && ["zzz", "genshin", "origin", "hsr", "grandcross"].includes(item.game)) {
       launch("Games Tierlist", { id: "phone:" + crypto.randomUUID(), kind: "tierlist", title: "Tier-list update", body: "", createdAt: Date.now(), read: true, game: item.game as GameNotice["game"] });
     } else if (item.kind === "freegames") launch("Free Games", { id: "phone:" + crypto.randomUUID(), kind: "freegames", title: "New giveaway", body: "", createdAt: Date.now(), read: true, offerId: item.offerId });
   });
@@ -435,6 +442,7 @@ export default function App() {
 
   const appContent = (name: string, visible = true) => {
     switch (name) {
+      case "Notifications": return <NotificationsPage key={announcementNotice || "history"} initialId={announcementNotice} onSettings={() => launch("Settings")} onOpen={notice => launch(notice.kind === "tierlist" ? "Games Tierlist" : "Free Games", notice)} />;
       case "Community Chat": return <CommunityChat active={visible} />;
       case "Daily Briefing": return <DailyBriefing time={time} onOpen={name => launch(name)} onNotice={notice => launch("Games Tierlist", notice)} onOffer={id => launch("Free Games", { id: `briefing-offer:${id}:${Date.now()}`, kind: "freegames", title: "Giveaway", body: "", offerId: id, createdAt: Date.now(), read: true })} />;
       case "Gaming Passport": return <GamingPassport key={navigation?.app === "Gaming Passport" ? navigation.request : "passport"} initialGameId={navigation?.app === "Gaming Passport" ? navigation.id : undefined} />;
@@ -494,6 +502,7 @@ export default function App() {
               <RotateCcw size={18} /> Clear desktop session
             </button></>}
           </div>
+          <NotificationSettings />
           <Personalization preferences={preferences} onChange={savePreferences} />
         </div>
       );
@@ -508,7 +517,7 @@ export default function App() {
       activeName={selected?.name} recent={[...windows].sort((a,b) => b.zIndex-a.zIndex).map(w => w.name)}
       onLaunch={name => launch(name)} onHome={home} onCloseApp={() => { if (selected) void close(selected.id).then(home); }}
       onSearch={() => setGlobalSearch(true)} onWidgets={() => setWidgetsOpen(true)}
-      notifications={<GameNotifications onPanelOpen={() => setGlobalSearch(false)} onOpen={notice => launch(notice.kind === "tierlist" ? "Games Tierlist" : "Free Games", notice)} />}
+      notifications={<GameNotifications onShow={() => { setAnnouncementNotice(undefined); launch("Notifications"); }} />}
       overlays={<><HomeWidgets time={time} onOpen={name => launch(name)} open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
         {globalSearch && <GlobalSearch apps={apps.map(app => app.name)} onClose={() => setGlobalSearch(false)} onSelect={hit => { setGlobalSearch(false); if (hit.kind !== "app") setNavigation({ ...hit, request: crypto.randomUUID() }); launch(hit.app); }} />}
         <WebsiteDialogs /></>}>
@@ -531,7 +540,7 @@ export default function App() {
         </div>
         <div className="top-system">
           <span>{formattedTime}</span>
-          <GameNotifications onOpen={notice => launch(notice.kind === "tierlist" ? "Games Tierlist" : "Free Games", notice)} onPanelOpen={() => { setStartMenu(false); setQuickSettings(false); setContext(null); }} />
+          <GameNotifications onShow={() => { setAnnouncementNotice(undefined); launch("Notifications"); }} />
           <button className="system-button" onClick={() => setQuickSettings(true)}>
             <Wifi size={16} /><Bluetooth size={15} /><BatteryFull size={19} />
           </button>

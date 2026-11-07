@@ -3,13 +3,13 @@ export const GIVEAWAY_FEED = "https://www.gamerpower.com/api/filter?platform=ste
 export const NOTIFICATION_KEY = "oxygen-game-notifications-v1";
 export const GAME_NAMES = { zzz: "Zenless Zone Zero", genshin: "Genshin Impact", origin: "Seven Deadly Sins: Origin", hsr: "Honkai: Star Rail", grandcross: "7DS Grand Cross" };
 export type GameId = keyof typeof GAME_NAMES;
-export type GameNotice = { id: string; kind: "tierlist" | "freegames"; title: string; body: string; createdAt: number; read: boolean; game?: GameId; offerId?: number };
-export type NoticeStore = { version: 1; items: GameNotice[]; tiers: Partial<Record<GameId, string>>; seenOffers: number[] | null; tierAlerts: boolean; freeGameAlerts: boolean };
+export type GameNotice = { id: string; kind: "tierlist" | "freegames" | "announcement"; title: string; body: string; createdAt: number; read: boolean; game?: GameId; offerId?: number; announcementId?: string };
+export type NoticeStore = { version: 1; items: GameNotice[]; tiers: Partial<Record<GameId, string>>; seenOffers: number[] | null; tierAlerts: boolean; freeGameAlerts: boolean; announcementAlerts: boolean; announcementSeen: string[] | null };
 export type OfferUpdate = { id: number; title: string; stores: string };
 export type TierUpdate = { game: GameId; fingerprint: string; updatedAt: string };
 const isGame = (value: unknown): value is GameId => typeof value === "string" && Object.hasOwn(GAME_NAMES, value);
 const object = (value: unknown): Record<string, unknown> | null => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
-export function emptyNoticeStore(): NoticeStore { return { version: 1, items: [], tiers: {}, seenOffers: null, tierAlerts: true, freeGameAlerts: true }; }
+export function emptyNoticeStore(): NoticeStore { return { version: 1, items: [], tiers: {}, seenOffers: null, tierAlerts: true, freeGameAlerts: true, announcementAlerts: true, announcementSeen: null }; }
 export function parseNoticeStore(raw: string | null): NoticeStore {
   const fallback = emptyNoticeStore();
   try {
@@ -18,10 +18,10 @@ export function parseNoticeStore(raw: string | null): NoticeStore {
     for (const [game, value] of Object.entries(object(data.tiers) || {})) if (isGame(game) && typeof value === "string" && /^[a-f0-9]{64}$/.test(value)) tiers[game] = value;
     const seen = new Set<string>();
     const items = Array.isArray(data.items) ? data.items.filter((value): value is GameNotice => {
-      const item = object(value); if (!item || typeof item.id !== "string" || item.id.length > 200 || seen.has(item.id) || (item.kind !== "tierlist" && item.kind !== "freegames") || typeof item.title !== "string" || item.title.length > 180 || typeof item.body !== "string" || item.body.length > 600 || typeof item.createdAt !== "number" || !Number.isFinite(item.createdAt) || typeof item.read !== "boolean" || (item.kind === "tierlist" && !isGame(item.game)) || (item.offerId !== undefined && (!Number.isSafeInteger(item.offerId) || Number(item.offerId) <= 0))) return false;
+      const item = object(value); if (!item || typeof item.id !== "string" || item.id.length > 200 || seen.has(item.id) || (item.kind !== "tierlist" && item.kind !== "freegames" && item.kind !== "announcement") || typeof item.title !== "string" || item.title.length > 180 || typeof item.body !== "string" || item.body.length > (item.kind === "announcement" ? 2000 : 600) || typeof item.createdAt !== "number" || !Number.isFinite(item.createdAt) || typeof item.read !== "boolean" || (item.kind === "tierlist" && !isGame(item.game)) || (item.offerId !== undefined && (!Number.isSafeInteger(item.offerId) || Number(item.offerId) <= 0))) return false;
       seen.add(item.id); return true;
     }).slice(0, 100) : [];
-    return { version: 1, items, tiers, seenOffers: Array.isArray(data.seenOffers) ? [...new Set(data.seenOffers.filter((id): id is number => Number.isSafeInteger(id) && id > 0))].slice(-2000) : null, tierAlerts: typeof data.tierAlerts === "boolean" ? data.tierAlerts : true, freeGameAlerts: typeof data.freeGameAlerts === "boolean" ? data.freeGameAlerts : true };
+    return { version: 1, items, tiers, seenOffers: Array.isArray(data.seenOffers) ? [...new Set(data.seenOffers.filter((id): id is number => Number.isSafeInteger(id) && id > 0))].slice(-2000) : null, tierAlerts: typeof data.tierAlerts === "boolean" ? data.tierAlerts : true, freeGameAlerts: typeof data.freeGameAlerts === "boolean" ? data.freeGameAlerts : true, announcementAlerts: typeof data.announcementAlerts === "boolean" ? data.announcementAlerts : true, announcementSeen: Array.isArray(data.announcementSeen) ? data.announcementSeen.filter((id): id is string => typeof id === "string" && /^[a-f0-9-]{36}$/i.test(id)).slice(-2000) : null };
   } catch { return fallback; }
 }
 function characters(value: unknown): unknown[] {

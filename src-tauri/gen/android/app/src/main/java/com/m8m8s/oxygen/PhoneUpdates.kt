@@ -20,6 +20,7 @@ import javax.net.ssl.HttpsURLConnection
 object PhoneUpdates {
   private const val WORK = "m8m8s-phone-updates-v1"
   private const val TIERS = "m8m8s-tier-updates"
+  private const val ANNOUNCEMENTS = "m8m8s-announcements"
   private const val GAMES = "m8m8s-free-games"
   private val gameNames = linkedMapOf("zzz" to "Zenless Zone Zero", "genshin" to "Genshin Impact", "origin" to "Seven Deadly Sins: Origin", "hsr" to "Honkai: Star Rail", "grandcross" to "7DS Grand Cross")
   fun preferences(context: Context) = context.getSharedPreferences("m8m8s-phone-updates-v1", Context.MODE_PRIVATE)
@@ -30,10 +31,11 @@ object PhoneUpdates {
       val manager = context.getSystemService(NotificationManager::class.java)
       manager.createNotificationChannel(NotificationChannel(TIERS, "Tier-list changes", NotificationManager.IMPORTANCE_DEFAULT))
       manager.createNotificationChannel(NotificationChannel(GAMES, "Free game giveaways", NotificationManager.IMPORTANCE_DEFAULT))
+      manager.createNotificationChannel(NotificationChannel(ANNOUNCEMENTS, "M8M8S announcements", NotificationManager.IMPORTANCE_DEFAULT))
     }
   }
 
-  fun configure(context: Context, enabled: Boolean, tierAlerts: Boolean, freeGameAlerts: Boolean) {
+  fun configure(context: Context, enabled: Boolean, tierAlerts: Boolean, freeGameAlerts: Boolean, announcementAlerts: Boolean) {
     val prefs = preferences(context)
     val edit = prefs.edit()
     // Start quietly whenever a category is enabled; old updates are not new notifications.
@@ -41,9 +43,11 @@ object PhoneUpdates {
       gameNames.keys.forEach { edit.remove("tier.$it") }
     }
     if (enabled && (!prefs.getBoolean("enabled", false) || freeGameAlerts && !prefs.getBoolean("freeGameAlerts", true))) edit.remove("offers")
+    if (enabled && (!prefs.getBoolean("enabled", false) || announcementAlerts && !prefs.getBoolean("announcementAlerts", true))) edit.remove("announcements")
+    edit.putBoolean("announcementAlerts", announcementAlerts)
     edit.putBoolean("enabled", enabled).putBoolean("tierAlerts", tierAlerts).putBoolean("freeGameAlerts", freeGameAlerts).apply()
     val manager = WorkManager.getInstance(context)
-    if (enabled && (tierAlerts || freeGameAlerts)) {
+    if (enabled && (tierAlerts || freeGameAlerts || announcementAlerts)) {
       channels(context)
       val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
       manager.enqueueUniquePeriodicWork(WORK, ExistingPeriodicWorkPolicy.KEEP,
@@ -54,21 +58,22 @@ object PhoneUpdates {
     }
   }
 
-  fun post(context: Context, kind: String, title: String, body: String, game: String? = null, offer: Long? = null) {
+  fun post(context: Context, kind: String, title: String, body: String, game: String? = null, offer: Long? = null, announcement: String? = null) {
     if (!allowed(context)) return
     if (kind != "test") {
       val prefs = preferences(context)
-      if (!prefs.getBoolean("enabled", false) || !prefs.getBoolean(if (kind == "tierlist") "tierAlerts" else "freeGameAlerts", true)) return
+      if (!prefs.getBoolean("enabled", false) || !prefs.getBoolean(if (kind == "tierlist") "tierAlerts" else if (kind == "announcement") "announcementAlerts" else "freeGameAlerts", true)) return
     }
     channels(context)
-    val id = ("$kind:$game:$offer").hashCode() and Int.MAX_VALUE
+    val id = ("$kind:$game:$offer:$announcement").hashCode() and Int.MAX_VALUE
     val intent = Intent(context, MainActivity::class.java).apply {
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
       putExtra("m8_kind", kind)
+      announcement?.let { putExtra("m8_announcement", it) }
       game?.let { putExtra("m8_game", it) }; offer?.let { putExtra("m8_offer", it) }
     }
     val pending = PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-    val notice = NotificationCompat.Builder(context, if (kind == "tierlist") TIERS else GAMES)
+    val notice = NotificationCompat.Builder(context, if (kind == "tierlist") TIERS else if (kind == "announcement") ANNOUNCEMENTS else GAMES)
       .setSmallIcon(R.drawable.ic_stat_m8m8s).setContentTitle(title.take(180)).setContentText(body.take(600))
       .setStyle(NotificationCompat.BigTextStyle().bigText(body.take(600))).setAutoCancel(true)
       .setContentIntent(pending).setOnlyAlertOnce(true).setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -153,6 +158,22 @@ object PhoneUpdates {
       val saved = JSONObject(); (seen.toList() + offers.map { it.getLong("id").toString() }).distinct().takeLast(2000).forEach { saved.put(it, true) }
       prefs.edit().putString("offers", saved.toString()).apply(); successful = true
     } catch (_: Exception) { /* A failed feed is never treated as an empty feed. */ }
+    if (prefs.getBoolean("announcementAlerts", true)) try {
+      val feed = JSONArray(fetch("https://wxszznrkuozyptkekhjp.supabase.co/functions/v1/announcements"))
+      check(feed.length() <= 100)
+      val messages = (0 until feed.length()).map { feed.getJSONObject(it) }
+      for (message in messages) {
+        check(Regex("[a-fA-F0-9-]{36}").matches(message.optString("id")))
+        check(message.optString("title").isNotBlank() && message.getString("title").length <= 140)
+        check(message.optString("body").isNotBlank() && message.getString("body").length <= 2000 && message.optString("published_at").isNotBlank())
+      }
+      val previous = prefs.getString("announcements", null)
+      val seen = if (previous == null) emptySet<String>() else JSONObject(previous).keys().asSequence().toSet()
+      val fresh = messages.filter { it.getString("id") !in seen }
+      if (previous != null) for (message in fresh.take(5)) post(context, "announcement", message.getString("title"), message.getString("body"), announcement = message.getString("id"))
+      val saved = JSONObject(); (seen.toList() + messages.map { it.getString("id") }).distinct().takeLast(2000).forEach { saved.put(it, true) }
+      prefs.edit().putString("announcements", saved.toString()).apply(); successful = true
+    } catch (_: Exception) { /* Keep announcement history if the public feed is unavailable. */ }
     if (successful) prefs.edit().putLong("lastCheck", System.currentTimeMillis()).apply()
     return successful
   }

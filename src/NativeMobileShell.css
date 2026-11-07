@@ -194,3 +194,5 @@ to{opacity:1;transform:none}
 
 .native-shell .nm-app-tile>strong,.native-shell .nm-quick-actions strong{font-size:12px}
 
+
+.os-shell.native-shell{min-height:0}

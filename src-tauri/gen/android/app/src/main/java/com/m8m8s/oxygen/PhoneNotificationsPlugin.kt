@@ -19,6 +19,7 @@ class PhoneUpdateArgs {
   var enabled: Boolean = false
   var tierAlerts: Boolean = true
   var freeGameAlerts: Boolean = true
+  var announcementAlerts: Boolean = true
 }
 
 @TauriPlugin(permissions = [Permission(strings = [Manifest.permission.POST_NOTIFICATIONS], alias = "notifications")])
@@ -35,7 +36,7 @@ class PhoneNotificationsPlugin(private val activity: Activity) : Plugin(activity
   @Command
   fun configure(invoke: Invoke) {
     val args = invoke.parseArgs(PhoneUpdateArgs::class.java)
-    PhoneUpdates.configure(activity, args.enabled, args.tierAlerts, args.freeGameAlerts)
+    PhoneUpdates.configure(activity, args.enabled, args.tierAlerts, args.freeGameAlerts, args.announcementAlerts)
     invoke.resolve(result())
   }
 
@@ -73,6 +74,8 @@ class PhoneNotificationsPlugin(private val activity: Activity) : Plugin(activity
     intent.getStringExtra("m8_kind")?.let { result.put("kind", it) }
     intent.getStringExtra("m8_game")?.let { result.put("game", it) }
     if (intent.hasExtra("m8_offer")) result.put("offerId", intent.getLongExtra("m8_offer", 0))
+    intent.getStringExtra("m8_announcement")?.let { result.put("announcementId", it) }
+    intent.removeExtra("m8_announcement")
     intent.removeExtra("m8_kind"); intent.removeExtra("m8_game"); intent.removeExtra("m8_offer")
     invoke.resolve(result)
   }

@@ -55,3 +55,5 @@ src-tauri/gen/android/local.properties
 # Generated Android native libraries and runtime glue
 src-tauri/gen/android/app/src/main/jniLibs/
 src-tauri/gen/android/app/src/main/java/**/generated/
+
+dist-admin/
