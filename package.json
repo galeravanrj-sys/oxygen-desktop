@@ -14,9 +14,7 @@
     "android:init": "node scripts/android.mjs init",
     "android:dev": "node scripts/android.mjs dev",
     "android:build": "node scripts/android.mjs build --debug --target aarch64 --apk --ci",
-    "android:doctor": "node scripts/android.mjs doctor",
-    "build:admin": "tsc -b && vite build --mode admin && node scripts/prepare-admin-dist.mjs",
-    "android:admin:build": "node scripts/android.mjs build-admin --debug --target aarch64 --apk --ci"
+    "android:doctor": "node scripts/android.mjs doctor"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

@@ -79,16 +79,10 @@ The first successful check quietly establishes a baseline. Only actual ranking c
 Verification: five native ranking fingerprint tests cover timestamp/image-only changes, reordered lists, changed ranks, role grids, and stale/unavailable feeds. Browser bridge simulations cover permission, enable, test, disable, desktop separation, and existing mobile navigation. The signed APK builds; notification delivery, process death/reboot scheduling, and tap routing still require physical-device checks.
 
 References: https://developer.android.com/reference/androidx/work/PeriodicWorkRequest and https://developer.android.com/develop/ui/compose/notifications/notification-permission
-## Notifications and separate Admin APK (0.4.0)
+## One app with administrator accounts (0.4.1)
 
-The bell now opens a full-screen Notifications app. New unread items appear under New; read items from the current day appear under Today; older read items appear under Earlier. Read messages stay in history (up to 100 saved items). Announcements open as full messages. Notification preferences and phone alert controls are in Settings. The old popover, close button, manual Check now action, and last-check footer were removed.
+Install M8M8S.apk for both members and administrators. In Settings, sign into your existing community account. Backend-approved administrators see Manage announcements, which opens the integrated drafts, preview, publish, and history tools. Ordinary accounts do not see this entry and cannot publish through the API. Community Chat, Gallery, and Settings share the same sign-in session.
 
-Build user APK: `npm run android:build`.
-Build separate administrator APK: `npm run android:admin:build`.
-Both commands currently output `src-tauri/gen/android/app/build/outputs/apk/arm64/debug/app-arm64-debug.apk`, so copy each APK before building the other variant. User application ID: `com.m8m8s.oxygen.debug`; administrator application ID: `com.m8m8s.admin.debug`. They install side by side and use separate Android app storage. The Admin app has sign-in, backend role checks, drafts, preview, publication confirmation, and announcement history. It is not included in the user app's launcher.
+The standalone Admin APK and build configuration were removed. Only the user application ID, com.m8m8s.oxygen.debug, is built. Existing administrator membership and the announcement backend are unchanged. No new passwords, tokens, or backend deployment are required. If a separate Admin app was installed on a phone, it can be uninstalled after switching to this version; the M8M8S user app and public announcements are separate from that app's local storage.
 
-Use an existing confirmed account with a row in `public.announcement_admins`. Administrator membership can be assigned only through privileged database access; client applications cannot grant themselves access. There are no service-role keys or administrator passwords in either APK. Published messages are immutable through client RPCs. Drafts and author IDs are not included in the public feed.
-
-Backend migration: `supabase/migrations/20261107000100_announcements.sql`. The read-only `announcements` edge function is deployed without JWT verification because published announcements are public. Saving and publishing go through authenticated, administrator-checked database RPCs. Do not deploy backend changes or grant roles without approval.
-
-Users must install 0.4.0 or newer to receive announcements. The user app fetches history in the foreground; the native worker checks for phone alerts about every 15 minutes. Existing Android timing, permission, channel and force-stop restrictions still apply. The first feed check establishes a quiet baseline. Enabling announcements later imports prior announcements as history rather than alerting for all old messages. No real announcements are published by the automated checks.
+Build with npm run android:build. Notification preferences remain in Settings. Announcements use the existing public feed and Android background checks; phone timing and permission restrictions still apply.

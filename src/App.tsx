@@ -1,3 +1,5 @@
+import AccountSettings from "./AccountSettings";
+import AdminPanel from "./AdminPanel";
 import NotificationsPage from "./NotificationsPage";
 import NotificationSettings from "./NotificationSettings";
 import useNotificationPolling from "./useNotificationPolling";
@@ -153,6 +155,7 @@ function fileToData(file: File): Promise<string> {
 
 export default function App() {
   const nativeApp = isTauri();
+  const [adminOpen, setAdminOpen] = useState(false);
   useNotificationPolling();
   const [announcementNotice, setAnnouncementNotice] = useState<string | undefined>();
   const [widgetsOpen, setWidgetsOpen] = useState(false);
@@ -502,6 +505,7 @@ export default function App() {
               <RotateCcw size={18} /> Clear desktop session
             </button></>}
           </div>
+          <AccountSettings onAdmin={() => setAdminOpen(true)} />
           <NotificationSettings />
           <Personalization preferences={preferences} onChange={savePreferences} />
         </div>
@@ -518,7 +522,7 @@ export default function App() {
       onLaunch={name => launch(name)} onHome={home} onCloseApp={() => { if (selected) void close(selected.id).then(home); }}
       onSearch={() => setGlobalSearch(true)} onWidgets={() => setWidgetsOpen(true)}
       notifications={<GameNotifications onShow={() => { setAnnouncementNotice(undefined); launch("Notifications"); }} />}
-      overlays={<><HomeWidgets time={time} onOpen={name => launch(name)} open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
+      overlays={<>{adminOpen && <AdminPanel onClose={() => setAdminOpen(false)}/>}<HomeWidgets time={time} onOpen={name => launch(name)} open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
         {globalSearch && <GlobalSearch apps={apps.map(app => app.name)} onClose={() => setGlobalSearch(false)} onSelect={hit => { setGlobalSearch(false); if (hit.kind !== "app") setNavigation({ ...hit, request: crypto.randomUUID() }); launch(hit.app); }} />}
         <WebsiteDialogs /></>}>
       {windows.filter(w => ["Music", "Browser", "Calculator", "Gaming Passport", "Community Chat"].includes(w.name) || w.id === selected?.id).map(w =>
@@ -838,6 +842,7 @@ export default function App() {
         </div>
       )}
       {globalSearch && <GlobalSearch apps={apps.map(app => app.name)} onClose={() => setGlobalSearch(false)} onSelect={hit => { setGlobalSearch(false); if (hit.kind !== "app") setNavigation({ ...hit, request: crypto.randomUUID() }); launch(hit.app); }} />}
+      {adminOpen && <AdminPanel onClose={() => setAdminOpen(false)}/>}
       <WebsiteDialogs />
     </main>
   );

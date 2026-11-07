@@ -14,9 +14,7 @@ const ndks=ndkRoot&&existsSync(ndkRoot)?readdirSync(ndkRoot).filter(name=>exists
 env.NDK_HOME=first([env.NDK_HOME,ndks[0]&&path.join(ndkRoot,ndks[0])]);
 env.Path=[cargoBin,env.JAVA_HOME&&path.join(env.JAVA_HOME,'bin'),env.ANDROID_HOME&&path.join(env.ANDROID_HOME,'platform-tools'),env.Path||env.PATH].filter(Boolean).join(path.delimiter);
 env.PATH=env.Path;
-const [requested='doctor',...args]=process.argv.slice(2);
-const command=requested==='build-admin'?'build':requested;
-if(requested==='build-admin'){env.M8M8S_ADMIN_BUILD='1';args.push('--config','src-tauri/tauri.admin.conf.json');}
+const [command='doctor',...args]=process.argv.slice(2);
 const failures=[];
 if(!existsSync(path.join(cargoBin,process.platform==='win32'?'cargo.exe':'cargo')))failures.push('Rust is missing. Install from https://rustup.rs.');
 if(!env.JAVA_HOME)failures.push('JDK 21/Android Studio JBR is missing. Set M8M8S_JAVA_HOME.');

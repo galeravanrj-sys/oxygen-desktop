@@ -19,8 +19,8 @@ android {
     namespace = "com.m8m8s.oxygen"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = if (System.getenv("M8M8S_ADMIN_BUILD") == "1") "com.m8m8s.admin" else "com.m8m8s.oxygen"
-        manifestPlaceholders["m8AppLabel"] = if (System.getenv("M8M8S_ADMIN_BUILD") == "1") "M8M8S Admin" else "M8M8S"
+        applicationId = "com.m8m8s.oxygen"
+        manifestPlaceholders["m8AppLabel"] = "M8M8S"
         minSdk = 24
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
