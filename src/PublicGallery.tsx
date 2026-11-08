@@ -18,6 +18,7 @@ type Props = {
 
 export default function PublicGallery({ localPhotos, loadingLocal, localError, onSaveLocal, onDeleteLocal }: Props) {
   const { photos: cloudPhotos, syncError, syncStatus, refresh, announce } = usePublicGallerySync();
+  const [collection, setCollection] = useState<"all" | "local" | "public">("all");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -51,6 +52,8 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
     ...localPhotos.map(photo => ({ id: photo.id, name: photo.name, url: photo.data, source: "local" as const })),
     ...cloudPhotos.map(photo => ({ id: photo.name, name: photo.name, url: photo.url, source: "public" as const })),
   ], [localPhotos, cloudPhotos]);
+
+  const visiblePhotos = allPhotos.filter(photo => collection === "all" || photo.source === collection);
 
   const viewerIndex = viewer ? allPhotos.findIndex(photo => photo.id === viewer.id && photo.source === viewer.source) : -1;
   function changePhoto(offset: number) { if (allPhotos.length) setViewer(allPhotos[(viewerIndex + offset + allPhotos.length) % allPhotos.length]); }
@@ -152,17 +155,20 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
         <span><Camera size={14}/> Camera photos save here automatically</span>
         <span role="status" className="unified-sync-status"><Cloud size={14}/>{syncError ? "Auto-sync reconnecting" : syncStatus}</span>
       </div>
+      <nav className="gallery-collections" aria-label="Photo collections">
+        {([['all', 'All photos'], ['local', 'On device'], ['public', 'Community']] as const).map(([value, label]) => <button key={value} aria-pressed={collection === value} onClick={() => setCollection(value)}>{label}</button>)}
+      </nav>
       {syncError && <p className="unified-error" role="alert">{syncError}</p>}
       {localError && <p className="unified-error" role="alert">{localError}</p>}
       {error && <p className="unified-error" role="alert">{error}</p>}
       {message && <p className="unified-success" role="status">{message}</p>}
       {loadingLocal && <p className="unified-muted">Loading saved photos…</p>}
-      {allPhotos.length === 0 && !loadingLocal ? (
+      {visiblePhotos.length === 0 && !loadingLocal ? (
         <div className="unified-empty"><ImagePlus size={40}/><h3>No photos yet</h3>
           <p>Take a picture in Camera or add photos from your device.</p></div>
       ) : (
         <div className="unified-photo-grid">
-          {allPhotos.map(photo => (
+          {visiblePhotos.map(photo => (
             <button key={`${photo.source}-${photo.id}`} className="unified-photo-card" onClick={() => { setError(""); setMessage(""); setViewer(photo); }}>
               <img src={photo.url} alt={photo.name} loading="lazy"/>
               <span className="unified-photo-label">{photo.source === "local" ? "On this device" : "Community"}</span>

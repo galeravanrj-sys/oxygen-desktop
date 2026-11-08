@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.4.3"
+version = "0.4.4"
 description = "M8M8S personal desktop for Android"
 authors = ["M8M8S"]
 license = ""

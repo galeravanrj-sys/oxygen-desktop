@@ -13,6 +13,7 @@ export async function openExternal(url: string) {
 export function installNativePlatform() {
   if (!isTauri()) return;
   document.documentElement.classList.add("native-app");
+  document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover");
   document.addEventListener("click", event => {
     const link = (event.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
     if (!link || link.hasAttribute("download") || !["https:", "http:"].includes(new URL(link.href).protocol)) return;

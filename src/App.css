@@ -1691,3 +1691,10 @@ button.oxygen-widget:hover {
 }
 
 .unified-viewer-actions .unified-viewer-feedback{flex-basis:100%;margin:2px 0 0;padding:8px 12px;font-size:12px;line-height:1.5;text-align:center;overflow-wrap:anywhere}.unified-viewer-actions .unified-error{background:#442c39;color:#ffb8c4}.unified-viewer-actions .unified-success{background:#243c36;color:#a6e8c7}
+
+/* Keep uploaded wallpaper as one centered image, including dark mode. */
+.os-shell .wallpaper.wallpaper-custom{background-size:cover;background-position:center;background-repeat:no-repeat}
+.wallpaper-custom .wallpaper-orb{display:none}
+.gallery-collections{display:flex;gap:8px;margin:0 0 18px}
+.gallery-collections button{border:1px solid #dddbea;background:transparent;color:#686281;border-radius:20px;padding:10px 16px;font:inherit;font-size:12px;min-height:44px}
+.gallery-collections button[aria-pressed=true]{background:#695de4;border-color:#695de4;color:white}

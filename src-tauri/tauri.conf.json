@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "M8M8S",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "identifier": "com.m8m8s.oxygen",
   "build": {
     "frontendDist": "../dist-android",
