@@ -1,0 +1,78 @@
+{
+  "expo": {
+    "name": "M8M8S Mobile",
+    "slug": "oxygen-mobile",
+    "version": "0.1.0",
+    "orientation": "default",
+    "icon": "./assets/images/m8m8s-icon.png",
+    "scheme": "m8m8s-mobile",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.m8m8s.oxygen.mobile",
+      "versionCode": 1,
+      "predictiveBackGestureEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/m8m8s-adaptive.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": ["CAMERA", "POST_NOTIFICATIONS"]
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/m8m8s-icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#263b51",
+          "image": "./assets/images/m8m8s-icon.png",
+          "imageWidth": 112
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow M8M8S to take photos when you open Camera.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choose photos to keep privately or publish separately.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Choose photos for your private gallery.",
+          "savePhotosPermission": "Save photos to your device when you choose Save to Photos.",
+          "granularPermissions": ["photo"],
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": true
+        }
+      ],
+      "expo-notifications",
+      "expo-background-task",
+      "expo-secure-store",
+      "expo-sharing",
+      "@react-native-community/datetimepicker",
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "verifiedAt":  "2026-11-20T05:31:41.3344555Z",
+    "file":  "artifacts/M8M8S-Mobile-0.1.0-release.apk",
+    "bytes":  42542558,
+    "sha256":  "bed7953fb4b6c57b16616c0710ae21364d700efce3a99bcf7fbd71f02efcbbed",
+    "package":  "com.m8m8s.oxygen.mobile",
+    "version":  "0.1.0",
+    "architecture":  "arm64-v8a",
+    "minimumSdk":  24,
+    "targetSdk":  36,
+    "signatureVerified":  true,
+    "signing":  "Android Debug certificate - preview only",
+    "buildResult":  "BUILD SUCCESSFUL in 4m 46s",
+    "androidDeviceTested":  false,
+    "bundleIncludesFinalSource":  true
+}

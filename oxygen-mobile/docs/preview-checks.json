@@ -1,0 +1,33 @@
+{
+  "platform": "Expo React Native Web preview, not an Android device",
+  "checkedAt": "2026-11-20T05:29:56.672Z",
+  "results": [
+    "Notes create/edit survive reload in the web preview.",
+    "Task creation survives reload in the web preview.",
+    "Calculator buttons produce 2 + 3 = 5.",
+    "Route rendered: notifications",
+    "Route rendered: chat",
+    "Route rendered: briefing",
+    "Route rendered: passport",
+    "Route rendered: appearance",
+    "Route rendered: weather",
+    "Route rendered: tasks",
+    "Route rendered: free-games",
+    "Route rendered: gallery",
+    "Route rendered: tiers",
+    "Route rendered: widgets",
+    "Route rendered: files",
+    "Route rendered: browser",
+    "Route rendered: settings",
+    "Route rendered: calendar",
+    "Route rendered: calculator",
+    "Route rendered: music",
+    "Route rendered: notes",
+    "Route rendered: camera",
+    "Launcher fits 320x740",
+    "Launcher fits 414x896",
+    "Launcher fits 768x1024",
+    "Launcher fits 960x540",
+    "No uncaught browser startup/route errors."
+  ]
+}

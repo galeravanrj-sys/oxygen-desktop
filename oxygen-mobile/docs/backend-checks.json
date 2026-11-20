@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-11-20T04:54:05.203Z",
+  "mode": "read-only",
+  "results": [
+    {
+      "name": "public Gallery contract shared by website and native clients",
+      "status": "passed",
+      "detail": "6 public objects read consistently; no upload performed"
+    },
+    {
+      "name": "community message schema and anonymous read policy",
+      "status": "passed",
+      "detail": "message fields accepted; 1 rows sampled without printing content"
+    },
+    {
+      "name": "chat reaction schema",
+      "status": "passed",
+      "detail": "existing reaction fields accepted"
+    },
+    {
+      "name": "announcement RPC",
+      "status": "passed",
+      "detail": "1 published announcements readable"
+    },
+    {
+      "name": "unread counts RPC",
+      "status": "passed",
+      "detail": "all three existing rooms returned"
+    },
+    {
+      "name": "administrator RPC rejects anonymous access",
+      "status": "passed",
+      "detail": "anonymous request denied as expected"
+    },
+    {
+      "name": "GamerPower",
+      "status": "passed",
+      "detail": "readable JSON"
+    },
+    {
+      "name": "Open-Meteo",
+      "status": "passed",
+      "detail": "readable JSON"
+    },
+    {
+      "name": "announcements",
+      "status": "passed",
+      "detail": "readable JSON"
+    },
+    {
+      "name": "tier origin",
+      "status": "passed",
+      "detail": "5 ranking rows; stale=false"
+    },
+    {
+      "name": "tier zzz",
+      "status": "passed",
+      "detail": "6 ranking rows; stale=false"
+    },
+    {
+      "name": "tier hsr",
+      "status": "passed",
+      "detail": "6 ranking rows; stale=false"
+    },
+    {
+      "name": "tier grandcross",
+      "status": "passed",
+      "detail": "7 ranking rows; stale=false"
+    },
+    {
+      "name": "tier genshin",
+      "status": "passed",
+      "detail": "7 ranking rows; stale=false"
+    }
+  ]
+}

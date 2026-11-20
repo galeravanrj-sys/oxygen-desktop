@@ -1,0 +1,17 @@
+// Scope Windows object-path hashing to this project's invocation, not the shared SDK.
+allprojects { project ->
+    ['com.android.application', 'com.android.library'].each { pluginId ->
+        project.plugins.withId(pluginId) {
+            project.extensions.getByName('androidComponents').finalizeDsl { android ->
+                def appModule = pluginId == 'com.android.application'
+                android.defaultConfig.externalNativeBuild.cmake.arguments.add(
+                    '-DCMAKE_OBJECT_PATH_MAX=' + (appModule ? '256' : '240'))
+                if (appModule) {
+                    // Autolinked codegen has long target names. Leave room for their hashes.
+                    android.externalNativeBuild.cmake.buildStagingDirectory =
+                        new File(project.rootDir, '../.cxx')
+                }
+            }
+        }
+    }
+}

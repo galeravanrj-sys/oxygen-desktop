@@ -1,0 +1,584 @@
+{
+  "game": "naruto-blazing",
+  "title": "Naruto Blazing",
+  "source_title": "Naruto Blazing Tier List",
+  "source": "https://www.hideoutgacha.com/games/naruto-blazing/tier-list",
+  "provider": "Hideout Guides",
+  "imported_at": "2026-11-06T17:10:57.678Z",
+  "modes": [
+    {
+      "id": "pve",
+      "label": "PVE",
+      "title": "General PVE Tier List (Story/Emergency)",
+      "tiers": [
+        {
+          "tier": "SS",
+          "characters": [
+            {
+              "id": "92376",
+              "name": "Sasuke Uchiha",
+              "subtitle": "The Last",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/95161.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-the-last",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10886",
+              "name": "Naruto Uzumaki",
+              "subtitle": "Nine Tails' Shroud",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/188.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-nine-tails-shroud",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "12426",
+              "name": "Sasori",
+              "subtitle": "Eternal Art",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/151.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasori-eternal-art",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "11056",
+              "name": "Jiraiya",
+              "subtitle": "The Toad Ninja",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/145.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/jiraiya-the-toad-ninja",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "12236",
+              "name": "Minato Namikaze",
+              "subtitle": "Rapid Lightning",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/195.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/minato-namikaze-rapid-lightning",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "12406",
+              "name": "Sakura Haruno",
+              "subtitle": "Unrelenting Commitment",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/209.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sakura-haruno-unrelenting-commitment",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            }
+          ]
+        },
+        {
+          "tier": "S",
+          "characters": [
+            {
+              "id": "10896",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Curse Mark 2nd State",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/191.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-curse-mark-2nd-state",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            },
+            {
+              "id": "13455",
+              "name": "Sakura Haruno",
+              "subtitle": "Dancing Cherry Blossoms",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/424.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sakura-haruno-dancing-cherry-blossoms",
+              "role": "",
+              "rarity": "5★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10866",
+              "name": "Rock Lee",
+              "subtitle": "The Eight Gates",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/218.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/rock-lee-the-eight-gates",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10966",
+              "name": "Itachi Uchiha",
+              "subtitle": "Beyond the Sharingan",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/302.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/itachi-uchiha-beyond-the-sharingan",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "11226",
+              "name": "Obito Uchiha",
+              "subtitle": "To Protect His Allies",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/200.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/obito-uchiha-to-protect-his-allies",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "11236",
+              "name": "Rin Nohara",
+              "subtitle": "Overflowing Kindness",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/202.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/rin-nohara-overflowing-kindness",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "11066",
+              "name": "Tsunade",
+              "subtitle": "The Slug Ninja",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/143.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/tsunade-the-slug-ninja",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "10976",
+              "name": "Naruto Uzumaki",
+              "subtitle": "Rasengan Mastered",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/137.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-rasengan-mastered",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10956",
+              "name": "Gaara",
+              "subtitle": "The Sand's Final Weapon",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/77.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/gaara-the-sands-final-weapon",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            },
+            {
+              "id": "12666",
+              "name": "Naruto Uzumaki",
+              "subtitle": "Unshakeable Will",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/308.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-unshakeable-will",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            }
+          ]
+        },
+        {
+          "tier": "A",
+          "characters": [
+            {
+              "id": "11216",
+              "name": "Kakashi Hatake",
+              "subtitle": "A Father's Blade",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/197.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/kakashi-hatake-a-fathers-blade",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "12396",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Soul Shrouded in Sorrow",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/311.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-soul-shrouded-in-sorrow",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10645",
+              "name": "Kabuto Yakushi",
+              "subtitle": "The Sound's Spy",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/82.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/kabuto-yakushi-the-sounds-spy",
+              "role": "",
+              "rarity": "5★",
+              "attribute": "Wisdom"
+            },
+            {
+              "id": "10906",
+              "name": "Hiruzen Sarutobi",
+              "subtitle": "Ninja Clothes",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/99.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/hiruzen-sarutobi-ninja-clothes",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "12636",
+              "name": "Hinata Hyuga",
+              "subtitle": "Blooming Talent",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/313.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/hinata-hyuga-blooming-talent",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "10796",
+              "name": "Neji Hyuga",
+              "subtitle": "A Caged Bird",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/220.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/neji-hyuga-a-caged-bird",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "12416",
+              "name": "Deidara",
+              "subtitle": "Ephemeral Art",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/153.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/deidara-ephemeral-art",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "12355",
+              "name": "Tayuya",
+              "subtitle": "Aggressive Strategist",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/293.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/tayuya-aggressive-strategist",
+              "role": "",
+              "rarity": "5★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10786",
+              "name": "Sakura Haruno",
+              "subtitle": "Hardened Resolve",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/60.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sakura-haruno-hardened-resolve",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            }
+          ]
+        },
+        {
+          "tier": "B",
+          "characters": [
+            {
+              "id": "10916",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Chidori: A New Skill",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/64.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-chidori-a-new-skill",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "10826",
+              "name": "Haku",
+              "subtitle": "A Frozen Heart",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/51.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/haku-a-frozen-heart",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10476",
+              "name": "Naruto Uzumaki",
+              "subtitle": "No. 1 Maverick",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/4.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-no-1-maverick",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "10776",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Ready for the Curse Mark",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/222.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-ready-for-the-curse-mark",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "11016",
+              "name": "Might Guy",
+              "subtitle": "Hot-Blooded Youth",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/68.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/might-guy-hot-blooded-youth",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10746",
+              "name": "Kakashi Hatake",
+              "subtitle": "Hidden Left Eye",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/45.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/kakashi-hatake-hidden-left-eye",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10936",
+              "name": "Tobirama Senju",
+              "subtitle": "Father of Reanimation",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/230.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/tobirama-senju-father-of-reanimation",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "11086",
+              "name": "Choji Akimichi",
+              "subtitle": "A Life Bet on Two Wings",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/163.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/choji-akimichi-a-life-bet-on-two-wings",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            }
+          ]
+        },
+        {
+          "tier": "C",
+          "characters": [
+            {
+              "id": "12606",
+              "name": "Kushina Uzumaki",
+              "subtitle": "The Red-Hot Habanero",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/306.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/kushina-uzumaki-the-red-hot-habanero",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            },
+            {
+              "id": "10926",
+              "name": "Hashirama Senju",
+              "subtitle": "Father of Leaf Village",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/227.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/hashirama-senju-father-of-leaf-village",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10486",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Lone Survivor",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/7.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-lone-survivor",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10506",
+              "name": "Gaara",
+              "subtitle": "Sand Defense",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/213.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/gaara-sand-defense",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "10496",
+              "name": "Kakashi Hatake",
+              "subtitle": "Copier of 1K Techniques",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/12.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/kakashi-hatake-copier-of-1k-techniques",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phantom-castle",
+      "label": "Phantom Castle",
+      "title": "Phantom Castle",
+      "tiers": [
+        {
+          "tier": "SS",
+          "characters": [
+            {
+              "id": "12396",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Soul Shrouded in Sorrow",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/311.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-soul-shrouded-in-sorrow",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10486",
+              "name": "Sasuke Uchiha",
+              "subtitle": "Lone Survivor",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/7.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasuke-uchiha-lone-survivor",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10476",
+              "name": "Naruto Uzumaki",
+              "subtitle": "No. 1 Maverick",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/4.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-no-1-maverick",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "11056",
+              "name": "Jiraiya",
+              "subtitle": "The Toad Ninja",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/145.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/jiraiya-the-toad-ninja",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            }
+          ]
+        },
+        {
+          "tier": "S",
+          "characters": [
+            {
+              "id": "12426",
+              "name": "Sasori",
+              "subtitle": "Eternal Art",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/151.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/sasori-eternal-art",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "10826",
+              "name": "Haku",
+              "subtitle": "A Frozen Heart",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/51.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/haku-a-frozen-heart",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "10966",
+              "name": "Itachi Uchiha",
+              "subtitle": "Beyond the Sharingan",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/302.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/itachi-uchiha-beyond-the-sharingan",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "10796",
+              "name": "Neji Hyuga",
+              "subtitle": "A Caged Bird",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/220.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/neji-hyuga-a-caged-bird",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Skill"
+            },
+            {
+              "id": "12666",
+              "name": "Naruto Uzumaki",
+              "subtitle": "Unshakeable Will",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/308.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-unshakeable-will",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Wisdom"
+            },
+            {
+              "id": "12355",
+              "name": "Tayuya",
+              "subtitle": "Aggressive Strategist",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/293.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/tayuya-aggressive-strategist",
+              "role": "",
+              "rarity": "5★",
+              "attribute": "Skill"
+            }
+          ]
+        },
+        {
+          "tier": "A",
+          "characters": [
+            {
+              "id": "10976",
+              "name": "Naruto Uzumaki",
+              "subtitle": "Rasengan Mastered",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/137.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/naruto-uzumaki-rasengan-mastered",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Body"
+            },
+            {
+              "id": "12236",
+              "name": "Minato Namikaze",
+              "subtitle": "Rapid Lightning",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/195.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/minato-namikaze-rapid-lightning",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            },
+            {
+              "id": "12636",
+              "name": "Hinata Hyuga",
+              "subtitle": "Blooming Talent",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/313.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/hinata-hyuga-blooming-talent",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Heart"
+            },
+            {
+              "id": "11086",
+              "name": "Choji Akimichi",
+              "subtitle": "A Life Bet on Two Wings",
+              "image": "https://www.hideoutgacha.com/images/naruto-blazing/icons/163.webp",
+              "url": "https://www.hideoutgacha.com/games/naruto-blazing/characters/choji-akimichi-a-life-bet-on-two-wings",
+              "role": "",
+              "rarity": "6★",
+              "attribute": "Bravery"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
