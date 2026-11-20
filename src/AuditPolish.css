@@ -1,0 +1,144 @@
+/* Hallmark checked · scope: app · built: the project · redesign: polish · v2.0.0 */
+/* Critique: preserve the M8M8S app shell; prioritize reachability, contrast and clear controls. */
+@import "./tokens.css";
+
+:root {
+  --font-ui: "Segoe UI", system-ui, Arial, sans-serif;
+  --color-surface: #f8fafc;
+  --color-ink: #1e293b;
+  --color-muted: #475569;
+  --color-line: #cbd5e1;
+  --color-focus: #0f172a;
+  --color-focus-halo: #ffffff;
+  --color-desktop: #263b51;
+  --color-desktop-dark: #172536;
+  --color-on-dark: #f8fafc;
+  --color-muted-on-dark: #cbd5e1;
+  --color-native-muted-dark: #bbc6d6;
+  --color-tint: #ede9f5;
+  --color-tint-dark: #353244;
+  --color-wallpaper-shade-start: #171a3dd9;
+  --color-wallpaper-shade-end: #171a3d44;
+}
+
+html { font-family: var(--font-ui); }
+::selection { color: var(--color-on-dark); background: var(--color-desktop); }
+input, textarea { caret-color: currentColor; }
+* { scrollbar-color: var(--color-muted) var(--color-surface); }
+h1, h2, h3 { min-width: 0; overflow-wrap: break-word; text-wrap: balance; }
+
+.os-shell {
+  height: var(--app-height, 100dvh);
+  min-height: 0;
+  font-family: var(--font-ui);
+  --muted: var(--color-muted-on-dark);
+}
+.os-shell .wallpaper:not(.wallpaper-custom) { background: var(--color-desktop); }
+.os-shell.dark-mode .wallpaper:not(.wallpaper-custom) { background: var(--color-desktop-dark); }
+.os-shell .wallpaper-orb { display: none; }
+.os-shell .top-bar, .os-shell .taskbar { color: var(--color-on-dark); background: var(--color-desktop); backdrop-filter: none; }
+.os-shell :is(.top-bar, .taskbar, .desktop-shortcuts, .oxygen-mobile-apps) { --color-focus: var(--color-on-dark); --color-focus-halo: var(--color-desktop-dark); }
+.os-shell.native-shell.dark-mode { --color-focus: var(--color-on-dark); --color-focus-halo: var(--color-desktop-dark); }
+.os-shell .desktop-date { opacity: 1; color: var(--color-muted-on-dark); }
+.os-shell .desktop-welcome { text-shadow: none; }
+.os-shell .taskbar-clock, .os-shell .quick-heading h2, .os-shell .desktop-widget h2 { font-variant-numeric: tabular-nums; }
+
+/* The outline is immediate and has a light halo on photographs and dark surfaces. */
+:is(button, input, select, textarea, a[href], summary, [tabindex]):focus-visible,
+.os-shell :is(button, input, select, textarea, a[href], summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-focus-halo);
+}
+.os-shell :is(button, input, select, textarea):disabled {
+  cursor: not-allowed;
+  opacity: .55;
+  filter: grayscale(1);
+}
+.os-shell button:enabled:active { filter: brightness(.94); }
+.os-shell .window-controls { flex-shrink: 0; gap: 0; }
+.os-shell .window-controls button { width: 44px; height: 44px; flex: 0 0 44px; }
+.os-shell .app-window-titlebar { min-height: 48px; padding-inline: 12px 4px; }
+.os-shell .window-app-title { min-width: 0; }
+.os-shell .window-app-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.os-shell .window-dot { display: none; }
+.os-shell .taskbar-start, .os-shell .taskbar-app, .os-shell .system-button,
+.os-shell .taskbar-system, .os-shell .quick-close { min-width: 44px; min-height: 44px; flex-shrink: 0; }
+.os-shell .taskbar-apps { overflow-y: hidden; padding: 6px; scroll-padding-inline: 6px; }
+.os-shell .taskbar-right { flex-shrink: 0; }
+.os-shell .taskbar-apps .taskbar-app { flex: 0 0 44px; }
+.os-shell .quick-settings { overflow-y: auto; padding-block: 12px; align-items: flex-start; }
+.os-shell .quick-panel { flex-shrink: 0; max-height: calc(var(--app-height, 100dvh) - 24px); overflow-y: auto; }
+.os-shell .quick-heading .quick-panel-label { font-size: 1rem; font-weight: 600; color: var(--color-ink); letter-spacing: normal; }
+.os-shell .quick-clock { font-size: 2rem; font-variant-numeric: tabular-nums; }
+.os-shell .quick-heading span, .os-shell .gallery-heading span,
+.os-shell .gallery-empty p, .os-shell .start-menu-header span,
+.os-shell .start-menu-footer, .os-shell .ox-muted { color: var(--color-muted); opacity: 1; }
+.os-shell .start-section-label, .os-shell .eyebrow { font-size: .875rem; letter-spacing: normal; text-transform: none; }
+.os-shell .start-search input { min-width: 0; font-size: 1rem; }
+.os-shell .quick-slider input { min-height: 44px; }
+.os-shell .photo-card-info button { min-width: 44px; min-height: 44px; color: var(--color-muted); }
+.os-shell .photo-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 145px), 1fr)); }
+.os-shell .unified-gallery-header p:not(.unified-eyebrow),
+.os-shell .unified-gallery-subbar, .os-shell .unified-gallery-footer { color: var(--color-muted); font-size: .875rem; }
+.os-shell .gallery-collections { flex-wrap: wrap; }
+.os-shell .gallery-collections button { white-space: nowrap; }
+.os-shell .unified-empty, .os-shell .unified-muted { color: var(--color-muted); }
+.os-shell .unified-empty p { font-size: .875rem; }
+
+/* Safe areas belong to the native header and navigation, once per edge. */
+.os-shell.native-shell {
+  height: var(--app-height, 100dvh);
+  padding: 0;
+  --nm-muted: var(--color-muted);
+  --nm-tint: var(--color-tint);
+}
+.os-shell.native-shell.dark-mode { --nm-muted: var(--color-native-muted-dark); --nm-tint: var(--color-tint-dark); }
+.os-shell.native-shell .nm-topbar { flex-basis: auto; min-height: calc(64px + env(safe-area-inset-top, 0px)); padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.os-shell.native-shell .nm-bottom-nav { flex-basis: auto; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); }
+.os-shell.native-shell .nm-icon-button, .os-shell.native-shell .m8-notification-bell { width: 44px; height: 44px; }
+.os-shell.native-shell .nm-bottom-nav>button { color: var(--nm-muted); }
+.os-shell.native-shell .nm-bottom-nav>button[aria-current=page] { color: var(--nm-ink); }
+.os-shell.native-shell .nm-bottom-nav>button>strong { font-size: .75rem; }
+.os-shell.native-shell :is(.nm-greeting>span, .nm-greeting>p, .nm-day-summary small, .nm-weather-peek small, .nm-page-intro>p, .nm-menu-row small, .nm-section-heading>button) { color: var(--nm-muted); font-size: .875rem; }
+.os-shell.native-shell .nm-briefing-hero:not(.has-wallpaper) { background: var(--nm-tint); color: var(--nm-ink); }
+.os-shell.native-shell .nm-hero-art { display: none; }
+.os-shell.native-shell .nm-hero-copy { position: relative; }
+.os-shell.native-shell .nm-hero-copy>strong { font-size: 1.75rem; }
+.os-shell.native-shell .nm-hero-copy>small { font-size: .875rem; }
+.os-shell.native-shell .nm-hero-action { font-size: .875rem; }
+.os-shell.native-shell .nm-hero-action svg { display: none; }
+.os-shell.native-shell .gallery-collections button[aria-pressed=true] { color: var(--m8-accent-ink); }
+.os-shell.native-shell[data-native-page=apps] .nm-scroll { overflow-y: auto; }
+.os-shell.native-shell[data-native-page=apps] .nm-app-grid { flex: none; grid-template-rows: none; grid-auto-rows: minmax(80px, auto); gap: 12px 8px; }
+.os-shell.native-shell[data-native-page=apps] .nm-app-tile>strong { font-size: .75rem; line-height: 1.35; }
+.os-shell.native-shell[data-native-page=apps] .nm-app-icon { width: 44px; height: 44px; }
+.os-shell.native-shell .nm-category-tabs>button { min-height: 44px; }
+.os-shell.native-shell .nm-category-tabs>button { color: var(--nm-muted); font-size: .875rem; }
+.os-shell.native-shell .nm-category-tabs>button[aria-pressed=true] { color: var(--nm-ink); background: var(--nm-tint); }
+
+@media (max-width: 40.625rem) {
+  .os-shell .desktop-area { height: calc(100% - 115px); }
+  .os-shell .oxygen-mobile-apps { overflow-y: auto; }
+  .os-shell .oxygen-mobile-grid { flex: none; grid-template-rows: none; grid-auto-rows: minmax(76px, auto); gap: 8px; }
+  .os-shell .oxygen-mobile-app>span { font-size: .75rem; line-height: 1.3; }
+  .os-shell .oxygen-mobile-app .shortcut-icon { width: 44px; height: 44px; }
+  .os-shell .taskbar { gap: 4px; padding-inline: 4px; }
+  .os-shell .taskbar>.taskbar-app, .os-shell .taskbar-divider { display: none; }
+  .os-shell .taskbar-right { gap: 4px; }
+  .os-shell .taskbar-clock { display: none; }
+  .os-shell .top-bar { padding-inline: 12px; }
+  .os-shell .mobile-window-rnd .app-window-titlebar { min-height: 48px; }
+  .os-shell .window-controls button { width: 44px; height: 44px; }
+}
+@media (max-height: 32rem) and (min-width: 40.626rem) {
+  .os-shell .desktop-area { overflow-y: auto; }
+  .os-shell .desktop-shortcuts { position: relative; top: auto; bottom: auto; margin-top: 88px; padding-bottom: 12px; grid-auto-rows: minmax(76px, auto); }
+}
+@media (pointer: coarse) {
+  .os-shell :is(.start-app-list button, .settings-options button, .nm-menu-row, .gallery-collections button) { min-height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .os-shell :is(.desktop-shortcut:hover .shortcut-icon, .oxygen-mobile-app:hover .shortcut-icon, .taskbar-app:hover, .taskbar-start:hover) { transform: none; }
+}

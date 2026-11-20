@@ -33,6 +33,7 @@ import "./HomeLauncher.css";
 import PublicGallery from "./PublicGallery";
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { Rnd } from "react-rnd";
+import { canSplitWindows, fitWindow } from "./windowGeometry";
 import {
   Bell, MessageCircle, Sparkles, Gamepad2, Palette, CloudSun, ListChecks, Star, Gift, Crown, Images, Folder, Globe, Settings, CalendarDays, Calculator, Clock3,
   Music, NotebookPen, Camera, Search, Wifi, Bluetooth,
@@ -178,6 +179,7 @@ export default function App() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [startMenu, setStartMenu] = useState(false);
   const [quickSettings, setQuickSettings] = useState(false);
+  const quickPanelRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(() =>
     readJSON(SETTINGS_KEY, { darkMode: false }).darkMode
@@ -195,8 +197,26 @@ export default function App() {
     width: window.innerWidth,
     height: window.innerHeight
   });
+  const workspaceRef = useRef<HTMLElement>(null);
+  const [workspace, setWorkspace] = useState({ width: window.innerWidth, height: Math.max(1, window.innerHeight - 115) });
   const isMobile = viewport.width <= 650;
   const mobileFullScreen = isMobile && !mobileFloating;
+  useEffect(() => {
+    if (!quickSettings) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const panel = quickPanelRef.current;
+    const controls = () => Array.from(panel?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), [tabindex="0"]') ?? []).filter(element => element.getClientRects().length);
+    controls()[0]?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const targets = controls();
+      const first = targets[0], last = targets.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    panel?.addEventListener("keydown", trap);
+    return () => { panel?.removeEventListener("keydown", trap); if (trigger?.isConnected) trigger.focus(); };
+  }, [quickSettings]);
   const zRef = useRef(
     Math.max(10, ...readJSON<Win[]>(SESSION_KEY, []).map(w => w.zIndex))
   );
@@ -207,13 +227,30 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const resize = () => setViewport({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+    const resize = () => {
+      const height = window.visualViewport?.height ?? window.innerHeight;
+      document.documentElement.style.setProperty("--app-height", `${height}px`);
+      setViewport({ width: window.innerWidth, height });
+    };
+    resize();
     window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    window.visualViewport?.addEventListener("resize", resize);
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.visualViewport?.removeEventListener("resize", resize);
+      document.documentElement.style.removeProperty("--app-height");
+    };
   }, []);
+
+  useEffect(() => {
+    const element = workspaceRef.current;
+    if (!element) return;
+    const observer = new ResizeObserver(() => {
+      setWorkspace({ width: element.clientWidth, height: element.clientHeight });
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [nativeApp]);
 
   useEffect(() => {
     localStorage.setItem(SESSION_KEY, JSON.stringify(windows));
@@ -263,8 +300,8 @@ export default function App() {
       id, name,
       x: 45 + (previous.length % 6) * 32,
       y: 35 + (previous.length % 6) * 26,
-      width: Math.min(name === "Calculator" ? 360 : ["Daily Briefing", "Gaming Passport", "Theme Studio"].includes(name) ? 960 : 760, Math.max(320, viewport.width - 90)),
-      height: Math.min(name === "Calculator" ? 560 : name === "Community Chat" ? 740 : name === "Daily Briefing" ? 780 : ["Gaming Passport", "Theme Studio"].includes(name) ? 720 : 510, Math.max(name === "Calculator" ? 500 : 260, viewport.height - 160)),
+      width: name === "Calculator" ? 360 : ["Daily Briefing", "Gaming Passport", "Theme Studio"].includes(name) ? 960 : 760,
+      height: name === "Calculator" ? 560 : name === "Community Chat" ? 740 : name === "Daily Briefing" ? 780 : ["Gaming Passport", "Theme Studio"].includes(name) ? 720 : 510,
       mode: "normal",
       minimized: false,
       zIndex: z
@@ -309,6 +346,7 @@ export default function App() {
   };
 
   const mode = (id: string, value: Mode) => {
+    if ((value === "left" || value === "right") && !canSplitWindows(workspace)) return;
     setWindows(previous => previous.map(w =>
       w.id === id ? {
         ...w,
@@ -326,6 +364,10 @@ export default function App() {
   };
 
   const splitTwo = async () => {
+    if (!canSplitWindows(workspace)) {
+      await siteAlert("Make the window wider to use two apps side by side.");
+      return;
+    }
     const visible = [...windows].filter(w => !w.minimized)
       .sort((a, b) => b.zIndex - a.zIndex);
     if (visible.length < 2) {
@@ -339,44 +381,10 @@ export default function App() {
   };
 
   const geometry = (w: Win) => {
-    
-    if (mobileFullScreen) {
-      return {
-        x: 0,
-        y: 0,
-        width: viewport.width,
-        height: Math.max(200, viewport.height - 115),
-      };
-    }
-
-    if (isMobile) {
-      const availableHeight = Math.max(200, viewport.height - 115);
-      if (w.mode !== "normal") return { x: 0, y: 0, width: viewport.width, height: availableHeight };
-      const width = Math.min(Math.max(280, w.width), viewport.width - 16);
-      const height = Math.min(Math.max(240, w.height), availableHeight - 16);
-      return { x: Math.max(8, Math.min(w.x, viewport.width - width - 8)), y: Math.max(8, Math.min(w.y, availableHeight - height - 8)), width, height };
-    }
-
-    const width = Math.max(320, viewport.width - 30);
-    const height = Math.max(260, viewport.height - 135);
-    if (w.mode === "fullscreen") {
+    if (w.mode === "fullscreen" && !isMobile) {
       return { x: 0, y: -45, width: viewport.width, height: viewport.height };
     }
-    if (w.mode === "maximized") {
-      return { x: 10, y: 10, width, height };
-    }
-    if (w.mode === "left") {
-      return { x: 10, y: 10, width: width / 2 - 8, height };
-    }
-    if (w.mode === "right") {
-      return { x: width / 2 + 6, y: 10, width: width / 2 - 8, height };
-    }
-    if (w.name === "Calculator") {
-      const calcWidth = Math.min(Math.max(320, w.width), width);
-      const calcHeight = Math.min(Math.max(500, w.height), height);
-      return { x: Math.max(0, Math.min(w.x, viewport.width - calcWidth - 10)), y: Math.max(0, Math.min(w.y, height - calcHeight)), width: calcWidth, height: calcHeight };
-    }
-    return { x: w.x, y: w.y, width: w.width, height: w.height };
+    return fitWindow(w, workspace, isMobile, mobileFullScreen, w.name === "Calculator" ? 500 : 260);
   };
 
   const saveCameraPhoto = async (data: string): Promise<void> => {
@@ -546,13 +554,13 @@ export default function App() {
         <div className="top-system">
           <span>{formattedTime}</span>
           <GameNotifications onShow={() => { setAnnouncementNotice(undefined); launch("Notifications"); }} />
-          <button className="system-button" onClick={() => setQuickSettings(true)}>
+          <button className="system-button" aria-label="Open quick settings" aria-expanded={quickSettings} onClick={() => setQuickSettings(true)}>
             <Wifi size={16} /><Bluetooth size={15} /><BatteryFull size={19} />
           </button>
         </div>
       </header>
 
-      <section className="desktop-area" onContextMenu={event => {
+      <section ref={workspaceRef} className="desktop-area" aria-label="App workspace" onContextMenu={event => {
         if (event.target !== event.currentTarget) return;
         event.preventDefault();
         setContext({ x: event.clientX, y: event.clientY });
@@ -627,8 +635,10 @@ export default function App() {
             <Rnd key={w.id} bounds="parent"
               position={{ x: g.x, y: g.y }}
               size={{ width: g.width, height: g.height }}
-              minWidth={mobileFullScreen ? 0 : isMobile ? Math.min(280, viewport.width - 16) : 320}
-              minHeight={isMobile ? (mobileFloating ? 240 : 0) : w.name === "Calculator" ? Math.min(500, Math.max(240, viewport.height - 135)) : 260}
+              minWidth={mobileFullScreen ? 0 : Math.min(isMobile ? 280 : 320, g.width)}
+              minHeight={mobileFullScreen ? 0 : Math.min(w.name === "Calculator" ? 500 : 260, g.height)}
+              maxWidth={workspace.width}
+              maxHeight={w.mode === "fullscreen" ? viewport.height : workspace.height}
               dragHandleClassName="app-window-titlebar"
               cancel=".window-controls, .window-controls *"
               disableDragging={mobileFullScreen || fixed}
@@ -648,8 +658,8 @@ export default function App() {
                 const edge = 30;
                 const snapped =
                   isMobile ? "normal" :
-                  data.x <= edge ? "left" :
-                  data.x + g.width >= viewport.width - edge ? "right" :
+                  canSplitWindows(workspace) && data.x <= edge ? "left" :
+                  canSplitWindows(workspace) && data.x + g.width >= workspace.width - edge ? "right" :
                   data.y <= 0 ? "maximized" : "normal";
                 updateWindow(w.id, {
                   x: data.x, y: data.y, mode: snapped
@@ -670,10 +680,10 @@ export default function App() {
                   </div>
                   <div className="window-controls">
                     {isMobile && <button className="mobile-layout-toggle" title={mobileFloating ? "Use full-screen apps" : "Use floating windows"} onClick={() => setMobileFloating(value => !value)}><WindowRestore size={15}/></button>}
-                    <button title="Snap left" onClick={() => mode(w.id, "left")}>
+                    <button title="Snap left" aria-label="Snap window left" disabled={!canSplitWindows(workspace)} onClick={() => mode(w.id, "left")}>
                       <PanelLeft size={15} />
                     </button>
-                    <button title="Snap right" onClick={() => mode(w.id, "right")}>
+                    <button title="Snap right" aria-label="Snap window right" disabled={!canSplitWindows(workspace)} onClick={() => mode(w.id, "right")}>
                       <PanelRight size={15} />
                     </button>
                     <button title="Full screen" onClick={() => mode(w.id, "fullscreen")}>
@@ -728,7 +738,7 @@ export default function App() {
           })}
         </div>
         <div className="taskbar-right">
-          <button className="taskbar-system"
+          <button className="taskbar-system" aria-label="Open quick settings" aria-expanded={quickSettings}
             onClick={() => setQuickSettings(!quickSettings)}>
             <Wifi size={16} /><Volume2 size={16} /><BatteryFull size={18} />
           </button>
@@ -747,10 +757,10 @@ export default function App() {
           </div>
           <div className="start-search">
             <Search size={17} />
-            <input placeholder="Search applications..."
+            <input aria-label="Search applications" placeholder="Search applications…"
               value={search} onChange={event => setSearch(event.target.value)} />
           </div>
-          <p className="start-section-label">ALL APPLICATIONS</p>
+          <p className="start-section-label">All applications</p>
           <div className="start-app-list">
             {orderedApps.filter(a => a.name.toLowerCase().includes(search.toLowerCase()))
               .map(app => {
@@ -773,30 +783,30 @@ export default function App() {
 
       {quickSettings && (
         <div className="quick-settings" onClick={() => setQuickSettings(false)}>
-          <div className="quick-panel" onClick={event => event.stopPropagation()}>
+          <div ref={quickPanelRef} className="quick-panel" role="dialog" aria-modal="true" aria-label="Quick settings" onClick={event => event.stopPropagation()}>
             <div className="quick-heading">
               <div>
-                <p className="eyebrow">CONTROL CENTER</p>
-                <h2>{formattedTime}</h2>
+                <h2 className="quick-panel-label">Quick settings</h2>
+                <p className="quick-clock">{formattedTime}</p>
                 <span>{formattedDate}</span>
               </div>
-              <button className="quick-close"
+              <button className="quick-close" aria-label="Close quick settings"
                 onClick={() => setQuickSettings(false)}>
                 <X size={19} />
               </button>
             </div>
             <div className="quick-grid">
-              <button className={wifi ? "enabled" : ""}
+              <button className={wifi ? "enabled" : ""} aria-pressed={wifi}
                 onClick={() => setWifi(!wifi)}>
                 <Wifi size={22} /><span>Wi-Fi</span>
                 <small>{wifi ? "On" : "Off"}</small>
               </button>
-              <button className={bluetooth ? "enabled" : ""}
+              <button className={bluetooth ? "enabled" : ""} aria-pressed={bluetooth}
                 onClick={() => setBluetooth(!bluetooth)}>
                 <Bluetooth size={22} /><span>Bluetooth</span>
                 <small>{bluetooth ? "On" : "Off"}</small>
               </button>
-              <button className={darkMode ? "enabled" : ""}
+              <button className={darkMode ? "enabled" : ""} aria-pressed={darkMode}
                 onClick={() => setDarkMode(!darkMode)}>
                 <Sun size={22} /><span>Appearance</span>
                 <small>{darkMode ? "Dark" : "Light"}</small>
@@ -807,12 +817,12 @@ export default function App() {
             </div>
             <div className="quick-slider">
               <div><Sun size={19} /><span>Brightness</span><strong>{brightness}%</strong></div>
-              <input type="range" min="0" max="100" value={brightness}
+              <input aria-label="Simulated brightness" type="range" min="0" max="100" value={brightness}
                 onChange={event => setBrightness(Number(event.target.value))} />
             </div>
             <div className="quick-slider">
               <div><Volume2 size={19} /><span>Music volume</span><strong>{volume}%</strong></div>
-              <input type="range" min="0" max="100" value={volume}
+              <input aria-label="Music volume" type="range" min="0" max="100" value={volume}
                 onChange={event => setVolume(Number(event.target.value))} />
             </div>
             <p className="ox-muted">

@@ -57,3 +57,6 @@ src-tauri/gen/android/app/src/main/jniLibs/
 src-tauri/gen/android/app/src/main/java/**/generated/
 
 dist-admin/
+
+# Local design captures and browser verification tools
+.hallmark/

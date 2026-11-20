@@ -13,9 +13,14 @@ body,
   min-height: 100%;
 }
 
+html,
 body {
-  overflow: hidden;
-  font-family: "Segoe UI", Arial, sans-serif;
+  overflow-x: clip;
+}
+
+body {
+  overflow-y: auto;
+  font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -25,7 +30,7 @@ input {
 }
 
 button {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: var(--palette-019);
 }
 
 /* Android WebView uses the same responsive interface as the website. */

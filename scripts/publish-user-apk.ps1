@@ -21,7 +21,7 @@ try {
  if(!$credential['password']){throw 'No GitHub credential is available.'}
  $headers=@{Authorization='Bearer '+$credential['password'];Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28';'User-Agent'='M8M8S-release'}
  $api='https://api.github.com/repos/galeravanrj-sys/oxygen-desktop/releases'
- $notes="M8M8S $Tag Android preview.`n`nThe app grids fit on one screen without scrolling. The Your personal space tagline is removed. Includes integrated account-based admin tools and announcement notifications.`n`nDownload M8M8S.apk and install over the previous M8M8S app. ARM64, Android 7.0+. Debug-signed preview; physical-device testing remains necessary. SHA256SUMS.txt verifies the download."
+ $notes="M8M8S $Tag Android preview.`n`nImproves phone and tablet layouts, short-screen app scrolling, text contrast, keyboard focus and touch targets. Adds safe-area spacing and reduced-motion support while preserving your apps and saved preferences.`n`nDownload M8M8S.apk and install over the previous M8M8S app. ARM64, Android 7.0+. Debug-signed preview; physical-device testing remains necessary. SHA256SUMS.txt verifies the download."
  $release=@(Invoke-RestMethod -Uri ($api+'?per_page=100') -Headers $headers) | Where-Object {$_.tag_name -eq $Tag} | Select-Object -First 1
  if(!$release){$body=@{tag_name=$Tag;name="M8M8S $Tag - Android Preview";body=$notes;draft=$true;prerelease=$true}|ConvertTo-Json;$release=Invoke-RestMethod -Method Post -Uri $api -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body))}
  $uploadRoot=$release.upload_url -replace '\{.*$',''

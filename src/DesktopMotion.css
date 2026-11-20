@@ -1,23 +1,23 @@
 /* One motion language for the desktop. Geometry never eases during direct manipulation. */
 .os-shell { --os-ease: cubic-bezier(.16,1,.3,1); }
-.os-shell .window-rnd { transition: transform 260ms var(--os-ease), width 260ms var(--os-ease), height 260ms var(--os-ease); }
+.os-shell .window-rnd { transition: none; }
 .os-shell .window-rnd.window-interacting { transition: none; }
 .os-shell .app-window { transform-origin: 50% 90%; transition: box-shadow 220ms ease, border-color 220ms ease; }
-.os-shell .window-rnd:not(.window-active) .app-window { box-shadow: 0 8px 30px #17234320; }
-.os-shell .window-active .app-window { box-shadow: 0 28px 70px #17234340, 0 4px 14px #17234318; }
+.os-shell .window-rnd:not(.window-active) .app-window { box-shadow: 0 8px 30px var(--palette-262); }
+.os-shell .window-active .app-window { box-shadow: 0 28px 70px var(--palette-263), 0 4px 14px var(--palette-264); }
 .os-shell .desktop-shortcut, .os-shell .oxygen-mobile-app, .os-shell .start-app-list button { transition: background 150ms ease, transform 180ms var(--os-ease); }
 .os-shell .shortcut-icon, .os-shell .start-app-icon { transition: transform 220ms var(--os-ease), box-shadow 220ms ease; }
 @media (hover: hover) {
-  .os-shell .desktop-shortcut:hover .shortcut-icon, .os-shell .oxygen-mobile-app:hover .shortcut-icon { transform: translateY(-5px) scale(1.06); box-shadow: 0 14px 26px #26335b30; }
+  .os-shell .desktop-shortcut:hover .shortcut-icon, .os-shell .oxygen-mobile-app:hover .shortcut-icon { transform: translateY(-5px) scale(1.06); box-shadow: 0 14px 26px var(--palette-265); }
   .os-shell .taskbar-app:hover, .os-shell .taskbar-start:hover { transform: translateY(-4px); }
   .os-shell .start-app-list button:hover { transform: translateX(3px); }
 }
 .os-shell .desktop-shortcut:active .shortcut-icon, .os-shell .oxygen-mobile-app:active .shortcut-icon { transform: scale(.91); }
 .os-shell .taskbar-app, .os-shell .taskbar-start { transition: transform 180ms var(--os-ease), background 160ms ease, opacity 160ms ease; }
 .os-shell .taskbar-app:active, .os-shell .taskbar-start:active { transform: scale(.9); }
-.os-shell .taskbar-app::after { transition: width 180ms var(--os-ease), background 180ms ease; }
+.os-shell .taskbar-app::after { transition: background 180ms var(--os-ease); }
 .os-shell .window-controls button { transition: background 120ms ease, color 120ms ease; }
-.os-shell .window-controls button:last-child:hover { background: #e5484d; color: white; }
+.os-shell .window-controls button:last-child:hover { background: var(--palette-266); color: var(--palette-027); }
 .os-shell .start-menu { transform-origin: 50% 100%; animation: os-panel-in 240ms var(--os-ease) both; }
 .os-shell .quick-panel { animation: os-panel-in 260ms var(--os-ease) both; }
 .os-shell .ox-context, .os-shell .gn-panel { animation: os-panel-in 180ms var(--os-ease) both; }
@@ -40,13 +40,13 @@
  .os-shell .mobile-floating-window { z-index: auto; }
  .os-shell[data-mobile-floating="true"] .desktop-area { overflow: hidden; }
  .os-shell[data-mobile-floating="true"] .oxygen-mobile-apps { max-height: 100%; overflow-y: auto; }
- .os-shell .mobile-floating-window .app-window { border-radius: 16px; border: 1px solid #ffffff60; }
+ .os-shell .mobile-floating-window .app-window { border-radius: 16px; border: 1px solid var(--palette-267); }
  .os-shell .mobile-floating-window .app-window-titlebar { touch-action: none; padding: 0 6px 0 10px; }
  .os-shell .mobile-floating-window .window-app-title { min-width: 0; overflow: hidden; }
  .os-shell .mobile-floating-window .window-app-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
  .os-shell .mobile-floating-window .window-controls { flex-shrink: 0; }
  .os-shell .mobile-floating-window .window-controls button { width: 30px; }
- .mobile-resize-grip { width: 32px; height: 32px; display: grid; place-items: center; color: var(--m8-accent); background: #ffffffd9; border-radius: 10px 0 14px 0; font-size: 19px; touch-action: none; user-select: none; }
+ .mobile-resize-grip { width: 32px; height: 32px; display: grid; place-items: center; color: var(--m8-accent); background: var(--palette-268); border-radius: 10px 0 14px 0; font-size: 19px; touch-action: none; user-select: none; }
 }
 
 .os-shell .mobile-floating-window { z-index: var(--mobile-window-z, 901) !important; }

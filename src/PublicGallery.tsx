@@ -139,7 +139,7 @@ export default function PublicGallery({ localPhotos, loadingLocal, localError, o
   return (
     <section className="oxygen-unified-gallery">
       <header className="unified-gallery-header">
-        <div><p className="unified-eyebrow">OXYGEN PHOTOS</p><h2>Gallery</h2>
+        <div><h2>Gallery</h2>
           <p>Your camera captures, saved photos, and community pictures — together.</p></div>
         <div className="unified-gallery-actions">
           <input ref={fileRef} hidden type="file" accept="image/jpeg,image/png,image/webp" multiple
