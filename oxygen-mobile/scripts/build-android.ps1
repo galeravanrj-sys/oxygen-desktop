@@ -1,6 +1,8 @@
 param([ValidateSet('debug','release')][string]$Variant='debug')
 $ErrorActionPreference='Stop'
 $mobileProject=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$appVersion=(Get-Content -LiteralPath (Join-Path $mobileProject 'app.json') -Raw | ConvertFrom-Json).expo.version
+if($appVersion -notmatch '^\d+\.\d+\.\d+$'){throw 'Invalid app version.'}
 $buildProject=$mobileProject
 Push-Location -LiteralPath $buildProject
 try {
@@ -18,8 +20,9 @@ try {
  }finally{Pop-Location}
  $apk=Join-Path $mobileProject ('android\app\build\outputs\apk\'+$Variant+'\app-'+$Variant+'.apk')
  if(!(Test-Path -LiteralPath $apk)){throw 'Gradle did not produce the expected APK.'}
+ if($Variant -eq 'release'){& (Join-Path $PSScriptRoot 'verify-startup-constructors.ps1') -Apk $apk}
  New-Item -ItemType Directory -Path (Join-Path $mobileProject 'artifacts') -Force | Out-Null
- $destination=Join-Path $mobileProject ('artifacts\M8M8S-Mobile-0.1.0-'+$Variant+'.apk')
+ $destination=Join-Path $mobileProject ('artifacts\M8M8S-Mobile-'+$appVersion+'-'+$Variant+'.apk')
  Copy-Item -LiteralPath $apk -Destination $destination -Force
  Get-FileHash -LiteralPath $destination -Algorithm SHA256
  Write-Output ('APK: '+$destination)

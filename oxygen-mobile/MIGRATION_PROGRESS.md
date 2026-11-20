@@ -21,6 +21,10 @@ existing database schema, policies, buckets and accounts are preserved.
 - [x] Reuse calculator arithmetic and history, ranking comparison, passport
       validation and notification-baseline algorithms with native storage/crypto adapters.
 - [x] Configure a separate Android ID: `com.m8m8s.oxygen.mobile`.
+- [x] Fix the 0.1.0 Android startup crash in 0.1.1: preserve reflected Room and
+  WorkManager constructors, verify APK DEX, and pass three cold launches plus
+  native Home rendering on Oppo Reno 13F / Android 16. See
+  `docs/startup-crash-0.1.1.md` for evidence and remaining test limits.
 - [x] Pass TypeScript, lint, seven domain tests, all 20 Expo Doctor checks and
       14 read-only backend checks; preserve all 105 recorded original-file hashes.
 - [x] Exercise all 19 routes in the browser preview, verify note/task persistence,

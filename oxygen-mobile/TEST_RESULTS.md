@@ -1,5 +1,9 @@
 # M8M8S Mobile validation
 
+The 0.1.0 startup crash and 0.1.1 correction are tracked in
+[`docs/startup-crash-0.1.1.md`](docs/startup-crash-0.1.1.md). The original results
+below describe the initial build and its validation limits.
+
 Validation date: 20 November 2026 (Asia/Manila). This is a separate Expo project;
 implementation coverage is listed in `MIGRATION_PROGRESS.md`.
 

@@ -34,11 +34,11 @@ The script detects the installed Java 21 and `D:\Android\Sdk`, or respects
 copied into ignored `artifacts/` when successful. Install a resulting APK with:
 
 ```powershell
-& "$env:ANDROID_HOME\platform-tools\adb.exe" install -r '.\artifacts\M8M8S-Mobile-0.1.0-debug.apk'
+& "$env:ANDROID_HOME\platform-tools\adb.exe" install -r '.\artifacts\M8M8S-Mobile-0.1.1-debug.apk'
 # For a development client, leave Metro running:
 npm.cmd start
 # Standalone preview (bundled JavaScript, no Metro needed):
-& "$env:ANDROID_HOME\platform-tools\adb.exe" install -r '.\artifacts\M8M8S-Mobile-0.1.0-release.apk'
+& "$env:ANDROID_HOME\platform-tools\adb.exe" install -r '.\artifacts\M8M8S-Mobile-0.1.1-release.apk'
 ```
 
 On this Windows workspace, prefer the APK script for local compilation: it applies

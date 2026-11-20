@@ -1,0 +1,28 @@
+{
+    "testedAt":  "2026-11-20T05:52:04.9675636Z",
+    "device":  "Oppo Reno 13F (CPH2699)",
+    "android":  "16",
+    "version":  "0.1.1",
+    "installation":  "Updated with adb install -r; app data retained",
+    "originalCrash":  "NoSuchMethodException: androidx.work.impl.WorkDatabase_Impl.\u003cinit\u003e []",
+    "coldLaunches":  [
+                         {
+                             "trial":  1,
+                             "processAliveAfterSeconds":  6,
+                             "crashDetected":  false
+                         },
+                         {
+                             "trial":  2,
+                             "processAliveAfterSeconds":  6,
+                             "crashDetected":  false
+                         },
+                         {
+                             "trial":  3,
+                             "processAliveAfterSeconds":  6,
+                             "crashDetected":  false
+                         }
+                     ],
+    "nativeHomeContentVerified":  true,
+    "startupConstructorsVerifiedInDex":  true,
+    "fullFeatureSuiteTested":  false
+}
